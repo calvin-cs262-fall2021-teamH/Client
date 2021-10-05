@@ -9,7 +9,7 @@ import * as React from 'react';
 import { Image, Button, View, Text } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import logo from './assets/Calvinsource.png';  
+import logo from './assets/HelloCampusLogo.PNG';  
 import map from './assets/campusmapD1.PNG';
 
 function HomeScreen({ navigation }) {
