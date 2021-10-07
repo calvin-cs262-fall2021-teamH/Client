@@ -9,16 +9,17 @@ import * as React from 'react';
 import { Image, Button, View, Text } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import logo from './assets/HelloCampusLogo.PNG';  
-import map from './assets/campusmapD1.PNG';
+// import logo from './assets/HelloCampusLogo.PNG';  
+import map from './assets/campusmapD1.png';
+import GeoPrototype from './components/GeolocationPrototype';
 
 function HomeScreen({ navigation }) {
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#8C2032' }}>
-      <Image source={logo} style={{ width: 305, height: 300 }} />
+      {/* <Image source={logo} style={{ width: 305, height: 300 }} /> */}
       <Button
         title="Get Started!"
-        onPress={() => navigation.navigate('Map')}
+        onPress={() => navigation.navigate('GeoPrototype')}
       />
     </View>
   );
@@ -41,6 +42,7 @@ function App() {
       <Stack.Navigator initialRouteName="Home">
         <Stack.Screen name="Team HUH!" component={HomeScreen} />
         <Stack.Screen name="Map" component={MapScreen} />
+        <Stack.Screen name="GeoPrototype" component={GeoPrototype} />
       </Stack.Navigator>
     </NavigationContainer>
   );
