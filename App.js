@@ -1,4 +1,4 @@
-/* hello-campus-d1.js  Second Prototype of app for project deliverable #2
+/* App.js  Second Prototype of app for project deliverable #2
 Team HUH?!
 9/17/2021
 Brian Langejans, David Reidsma, David Heynen, Paul Dick, Kurt Wietelmann
@@ -9,30 +9,9 @@ import * as React from 'react';
 import { Image, Button, View, Text } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-// import logo from './assets/HelloCampusLogo.PNG';  
-import map from './assets/campusmapD1.png';
-import GeoPrototype from './components/GeolocationPrototype';
-
-function HomeScreen({ navigation }) {
-  return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#8C2032' }}>
-      {/* <Image source={logo} style={{ width: 305, height: 300 }} /> */}
-      <Button
-        title="Get Started!"
-        onPress={() => navigation.navigate('GeoPrototype')}
-      />
-    </View>
-  );
-}
-
-function MapScreen() {
-  return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#8C2032' }}>
-      <Text>Map</Text>
-      <Image source = {map} style = {{ width: 700, height : 700}}/>
-    </View>
-  );
-}
+import HomeScreen from "./screens/home";
+import MapScreen from "./screens/map";
+import GeoPrototype from './screens/GeolocationPrototype';
 
 const Stack = createNativeStackNavigator();
 
@@ -40,7 +19,7 @@ function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Home">
-        <Stack.Screen name="Team HUH!" component={HomeScreen} />
+        <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="Map" component={MapScreen} />
         <Stack.Screen name="GeoPrototype" component={GeoPrototype} />
       </Stack.Navigator>
