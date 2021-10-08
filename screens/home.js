@@ -11,7 +11,7 @@ import { Image, Button, View, Text, TouchableOpacity, FlatList } from 'react-nat
 export default function HomeScreen({navigation}) {
     return (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#8C2032' }}>
-          <Image source={ require('../assets/HelloCampusLogo.png')} style={{ width: 305, height: 300 }} />
+          <Image source={ require('../assets/HelloCampusLogo.PNG')} style={{ width: 300, height: 300 }} />
           <Button
             title="Get Started!"
             onPress={() => navigation.navigate('Map')}
