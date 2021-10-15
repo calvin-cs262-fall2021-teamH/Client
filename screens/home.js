@@ -16,6 +16,10 @@ export default function HomeScreen({navigation}) {
             title="Get Started!"
             onPress={() => navigation.navigate('Map')}
           />
+          <Button
+            title= "LOG IN"
+            onPress={() => navigation.navigate('Login')}
+            />
         </View>
     );
 }

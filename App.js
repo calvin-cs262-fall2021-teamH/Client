@@ -6,12 +6,12 @@ adapted from the navigation tutorial found at: https://reactnavigation.org/docs/
 */
 
 import * as React from 'react';
-import { Image, Button, View, Text } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import HomeScreen from "./screens/home";
 import MapScreen from "./screens/map";
 import PointInfoScreen from './screens/pointInfo';
+import Login from "./screens/Login";
 
 const Stack = createNativeStackNavigator();
 
@@ -22,6 +22,7 @@ function App() {
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="Map" component={MapScreen} />
         <Stack.Screen name="PointInfo" component={PointInfoScreen} />
+        <Stack.Screen name = "Login" component = {Login}/>
       </Stack.Navigator>
     </NavigationContainer>
   );
