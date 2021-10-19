@@ -2,7 +2,7 @@
 Team HUH?!
 10/6/2021
 Brian Langejans, David Reidsma, David Heynen, Paul Dick, Kurt Wietelmann
-adapted from the navigation tutorial found at: https://reactnavigation.org/docs/navigating
+adapted page navigation from: https://reactnavigation.org/docs/navigating
 */
 
 import React, { useState } from 'react';
@@ -11,11 +11,15 @@ import { Image, Button, View, Text, TouchableOpacity, FlatList } from 'react-nat
 export default function HomeScreen({navigation}) {
     return (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#8C2032' }}>
-          <Image source={ require('../assets/HelloCampusLogo.png')} style={{ width: 300, height: 300 }} />
+          <Image source={ require('../assets/HelloCampusLogo.PNG')} style={{ width: 300, height: 300 }} />
           <Button
             title="Get Started!"
             onPress={() => navigation.navigate('Map')}
           />
+          <Button
+            title= "LOG IN"
+            onPress={() => navigation.navigate('Login')}
+            />
           <Button
             title="Geolocation prototype"
             onPress={() => navigation.navigate('GeoPrototype')}
