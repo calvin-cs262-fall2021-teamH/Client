@@ -13,11 +13,11 @@ import { globalStyles } from '../styles/global';
 export default function MapScreen({navigation}) {
   // a list of different locations on the map (only 2 for this prototype)
   const locations = [
-    { name: "Whiskey Pond", image: 'WhiskeyPond.png',
+    { name: "Whiskey Pond", image: '../assets/WhiskeyPond.png',
         description: "This secluded pond is fed by a seep on the eastern edge. It is home to ducks," + 
                       "frogs, and plants like Buttonbush, Duckweed, and the tiniest vascular" +
                       "plant in Michigan, water meal. Watch for the Great Blue Heron that often feeds here"},
-    { name: "Crown Gap", image: 'CrownGap.png',
+    { name: "Crown Gap", image: '../assets/CrownGap.png',
         description: "In 1995, this large maple tree fell, removing branches from several neighboring trees. " +
                      "The result was a large hole in the canopy, or a crown gap. The gap allows more sunlight to " +
                      "reach the forest floor, encouraging growth of seedlings. Eventually one or two of the seedlings " +
