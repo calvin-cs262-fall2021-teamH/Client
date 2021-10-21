@@ -9,12 +9,19 @@ import React, { useState } from 'react';
 import { Image, Button, View, Text, TouchableOpacity, FlatList, ImageBackground } from 'react-native';
 import { globalStyles } from '../styles/global';
 
+
+/*
+<Text style={{ fontSize: 30, color: "#fff", padding: 20 }}>{ route.params.name }</Text>
+<ImageBackground source = { require('../assets/' + route.params.image) } style = { globalStyles.map }/>
+<Text style={{ fontSize: 20, color: "#fff", padding: 20 }}>{ route.params.description }</Text>
+*/
+
 export default function PointInfoScreen({ route, navigation }) {
     return (
-        <View style={{ flex: 1, alignItems: 'left', backgroundColor: '#8C2032' }}>
+        // <View style={{ flex: 1, alignItems: 'left', backgroundColor: '#8C2032' }}>
             <Text style={{ fontSize: 30, color: "#fff", padding: 20 }}>{ route.params.name }</Text>
-            <ImageBackground source = { require('../assets/' + route.params.image) } style = { globalStyles.map }/>
-            <Text style={{ fontSize: 20, color: "#fff", padding: 20 }}>{ route.params.description }</Text>
-        </View>
+            // <ImageBackground source = { require('../assets/WhiskeyPond.png') } style = { globalStyles.map }/>
+            // <Text style={{ fontSize: 20, color: "#fff", padding: 20 }}>{ "lskpuafpe" }</Text>
+        // </View>
     );
 }
