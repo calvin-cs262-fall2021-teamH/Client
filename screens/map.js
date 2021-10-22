@@ -7,7 +7,6 @@ adapted from the navigation tutorial found at: https://reactnavigation.org/docs/
 
 import React, { useState } from 'react';
 import { Image, Button, View, Text, TouchableOpacity, FlatList, ImageBackground, Touchable } from 'react-native';
-import { PointInfoScreen } from './pointInfo';
 import { globalStyles } from '../styles/global';
 
 export default function MapScreen({navigation}) {
@@ -26,7 +25,7 @@ export default function MapScreen({navigation}) {
 
   return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#8C2032' }}>
-        <Text style={{ fontSize: 30, color: "#fff", padding: 20 } }>Select a point of interest on the map to learn more!</Text>
+        <Text style={{ fontSize: 25, color: "#fff", padding: 20 } }>Select a point of interest on the map to learn more!</Text>
         <ImageBackground source = { require('../assets/ecomap.png')} style = { globalStyles.map }/>
         <TouchableOpacity style = {[ globalStyles.mapPoint, {top:-240, right: 90} ]} onPress={() => navigation.navigate('PointInfo', locations[0])}></TouchableOpacity>
         <TouchableOpacity style = {[ globalStyles.mapPoint, {top:-360, left: 110} ]} onPress={() => navigation.navigate('PointInfo', locations[1])}></TouchableOpacity>
