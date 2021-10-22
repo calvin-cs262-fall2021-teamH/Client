@@ -6,20 +6,59 @@ adapted page navigation from: https://reactnavigation.org/docs/navigating
 */
 
 import React, { useState } from 'react';
-import { Image, Button, View, Text, TouchableOpacity, FlatList } from 'react-native';
+import { Image, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
 export default function HomeScreen({navigation}) {
     return (
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#8C2032' }}>
-          <Image source={ require('../assets/HelloCampusLogo.PNG')} style={{ width: 300, height: 300 }} />
-          <Button
-            title="Get Started!"
-            onPress={() => navigation.navigate('Map')}
-          />
-          <Button
-            title= "LOG IN"
-            onPress={() => navigation.navigate('Login')}
-            />
+        <View style={styles.container}>
+          
+          <Image source={ require('../assets/truelogow_o_background.png')} style={{ width: 300, height: 300 }} />
+          
+          <TouchableOpacity style={styles.genericButton} onPress={() => navigation.navigate('Map')}>
+            <Text style={styles.loginText}>Take a Tour!</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.genericButton} onPress={() => navigation.navigate('Login')}>
+            <Text style={styles.loginText}>Sign In / Create Account</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.aboutButton} onPress={() => navigation.navigate('About')}>
+            <Text style={styles.loginText}>About</Text>
+          </TouchableOpacity>
         </View>
     );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#8C2131",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  loginText: {
+    fontWeight: 'bold'
+  },
+
+aboutButton: {
+  width : "20%",
+  borderRadius: 75,
+  height: 75,
+  alignItems: "center",
+  justifyContent: "center",
+  marginTop: 40,
+  backgroundColor: "#8C2131",
+
+},
+
+genericButton: {
+  width: "20%",
+  borderRadius: 10,
+  height: 25,
+  alignItems: "center",
+  justifyContent: "center",
+  marginTop: 10,
+  backgroundColor: "#fff",
+},
+});
