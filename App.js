@@ -12,6 +12,8 @@ import HomeScreen from "./screens/home";
 import MapScreen from "./screens/map";
 import PointInfoScreen from './screens/pointInfo';
 import Login from "./screens/Login";
+import About from "./screens/about";
+import Admin from "./screens/admin";
 
 const Stack = createNativeStackNavigator();
 
@@ -19,10 +21,12 @@ function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Home">
-        <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="Map" component={MapScreen} />
-        <Stack.Screen name="PointInfo" component={PointInfoScreen} />
+        <Stack.Screen name= "Home" component={HomeScreen} />
+        <Stack.Screen name= "Map" component={MapScreen} />
+        <Stack.Screen name= "PointInfo" component={PointInfoScreen} />
         <Stack.Screen name = "Login" component = {Login}/>
+        <Stack.Screen name = "About" component = {About}/>
+        <Stack.Screen name = "Admin" component = {Admin}/>
       </Stack.Navigator>
     </NavigationContainer>
   );
