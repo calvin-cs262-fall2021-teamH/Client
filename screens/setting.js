@@ -4,14 +4,27 @@ Team HUH?!
 Brian Langejans, David Reidsma, David Heynen, Paul Dick, Kurt Wietelmann
 */
 
-import React, { useState } from 'react';
+import React, { useState, Component } from 'react';
 import { Image, Button, View, Text, TouchableOpacity, Switch } from 'react-native';
 import { globalStyles } from '../styles/global';
 
 export default function SettingScreen({ navigation }) {
-    const [switchValue, setSwitchValue] = useState(false);
-    const toggleSwitch = (value) => {
-        setSwitchValue(value);
+    const [switchValueOne, setSwitchValueOne] = useState(false);
+    const [switchValueTwo, setSwitchValueTwo] = useState(false);
+    const [switchValueThree, setSwitchValueThree] = useState(false);
+    const switchOne = (value) => {toggleSwitch(1)};
+    const switchTwo = (value) => {toggleSwitch(2)};
+    const switchThree = (value) => {toggleSwitch(3)};
+
+    const toggleSwitch = (index) => {
+        if (index == 1) {
+            setSwitchValueOne(previousStat => !previousStat);
+        } 
+        else if (index == 2) {
+            setSwitchValueTwo(previousStat => !previousStat);
+        } else if (index == 3) {
+            setSwitchValueThree(previousStat => !previousStat);
+        }
     }
 
     return (
@@ -19,10 +32,10 @@ export default function SettingScreen({ navigation }) {
             <View style={globalStyles.settingOption}>
                 <Text>Setting option 1</Text>
                 <View style={{alignItems: 'right'}}>
-                    <Switch                      
+                    <Switch        
                         trackColor={{ false: 'gray', true: 'green' }}
-                        onValueChange={toggleSwitch}
-                        value={switchValue}
+                        onValueChange={switchOne}
+                        value={switchValueOne}
                     />
                 </View>
             </View>
@@ -31,8 +44,8 @@ export default function SettingScreen({ navigation }) {
                 <View style={{alignItems: 'right'}}>
                     <Switch                      
                         trackColor={{ false: 'gray', true: 'green' }}
-                        onValueChange={toggleSwitch}
-                        value={switchValue}
+                        onValueChange={switchTwo}
+                        value={switchValueTwo}                 
                     />
                 </View>
             </View>
@@ -41,8 +54,8 @@ export default function SettingScreen({ navigation }) {
                 <View style={{alignItems: 'right'}}>
                     <Switch                      
                         trackColor={{ false: 'gray', true: 'green' }}
-                        onValueChange={toggleSwitch}
-                        value={switchValue}
+                        onValueChange={switchThree}
+                        value={switchValueThree}                   
                     />
                 </View>
             </View>
