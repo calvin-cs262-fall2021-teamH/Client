@@ -19,5 +19,19 @@ export const globalStyles = StyleSheet.create({
     map: {
         width: 400, 
         height : 400,
+    },
+    setting: {
+        width: 50,
+        height: 50,
+        borderRadius: 20,
+    },
+    settingOption: {
+        backgroundColor: '#FFF',
+        padding: 15,
+        borderRadius: 10,        
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        marginBottom: 20,
     }
 });
