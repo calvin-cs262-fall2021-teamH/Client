@@ -21,9 +21,9 @@ import { globalStyles } from '../styles/global';
 export default function PointInfoScreen({ route, navigation }) {
     return (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#8C2032' }}>
-            <Text style={{ fontSize: 30, color: "#fff", padding: 20 }}>{ 'slkahfpoiefa' }</Text>
+            <Text style={{ fontSize: 30, color: "#fff", padding: 20 }}>{ route.params.name }</Text>
             <ImageBackground source = { route.params.image } style = { globalStyles.map }/>
-            <Text style={{ fontSize: 20, color: "#fff", padding: 20 }}>{ "lskpuafpe" }</Text>
+            <Text style={{ fontSize: 20, color: "#fff", padding: 20 }}>{ route.params.description }</Text>
         </View>
     );
 }
