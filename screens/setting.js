@@ -31,7 +31,7 @@ export default function SettingScreen({ navigation }) {
         <View style={{ flex: 1, backgroundColor: '#8C2032', padding: 20 }}>
             <View style={globalStyles.settingOption}>
                 <Text>Setting option 1</Text>
-                <View style={{alignItems: 'right'}}>
+                <View style={{alignItems: 'center'}}>
                     <Switch        
                         trackColor={{ false: 'gray', true: 'green' }}
                         onValueChange={switchOne}
@@ -41,7 +41,7 @@ export default function SettingScreen({ navigation }) {
             </View>
             <View style={globalStyles.settingOption}>
                 <Text>Setting option 2</Text>
-                <View style={{alignItems: 'right'}}>
+                <View style={{alignItems: 'center'}}>
                     <Switch                      
                         trackColor={{ false: 'gray', true: 'green' }}
                         onValueChange={switchTwo}
@@ -51,7 +51,7 @@ export default function SettingScreen({ navigation }) {
             </View>
             <View style={globalStyles.settingOption}>
                 <Text>Setting option 3</Text>
-                <View style={{alignItems: 'right'}}>
+                <View style={{alignItems: 'center'}}>
                     <Switch                      
                         trackColor={{ false: 'gray', true: 'green' }}
                         onValueChange={switchThree}
