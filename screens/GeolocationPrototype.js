@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Image, Button, StyleSheet, View, Text } from 'react-native';
+import { Image, Button, StyleSheet, View, Text,TouchableOpacity } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as Location from 'expo-location';
 
-export default function GeoPrototype({ navigation }) {
-  const [location, setLocation] = useState(null);
+// A good reference example: https://snack.expo.dev/@chronsyn/watchpositionasync-example
+export default function GeolocationPrototype({navigation}) {
+  const [watcher, setWatcher] = useState(null);
+  const [currentLocation, setCurrentLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
-
+  
   useEffect(() => {
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
@@ -16,25 +18,34 @@ export default function GeoPrototype({ navigation }) {
         return;
       }
 
-      let location = await Location.getCurrentPositionAsync({});
-      setLocation(location);
-    })();
-  }, []);
-
-  let text = 'Waiting..';
-  if (errorMsg) {
-    text = errorMsg;
-  } else if (location) {
-    const latitude = location["latitude"]?.toString();//location.latitude;
-    const longitude = location["longitude"]?.toString();//location.longitude;
-    text = latitude + ", " + longitude;
-
-    text = JSON.stringify(location);
-  }
-
+      await Location.watchPositionAsync({
+        accuracy: Location.Accuracy.Highest,
+        distanceInterval: 1,
+        timeInterval: 1000
+      }, ({coords}) => {
+        console.log({coords});
+        setCurrentLocation(coords);
+      }).then((locationWatcher) => {
+        setWatcher(locationWatcher);
+      }).catch((err) => {
+        console.log(err);
+      });
+      return () => {
+        watcher.remove();
+        // TODO: make sure this is getting called when the screen is left.
+        // If it's not called then we could have a memory leak.
+      }
+    })()
+  }, [])
   return (
     <View style={styles.container}>
-      <Text style={styles.paragraph}>{text}</Text>
+      {currentLocation && currentLocation.latitude && (
+        <Text>{currentLocation.latitude}</Text>
+      )}
+
+      {currentLocation && currentLocation.longitude && (
+        <Text>{currentLocation.longitude}</Text>
+      )}
     </View>
   );
 }
@@ -63,4 +74,8 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: '#fff',
   },
+  buttonLabel: {
+    color: "white",
+    textAlign: "center"
+  }
 });
