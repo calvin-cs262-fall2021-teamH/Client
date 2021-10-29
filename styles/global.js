@@ -33,5 +33,9 @@ export const globalStyles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
         marginBottom: 20,
+    },
+    interactionButton: {
+        width: 50,
+        height: 50,
     }
 });
