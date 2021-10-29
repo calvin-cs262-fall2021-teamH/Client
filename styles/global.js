@@ -8,8 +8,8 @@ import { StyleSheet } from 'react-native';
 
 export const globalStyles = StyleSheet.create({
     setting: {
-        width: 50,
-        height: 50,
+        width: 40,
+        height: 40,
         borderRadius: 20,
     },
     settingOption: {
@@ -35,5 +35,14 @@ export const globalStyles = StyleSheet.create({
         width: 170, 
         height:170,
         alignItems: 'center',
-    }
+    },
+    genericButton: {
+        width: "80%",
+        borderRadius: 10,
+        height: 25,
+        alignItems: "center",
+        justifyContent: "center",
+        marginTop: 10,
+        backgroundColor: "#fff",
+    },
 });
