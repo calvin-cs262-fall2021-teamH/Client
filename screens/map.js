@@ -6,13 +6,29 @@ adapted from the navigation tutorial found at: https://reactnavigation.org/docs/
 */
 
 import React, { useState, useEffect } from 'react';
-import { Image, Button, View, Text, TouchableOpacity, FlatList, ImageBackground, Touchable } from 'react-native';
+import { Image, Button, View, Text, TouchableOpacity, FlatList, ImageBackground, Touchable, StyleSheet } from 'react-native';
 import { globalStyles } from '../styles/global';
 import { InteractionButton } from "../components/interactionButton";
 import * as Location from 'expo-location';
 import {getDistance} from 'geolib';
 
+function scaleValue(value, oldMin, oldMax, newMin, newMax) {
+  return ((value - oldMin) / (oldMax - oldMin)) * (newMax - newMin) + newMin;
+}
+
 export default function MapScreen({navigation}) {
+  // 42.93604524494348, -85.58066210952111
+  // 42.92751441040437, -85.59027514660808
+  const minLatitude = 42.92751441040437;
+  const minLongitude = -85.59027514660808;
+  const maxLatitude = 42.93604524494348;
+  const maxLongitude = -85.58066210952111;
+
+  const minX = 0;
+  const minY = 90;
+  const maxX = 400;
+  const maxY = 490;
+
   // a list of different locations on the map (only 2 for this prototype)
   const locations = [
     { name: 'Whiskey Pond', image: require('../assets/WhiskeyPond.png'),
@@ -31,6 +47,7 @@ export default function MapScreen({navigation}) {
   const [watcher, setWatcher] = useState(null);
   const [currentLocation, setCurrentLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
+  const [currentXYPosition, setCurrentXYPosition] = useState(null);
   
   useEffect(() => {
     (async () => {
@@ -45,7 +62,15 @@ export default function MapScreen({navigation}) {
         distanceInterval: 1,
         timeInterval: 1000
       }, ({coords}) => {
-        console.log({coords});
+        // console.log({coords});
+        let y = scaleValue(coords.longitude, minLongitude, maxLongitude, minX, maxX);
+        y = -y; // is this correct?
+
+        let x = scaleValue(coords.latitude, minLatitude, maxLatitude, minY, maxY);
+
+        let xyCoords = { x: x, y: y };
+        console.log(xyCoords);
+        setCurrentXYPosition(xyCoords);
         setCurrentLocation(coords);
       }).then((locationWatcher) => {
         setWatcher(locationWatcher);
@@ -63,9 +88,12 @@ export default function MapScreen({navigation}) {
   return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#8C2032' }}>
         <Text style={{ fontSize: 25, color: "#fff", padding: 15, top: 100 } }>Walk towards a point on the map to learn more!</Text>
-        <ImageBackground source = { require('../assets/ecomap.png')} style = { globalStyles.map}/>
-        <TouchableOpacity style = {[ globalStyles.mapPoint, {top:-160, right: 85} ]} onPress={() => navigation.navigate('PointInfo', locations[0])}></TouchableOpacity>
-        <TouchableOpacity style = {[ globalStyles.mapPoint, {top:-270, left: 110} ]} onPress={() => navigation.navigate('PointInfo', locations[1])}></TouchableOpacity>
+        <ImageBackground source = { require('../assets/ecomap.png')} style = { styles.map}/>
+        <TouchableOpacity style = {[ styles.mapPoint, {top:-160, right: 85} ]} onPress={() => navigation.navigate('PointInfo', locations[0])}></TouchableOpacity>
+        <TouchableOpacity style = {[ styles.mapPoint, {top:-270, left: 110} ]} onPress={() => navigation.navigate('PointInfo', locations[1])}></TouchableOpacity>
+
+        { /* the point of the user on the map using the current latitude and longitude */ }
+        <TouchableOpacity style = {[ styles.userPoint, {top: currentXYPosition.y, left: currentXYPosition.x} ]}></TouchableOpacity>
 
         {currentLocation && currentLocation.latitude && (
           <Text style = {{color: "white"}}>{currentLocation.latitude}</Text>
@@ -99,3 +127,28 @@ export default function MapScreen({navigation}) {
       </View>
     );
 }
+
+const styles = StyleSheet.create({
+  map: {
+    width: 400, 
+    height : 400,
+    top: 90
+  },
+  mapPoint: {
+      width: 50,
+      height: 50,
+      borderRadius: 100,
+      backgroundColor: 'yellow',
+      borderWidth: 3,
+      borderColor: '#ced20c',
+      opacity: 0.5,
+  },
+  userPoint: {
+      width: 10,
+      height: 10,
+      borderRadius: 100,
+      backgroundColor: 'red',
+      borderWidth: 1,
+      borderColor: 'grey'
+  }
+});
