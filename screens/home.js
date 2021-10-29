@@ -10,22 +10,6 @@ import { Image, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
 export default function HomeScreen({navigation}) {
     return (
-<<<<<<< HEAD
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#8C2032' }}>
-          <Image source={ require('../assets/HelloCampusLogo.png')} style={{ width: 300, height: 300 }} />
-          <Button
-            title="Get Started!"
-            onPress={() => navigation.navigate('Map')}
-          />
-          <Button
-            title= "LOG IN"
-            onPress={() => navigation.navigate('Login')}
-            />
-          <Button
-            title="Geolocation prototype"
-            onPress={() => navigation.navigate('GeoPrototype')}
-          />
-=======
         <View style={styles.container}>
           
           <Image source={ require('../assets/truelogow_o_background.png')} style={{ width: 300, height: 300 }} />
@@ -41,7 +25,6 @@ export default function HomeScreen({navigation}) {
           <TouchableOpacity style={styles.aboutButton} onPress={() => navigation.navigate('About')}>
             <Text style={styles.aboutText}>About</Text>
           </TouchableOpacity>
->>>>>>> main
         </View>
     );
 }

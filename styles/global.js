@@ -19,6 +19,7 @@ export const globalStyles = StyleSheet.create({
     map: {
         width: 400, 
         height : 400,
+        top: 90
     },
     setting: {
         width: 50,
@@ -34,8 +35,19 @@ export const globalStyles = StyleSheet.create({
         justifyContent: 'space-between',
         marginBottom: 20,
     },
+    pointImage: {
+        width: 400, 
+        height : 400
+    },
     interactionButton: {
-        width: 50,
-        height: 50,
+        width: 170, 
+        height:170,
+        alignItems: 'center',
+        bottom:170
+    },
+    noInteractionButton: {
+        width: 170, 
+        height:170,
+        alignItems: 'center',
     }
 });
