@@ -51,7 +51,6 @@ function App() {
             )
           })} />
         <Stack.Screen name="Setting" component={SettingScreen} />
-<<<<<<< HEAD
         <Stack.Screen 
           name="GeoPrototype"
           component={GeoPrototype}
@@ -60,9 +59,7 @@ function App() {
               <Header navigation={navigation}/>
             )
           })}  />
-=======
         <Stack.Screen name = "Login" component = {Login}/>
->>>>>>> main
       </Stack.Navigator>
     </NavigationContainer>
   );
