@@ -59,6 +59,11 @@ export default function SettingScreen({ navigation }) {
                     />
                 </View>
             </View>
+            <View style={{alignItems: 'center'}}>
+                <TouchableOpacity style={globalStyles.genericButton} onPress={() => navigation.popToTop()}>
+                    <Text style={{fontWeight: 'bold'}}>Logout!</Text>
+                </TouchableOpacity>
+            </View>     
         </View>
     );
 }
