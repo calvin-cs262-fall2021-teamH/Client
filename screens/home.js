@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
   },
 
 aboutButton: {
-  width : "20%",
+  width : "80%",
   borderRadius: 75,
   height: 75,
   alignItems: "center",
@@ -53,7 +53,7 @@ aboutButton: {
 },
 
 genericButton: {
-  width: "20%",
+  width: "80%",
   borderRadius: 10,
   height: 25,
   alignItems: "center",
