@@ -1,3 +1,7 @@
+
+
+////////////////////////////////////////////////////////////////////////////////////////
+
 /* App.js  Second Prototype of app for project deliverable #2
 Team HUH?!
 9/17/2021
@@ -47,6 +51,7 @@ function App() {
             )
           })} />
         <Stack.Screen name="Setting" component={SettingScreen} />
+<<<<<<< HEAD
         <Stack.Screen 
           name="GeoPrototype"
           component={GeoPrototype}
@@ -55,6 +60,9 @@ function App() {
               <Header navigation={navigation}/>
             )
           })}  />
+=======
+        <Stack.Screen name = "Login" component = {Login}/>
+>>>>>>> main
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -1,25 +1,29 @@
-//Paul Dick, login-screen prototype
-//note: code from https://serverless-stack.com/chapters/create-a-login-page.html
 
-import React, { useState } from "react";
-import Form from "react-bootstrap/Form";
-import Button from "react-bootstrap/Button";
-//import 'bootstrap/dist/css/bootstrap.min.css';
-//import "./Login.css";
+import React from "react";
+import { StyleSheet, View, Button } from "react-native";
+import * as Google from "expo-google-app-auth";
 
-export default function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+const LoginScreen = ({ navigation }) => {
+  const signInAsync = async () => {
+    console.log("LoginScreen.js 6 | loggin in");
+    try {
+      const { type, user } = await Google.logInAsync({
+        iosClientId: 2260489795-nvs04mkpqbhrjbd7ne2jb560e2a3dhdm.apps.googleusercontent.com,
+        androidClientId: 2260489795-b82e25fatl0ih72e43ii5q6q858fb6ql.apps.googleusercontent.com,
+      });
 
-  function validateForm() {
-    return email.length > 0 && password.length > 0;
-  }
-
-  function handleSubmit(event) {
-    event.preventDefault();
-  }
+      if (type === "success") {
+        // Then you can use the Google REST API
+        console.log("LoginScreen.js 17 | success, navigating to profile");
+        navigation.navigate("Profile", { user });
+      }
+    } catch (error) {
+      console.log("LoginScreen.js 19 | error with login", error);
+    }
+  };
 
   return (
+<<<<<<< HEAD
     <Text style={{ fontSize: 30, color: "#fff", padding: 20 } }>lkdsafj;lkeoiafu</Text>
     // <div className="Login">
     //   <Form onSubmit={handleSubmit}>
@@ -45,5 +49,14 @@ export default function Login() {
     //     </Button>
     //   </Form>
     // </div>
+=======
+    <View style={styles.container}>
+      <Button title="Login with Google" onPress={signInAsync} />
+    </View>
+>>>>>>> main
   );
-}
+};
+
+export default LoginScreen;
+
+const styles = StyleSheet.create({});
