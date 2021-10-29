@@ -24,10 +24,10 @@ export default function MapScreen({navigation}) {
   const maxLatitude = 42.93604524494348;
   const maxLongitude = -85.58066210952111;
 
-  const minX = 0;
-  const minY = 90;
-  const maxX = 400;
-  const maxY = 490;
+  const minX = 85;//0;
+  const minY = -160;//0;
+  const maxX = 110;//400;
+  const maxY = -270;//400;
 
   // a list of different locations on the map (only 2 for this prototype)
   const locations = [
@@ -47,7 +47,7 @@ export default function MapScreen({navigation}) {
   const [watcher, setWatcher] = useState(null);
   const [currentLocation, setCurrentLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
-  const [currentXYPosition, setCurrentXYPosition] = useState(null);
+  const [currentXYPosition, setCurrentXYPosition] = useState({ x: 0, y: 0 });
   
   useEffect(() => {
     (async () => {
@@ -63,10 +63,11 @@ export default function MapScreen({navigation}) {
         timeInterval: 1000
       }, ({coords}) => {
         // console.log({coords});
-        let y = scaleValue(coords.longitude, minLongitude, maxLongitude, minX, maxX);
-        y = -y; // is this correct?
+        let x = scaleValue(coords.longitude, minLongitude, maxLongitude, minX, maxX);
+        // y = -y; // is this correct?
+        // y += 90
 
-        let x = scaleValue(coords.latitude, minLatitude, maxLatitude, minY, maxY);
+        let y = scaleValue(coords.latitude, minLatitude, maxLatitude, minY, maxY);
 
         let xyCoords = { x: x, y: y };
         console.log(xyCoords);
@@ -147,7 +148,7 @@ const styles = StyleSheet.create({
       width: 10,
       height: 10,
       borderRadius: 100,
-      backgroundColor: 'red',
+      backgroundColor: 'blue',
       borderWidth: 1,
       borderColor: 'grey'
   }
