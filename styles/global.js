@@ -7,20 +7,6 @@ Brian Langejans, David Reidsma, David Heynen, Paul Dick, Kurt Wietelmann
 import { StyleSheet } from 'react-native';
 
 export const globalStyles = StyleSheet.create({
-    mapPoint: {
-        width: 50,
-        height: 50,
-        borderRadius: 100,
-        backgroundColor: 'yellow',
-        borderWidth: 3,
-        borderColor: '#ced20c',
-        opacity: 0.5,
-    },
-    map: {
-        width: 400, 
-        height : 400,
-        top: 90
-    },
     setting: {
         width: 50,
         height: 50,
