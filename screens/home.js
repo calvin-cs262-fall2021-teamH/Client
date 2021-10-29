@@ -7,6 +7,7 @@ adapted page navigation from: https://reactnavigation.org/docs/navigating
 
 import React, { useState } from 'react';
 import { Image, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { globalStyles } from '../styles/global';
 
 export default function HomeScreen({navigation}) {
     return (
@@ -14,11 +15,11 @@ export default function HomeScreen({navigation}) {
           
           <Image source={ require('../assets/truelogow_o_background.png')} style={{ width: 300, height: 300 }} />
           
-          <TouchableOpacity style={styles.genericButton} onPress={() => navigation.navigate('Map')}>
+          <TouchableOpacity style={globalStyles.genericButton} onPress={() => navigation.navigate('Map')}>
             <Text style={styles.loginText}>Take a Tour!</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.genericButton} onPress={() => navigation.navigate('Login')}>
+          <TouchableOpacity style={globalStyles.genericButton} onPress={() => navigation.navigate('Login')}>
             <Text style={styles.loginText}>Sign In / Create Account</Text>
           </TouchableOpacity>
 
@@ -51,22 +52,5 @@ aboutButton: {
   marginTop: 40,
   backgroundColor: "#8C2131",
 
-},
-
-
-aboutText: {
-  fontWeight: 'bold',
-  color: "#d9aa00"
-},
-
-
-genericButton: {
-  width: "80%",
-  borderRadius: 10,
-  height: 25,
-  alignItems: "center",
-  justifyContent: "center",
-  marginTop: 10,
-  backgroundColor: "#fff",
 },
 });

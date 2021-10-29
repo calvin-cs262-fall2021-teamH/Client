@@ -21,8 +21,8 @@ export const globalStyles = StyleSheet.create({
         height : 400,
     },
     setting: {
-        width: 50,
-        height: 50,
+        width: 40,
+        height: 40,
         borderRadius: 20,
     },
     settingOption: {
@@ -33,5 +33,14 @@ export const globalStyles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
         marginBottom: 20,
-    }
+    },
+    genericButton: {
+        width: "80%",
+        borderRadius: 10,
+        height: 25,
+        alignItems: "center",
+        justifyContent: "center",
+        marginTop: 10,
+        backgroundColor: "#fff",
+      },
 });
