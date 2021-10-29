@@ -24,7 +24,7 @@ export default function HomeScreen({navigation}) {
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.aboutButton} onPress={() => navigation.navigate('About')}>
-            <Text style={styles.loginText}>About</Text>
+            <Text style={styles.aboutText}>About</Text>
           </TouchableOpacity>
         </View>
     );
@@ -39,7 +39,8 @@ const styles = StyleSheet.create({
   },
 
   loginText: {
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    color: "#000000"
   },
 
 aboutButton: {

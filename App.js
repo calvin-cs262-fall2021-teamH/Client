@@ -1,7 +1,3 @@
-
-
-////////////////////////////////////////////////////////////////////////////////////////
-
 /* App.js  Second Prototype of app for project deliverable #2
 Team HUH?!
 9/17/2021
@@ -18,6 +14,7 @@ import PointInfoScreen from './screens/pointInfo';
 import SettingScreen from './screens/setting';
 import Header from './shared/header';
 import Login from './screens/Login';
+import About from './screens/about';
 
 const Stack = createNativeStackNavigator();
 
@@ -49,8 +46,9 @@ function App() {
               <Header navigation={navigation}/>
             )
           })} />
-        <Stack.Screen name="Setting" component={SettingScreen} />
+        <Stack.Screen name = "Setting" component={SettingScreen} />
         <Stack.Screen name = "Login" component = {Login}/>
+        <Stack.Screen name = "About" component = {About}/>
       </Stack.Navigator>
     </NavigationContainer>
   );
