@@ -1,4 +1,5 @@
-
+//Login screen 
+//From: https://inaguirre.medium.com/react-native-login-with-google-quick-guide-fe351e464752
 import React from "react";
 import { StyleSheet, View, Button } from "react-native";
 import * as Google from "expo-google-app-auth";
