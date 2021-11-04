@@ -21,8 +21,8 @@ export const globalStyles = StyleSheet.create({
         height : 400,
     },
     setting: {
-        width: 40,
-        height: 40,
+        width: 30,
+        height: 30,
         borderRadius: 20,
     },
     settingOption: {
