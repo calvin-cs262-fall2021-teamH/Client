@@ -17,37 +17,58 @@ function scaleValue(value, oldMin, oldMax, newMin, newMax) {
 }
 
 export default function MapScreen({navigation}) {
-  // 42.93604524494348, -85.58066210952111
-  // 42.92751441040437, -85.59027514660808
-  const minLatitude = 42.92751441040437;
-  const minLongitude = -85.59027514660808;
-  const maxLatitude = 42.93604524494348;
-  const maxLongitude = -85.58066210952111;
+  const MAP_WIDTH = 400;
+  const MAP_HEIGHT = 461.487;
+  const MAP_Y = 90;
+  const MAP_X = 0;
 
-  const minX = 85;//0;
-  const minY = -160;//0;
-  const maxX = 110;//400;
-  const maxY = -270;//400;
+  const POINT_WIDTH = 50;
+  const POINT_HEIGHT = 50;
+
+  const REAL_UPPER_LEFT_CORNER_COORD = { lat: 42.93532617951739, long: -85.58525936106732 };
+  const REAL_LOWER_RIGHT_CORNER_COORD = { lat: 42.9297585579178, long: -85.57842713530987 };
+
+  function realToPixelCoords(lat, long) {
+    // the real coords increase left to right and increase bottom to top
+    
+    let pixelX = MAP_WIDTH - scaleValue(-long, -REAL_UPPER_LEFT_CORNER_COORD.long, -REAL_LOWER_RIGHT_CORNER_COORD.long, MAP_X, MAP_WIDTH);
+    pixelX -= POINT_WIDTH / 2;
+
+    let pixelY = MAP_HEIGHT - scaleValue(lat, REAL_LOWER_RIGHT_CORNER_COORD.lat, REAL_UPPER_LEFT_CORNER_COORD.lat, 0, MAP_HEIGHT);
+    pixelY += MAP_Y;
+    pixelY -= POINT_HEIGHT / 2;
+
+    return { x: pixelX, y: pixelY };
+  }
+
+  // for testing
+  const PRINCE_CONFERENCE_CENTER_COORDS = { lat: 42.930270650358146, long: -85.5834892691921 };
+  const PRINCE_SCREEN_COORDS = realToPixelCoords(PRINCE_CONFERENCE_CENTER_COORDS.lat, PRINCE_CONFERENCE_CENTER_COORDS.long);
 
   // a list of different locations on the map (only 2 for this prototype)
+  const WHISKEY_POND_COORDS = { lat: 42.93264295748676, long: -85.5831781329471 };
+  const CROWN_GAP_COORDS = { lat: 42.93374267151409, long: -85.58030280488913 };
   const locations = [
     { name: 'Whiskey Pond', image: require('../assets/WhiskeyPond.png'),
         description: 'This secluded pond is fed by a seep on the eastern edge. It is home to ducks,' + 
                       'frogs, and plants like Buttonbush, Duckweed, and the tiniest vascular' +
                       'plant in Michigan, water meal. Watch for the Great Blue Heron that often feeds here',
+        lat: WHISKEY_POND_COORDS.lat, long: WHISKEY_POND_COORDS.long,
+        pixelCoords: realToPixelCoords(WHISKEY_POND_COORDS.lat, WHISKEY_POND_COORDS.long),
         radius: 15},
     { name: 'Crown Gap', image: require('../assets/CrownGap.png'),
         description: 'In 1995, this large maple tree fell, removing branches from several neighboring trees. ' +
                      'The result was a large hole in the canopy, or a crown gap. The gap allows more sunlight to ' +
                      'reach the forest floor, encouraging growth of seedlings. Eventually one or two of the seedlings ' +
                      'you see now will out-compete the others and will fill the canopy gap',
+        lat: CROWN_GAP_COORDS.lat, long: CROWN_GAP_COORDS.long,
+        pixelCoords: realToPixelCoords(CROWN_GAP_COORDS.lat, CROWN_GAP_COORDS.long),
         radius: 15}
   ];
 
   const [watcher, setWatcher] = useState(null);
   const [currentLocation, setCurrentLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
-  const [currentXYPosition, setCurrentXYPosition] = useState({ x: 0, y: 0 });
   
   useEffect(() => {
     (async () => {
@@ -59,19 +80,8 @@ export default function MapScreen({navigation}) {
 
       await Location.watchPositionAsync({
         accuracy: Location.Accuracy.Highest,
-        distanceInterval: 1,
-        timeInterval: 1000
+        distanceInterval: 0.5
       }, ({coords}) => {
-        // console.log({coords});
-        let x = scaleValue(coords.longitude, minLongitude, maxLongitude, minX, maxX);
-        // y = -y; // is this correct?
-        // y += 90
-
-        let y = scaleValue(coords.latitude, minLatitude, maxLatitude, minY, maxY);
-
-        let xyCoords = { x: x, y: y };
-        console.log(xyCoords);
-        setCurrentXYPosition(xyCoords);
         setCurrentLocation(coords);
       }).then((locationWatcher) => {
         setWatcher(locationWatcher);
@@ -79,51 +89,49 @@ export default function MapScreen({navigation}) {
         console.log(err);
       });
       return () => {
-        watcher.remove();
+        // watcher.remove();
         // TODO: make sure this is getting called when the screen is left.
         // If it's not called then we could have a memory leak.
       }
     })()
   }, [])
 
+  function getClosePoint() {
+    console.log("hoobenjooben");
+    if (currentLocation == null)
+      return null;
+
+    let sortedByDistance = locations.sort((a, b) => getDistance(currentLocation, {latitude: a.lat, longitude: a.long}) > getDistance(currentLocation, {latitude: b.lat, longitude: b.long}) ? 1 : -1)
+    let closePoint = sortedByDistance[0];
+    if (getDistance(currentLocation, {latitude: closePoint.lat, longitude: closePoint.long}) <= 30) {
+      return closePoint;
+    }
+    return null;
+  }
+
+  const CLOSEST_POINT = getClosePoint();
+  const USER_COORDS = currentLocation ? realToPixelCoords(currentLocation.latitude, currentLocation.longitude) : { x: 0, y: 0 };
+
   return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#8C2032' }}>
-        <Text style={{ fontSize: 25, color: "#fff", padding: 15, top: 100 } }>Walk towards a point on the map to learn more!</Text>
-        <ImageBackground source = { require('../assets/ecomap.png')} style = { styles.map}/>
-        <TouchableOpacity style = {[ styles.mapPoint, {top:-160, right: 85} ]} onPress={() => navigation.navigate('PointInfo', locations[0])}></TouchableOpacity>
-        <TouchableOpacity style = {[ styles.mapPoint, {top:-270, left: 110} ]} onPress={() => navigation.navigate('PointInfo', locations[1])}></TouchableOpacity>
+        <Text style={{ fontSize: 25, color: "#fff", padding: 15, position: 'absolute', top: 0 } }>Walk towards a point on the map to learn more!</Text>
+        <ImageBackground source = { require('../assets/ecomap.png')} style = {{position: 'absolute', top: 100, width: MAP_WIDTH, height: MAP_HEIGHT}}/>
+
+        <TouchableOpacity style = {[ styles.mapPoint, {position: 'absolute', top:locations[0].pixelCoords.y, right: locations[0].pixelCoords.x} ]} onPress={() => navigation.navigate('PointInfo', locations[0])}></TouchableOpacity>
+        <TouchableOpacity style = {[ styles.mapPoint, {position: 'absolute', top:locations[1].pixelCoords.y, right: locations[1].pixelCoords.x} ]} onPress={() => navigation.navigate('PointInfo', locations[1])}></TouchableOpacity>
 
         { /* the point of the user on the map using the current latitude and longitude */ }
-        <TouchableOpacity style = {[ styles.userPoint, {top: currentXYPosition.y, left: currentXYPosition.x} ]}></TouchableOpacity>
+        <TouchableOpacity style = {[ styles.userPoint, {top: USER_COORDS.y, left: USER_COORDS.x} ]}></TouchableOpacity>
 
-        {currentLocation && currentLocation.latitude && (
-          <Text style = {{color: "white"}}>{currentLocation.latitude}</Text>
-        )}
-
-        {currentLocation && currentLocation.longitude && (
-          <Text style = {{color: "white"}}>{currentLocation.longitude}</Text>
-        )}
-
-        <ImageBackground source = { require('../assets/PointInteractionButton.png')} style = { globalStyles.noInteractionButton}/>
-        {currentLocation && currentLocation.latitude && (getDistance(currentLocation, {latitude: 42.9318392, longitude: -85.5875125}) <= 3) && (
-          <TouchableOpacity style = { globalStyles.interactionButton }  onPress={() => navigation.navigate('PointInfo', locations[1])}>
-            <Image source={require("../assets/PointInteractionButton2.png")} style = {{width: 170, height:170 }}/>
-          </TouchableOpacity>
-        )}
-
-        {currentLocation && currentLocation.latitude && (getDistance(currentLocation, {latitude: 42.932596, longitude: -85.578920}) <= 30) && (
-          <TouchableOpacity style = { globalStyles.interactionButton }  onPress={() => navigation.navigate('PointInfo', locations[0])}>
-            <Image source={require("../assets/PointInteractionButton2.png")} style = {{width: 170, height:170 }}/>
-          </TouchableOpacity>
-        )}
-
-        {currentLocation && currentLocation.latitude && (getDistance(currentLocation, {latitude: 42.934345, longitude: -85.583079}) <= 15) && (
-          <TouchableOpacity style = { globalStyles.interactionButton }  onPress={() => navigation.navigate('PointInfo', locations[1])}>
-            <Image source={require("../assets/PointInteractionButton2.png")} style = {{width: 170, height:170 }}/>
-          </TouchableOpacity>
-        )}  
-
-
+        <TouchableOpacity
+          style={[{ bottom: 0, position: 'absolute', alignItems: 'center' }, globalStyles.noInteractionButton ]}
+          onPress={() => {
+            if (CLOSEST_POINT == null)
+              return;
+            navigation.navigate('PointInfo', CLOSEST_POINT);
+          }}>
+          <Image source={CLOSEST_POINT == null ? require('../assets/PointInteractionButton.png') : require("../assets/PointInteractionButton2.png")} style = {{width: 170, height:170 }}/>
+        </TouchableOpacity>
 
       </View>
     );
