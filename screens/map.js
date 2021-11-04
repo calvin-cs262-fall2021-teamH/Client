@@ -55,7 +55,7 @@ export default function MapScreen({navigation}) {
                       'plant in Michigan, water meal. Watch for the Great Blue Heron that often feeds here',
         lat: WHISKEY_POND_COORDS.lat, long: WHISKEY_POND_COORDS.long,
         pixelCoords: realToPixelCoords(WHISKEY_POND_COORDS.lat, WHISKEY_POND_COORDS.long),
-        radius: 15},
+        radius: 40},
     { name: 'Crown Gap', image: require('../assets/CrownGap.png'),
         description: 'In 1995, this large maple tree fell, removing branches from several neighboring trees. ' +
                      'The result was a large hole in the canopy, or a crown gap. The gap allows more sunlight to ' +
@@ -67,8 +67,11 @@ export default function MapScreen({navigation}) {
   ];
 
   const [watcher, setWatcher] = useState(null);
-  const [currentLocation, setCurrentLocation] = useState(null);
+ // const [currentLocation, setCurrentLocation] = useState({x: 0, y: 0});
   const [errorMsg, setErrorMsg] = useState(null);
+  const [userCoords, setUserCoords] = useState({pixelCoords: {x: 0, y: 0}, coords: {latitude:0, longitude:0}});
+  
+  // let currentLocation = {x:0, y:0};
   
   useEffect(() => {
     (async () => {
@@ -81,8 +84,14 @@ export default function MapScreen({navigation}) {
       await Location.watchPositionAsync({
         accuracy: Location.Accuracy.Highest,
         distanceInterval: 0.5
+        //timeInterval: 1
       }, ({coords}) => {
-        setCurrentLocation(coords);
+        //setCurrentLocation(coords);
+        let pixelCoords = realToPixelCoords(coords.latitude, coords.longitude);
+        console.log(pixelCoords.x + ", " + pixelCoords.y);
+        
+        //setCurrentLocation(coords);
+        setUserCoords({coords:coords, pixelCoords:pixelCoords});
       }).then((locationWatcher) => {
         setWatcher(locationWatcher);
       }).catch((err) => {
@@ -97,20 +106,26 @@ export default function MapScreen({navigation}) {
   }, [])
 
   function getClosePoint() {
-    console.log("hoobenjooben");
+    let currentLocation = userCoords.coords;
     if (currentLocation == null)
       return null;
 
-    let sortedByDistance = locations.sort((a, b) => getDistance(currentLocation, {latitude: a.lat, longitude: a.long}) > getDistance(currentLocation, {latitude: b.lat, longitude: b.long}) ? 1 : -1)
+    let sortedByDistance = locations.sort((a, b) => {
+      let distance = getDistance(currentLocation, {latitude: a.lat, longitude: a.long});
+      let distanceB = getDistance(currentLocation, {latitude: b.lat, longitude: b.long});
+      console.log(a.name + ", " + distance);
+      console.log(b.name + ", " + distanceB);
+      return distance > distanceB ? 1 : -1
+    });
     let closePoint = sortedByDistance[0];
-    if (getDistance(currentLocation, {latitude: closePoint.lat, longitude: closePoint.long}) <= 30) {
+    if (getDistance(currentLocation, {latitude: closePoint.lat, longitude: closePoint.long}) <= closePoint.radius) {
       return closePoint;
     }
     return null;
   }
 
   const CLOSEST_POINT = getClosePoint();
-  const USER_COORDS = currentLocation ? realToPixelCoords(currentLocation.latitude, currentLocation.longitude) : { x: 0, y: 0 };
+  
 
   return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#8C2032' }}>
@@ -121,7 +136,7 @@ export default function MapScreen({navigation}) {
         <TouchableOpacity style = {[ styles.mapPoint, {position: 'absolute', top:locations[1].pixelCoords.y, right: locations[1].pixelCoords.x} ]} onPress={() => navigation.navigate('PointInfo', locations[1])}></TouchableOpacity>
 
         { /* the point of the user on the map using the current latitude and longitude */ }
-        <TouchableOpacity style = {[ styles.userPoint, {top: USER_COORDS.y, left: USER_COORDS.x} ]}></TouchableOpacity>
+        <TouchableOpacity style = {[ styles.userPoint, {position: 'absolute', top: userCoords.pixelCoords.y, right: userCoords.pixelCoords.x} ]}></TouchableOpacity>
 
         <TouchableOpacity
           style={[{ bottom: 0, position: 'absolute', alignItems: 'center' }, globalStyles.noInteractionButton ]}
