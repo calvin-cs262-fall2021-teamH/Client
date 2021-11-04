@@ -20,7 +20,7 @@ export default function HomeScreen({navigation}) {
           </TouchableOpacity>
 
           <TouchableOpacity style={globalStyles.genericButton} onPress={() => navigation.navigate('Login')}>
-            <Text style={styles.loginText}>Sign In / Create Account</Text>
+            <Text style={styles.loginText}>Sign In</Text>
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.aboutButton} onPress={() => navigation.navigate('About')}>
