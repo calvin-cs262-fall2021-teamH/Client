@@ -35,12 +35,12 @@ export const globalStyles = StyleSheet.create({
         marginBottom: 20,
     },
     genericButton: {
-        width: "80%",
-        borderRadius: 10,
-        height: 25,
+        width: "75%",
+        borderRadius: 50,
+        height: 60,
         alignItems: "center",
         justifyContent: "center",
-        marginTop: 10,
+        marginTop: 20,
         backgroundColor: "#fff",
       },
 });
