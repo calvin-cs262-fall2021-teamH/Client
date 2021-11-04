@@ -29,7 +29,6 @@ export const globalStyles = StyleSheet.create({
         width: 170, 
         height:170,
         alignItems: 'center',
-        bottom:170
     },
     noInteractionButton: {
         width: 170, 
