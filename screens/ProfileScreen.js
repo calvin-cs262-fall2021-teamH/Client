@@ -9,7 +9,7 @@ const ProfileScreen = ({ route, navigation }) => {
     
     <View style={{alignItems: 'center'}}>
       <Text>Profile Screen</Text>
-      <Text>Welcome {user.name} !</Text>
+      <Text>Welcome {user.name}!</Text>
     <TouchableOpacity style={globalStyles.genericButton} onPress={() => navigation.popToTop()}>
         <Text style={{fontWeight: 'bold'}}> Logout </Text>
     </TouchableOpacity>
