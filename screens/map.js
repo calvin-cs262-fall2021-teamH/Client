@@ -55,7 +55,7 @@ export default function MapScreen({navigation}) {
                       'plant in Michigan, water meal. Watch for the Great Blue Heron that often feeds here',
         lat: WHISKEY_POND_COORDS.lat, long: WHISKEY_POND_COORDS.long,
         pixelCoords: realToPixelCoords(WHISKEY_POND_COORDS.lat, WHISKEY_POND_COORDS.long),
-        radius: 15},
+        radius: 40},
     { name: 'Crown Gap', image: require('../assets/CrownGap.png'),
         description: 'In 1995, this large maple tree fell, removing branches from several neighboring trees. ' +
                      'The result was a large hole in the canopy, or a crown gap. The gap allows more sunlight to ' +
@@ -67,9 +67,9 @@ export default function MapScreen({navigation}) {
   ];
 
   const [watcher, setWatcher] = useState(null);
-  const [currentLocation, setCurrentLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
-  
+  const [userLocation, setUserLocation] = useState({ pixelCoords: { x: null, y: null }, realCoords: { latitude: null, longitude: null } });
+    
   useEffect(() => {
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
@@ -78,17 +78,29 @@ export default function MapScreen({navigation}) {
         return;
       }
 
+      // todo: figure why this doesn't update often enough
       await Location.watchPositionAsync({
         accuracy: Location.Accuracy.Highest,
         distanceInterval: 0.5
+        //timeInterval: 1
       }, ({coords}) => {
-        setCurrentLocation(coords);
+        if (coords == null) {
+          console.log("null coords");
+          return;
+        }
+
+        let pixelCoords = realToPixelCoords(coords.latitude, coords.longitude);
+        console.log("Latitude, longitude: " + coords.latitude + ", " + coords.longitude);
+        console.log("Screen coords: " + pixelCoords.x + ", " + pixelCoords.y);
+        setUserLocation({ realCoords: coords, pixelCoords: pixelCoords });
       }).then((locationWatcher) => {
         setWatcher(locationWatcher);
       }).catch((err) => {
         console.log(err);
       });
       return () => {
+        // TODO: find out if watcher.remove() here interferes with location updates and if we need it
+
         // watcher.remove();
         // TODO: make sure this is getting called when the screen is left.
         // If it's not called then we could have a memory leak.
@@ -97,20 +109,28 @@ export default function MapScreen({navigation}) {
   }, [])
 
   function getClosePoint() {
-    console.log("hoobenjooben");
-    if (currentLocation == null)
+    let currentLocation = userLocation.realCoords;    
+    if (currentLocation.latitude == null)
       return null;
 
-    let sortedByDistance = locations.sort((a, b) => getDistance(currentLocation, {latitude: a.lat, longitude: a.long}) > getDistance(currentLocation, {latitude: b.lat, longitude: b.long}) ? 1 : -1)
+    let sortedByDistance = locations.sort((a, b) => {
+      let distanceA = getDistance(currentLocation, {latitude: a.lat, longitude: a.long});
+      let distanceB = getDistance(currentLocation, {latitude: b.lat, longitude: b.long});
+
+      console.log("Distance to " + a.name + ": " + distanceA + " meters");
+      console.log("Distance to " + b.name + ": " + distanceB + " meters");
+      return distanceA > distanceB ? 1 : -1
+    });
+    
     let closePoint = sortedByDistance[0];
-    if (getDistance(currentLocation, {latitude: closePoint.lat, longitude: closePoint.long}) <= 30) {
+    // TODO: don't get the distance twice, this sucks
+    if (getDistance(currentLocation, {latitude: closePoint.lat, longitude: closePoint.long}) <= closePoint.radius) {
       return closePoint;
     }
     return null;
   }
 
-  const CLOSEST_POINT = getClosePoint();
-  const USER_COORDS = currentLocation ? realToPixelCoords(currentLocation.latitude, currentLocation.longitude) : { x: 0, y: 0 };
+  const closestPoint = getClosePoint();
 
   return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#8C2032' }}>
@@ -121,16 +141,24 @@ export default function MapScreen({navigation}) {
         <TouchableOpacity style = {[ styles.mapPoint, {position: 'absolute', top:locations[1].pixelCoords.y, right: locations[1].pixelCoords.x} ]} onPress={() => navigation.navigate('PointInfo', locations[1])}></TouchableOpacity>
 
         { /* the point of the user on the map using the current latitude and longitude */ }
-        <TouchableOpacity style = {[ styles.userPoint, {top: USER_COORDS.y, left: USER_COORDS.x} ]}></TouchableOpacity>
+        <TouchableOpacity style = {[
+          styles.userPoint,
+          {
+            position: 'absolute',
+            /* if there's no position to pull from, make the point go bye-bye */
+            top: userLocation.pixelCoords.y != null ? userLocation.pixelCoords.y : -500,
+            right: userLocation.pixelCoords.x != null ? userLocation.pixelCoords.x : -500
+          }
+        ]}/>
 
         <TouchableOpacity
           style={[{ bottom: 0, position: 'absolute', alignItems: 'center' }, globalStyles.noInteractionButton ]}
           onPress={() => {
-            if (CLOSEST_POINT == null)
+            if (closestPoint == null)
               return;
-            navigation.navigate('PointInfo', CLOSEST_POINT);
+            navigation.navigate('PointInfo', closestPoint);
           }}>
-          <Image source={CLOSEST_POINT == null ? require('../assets/PointInteractionButton.png') : require("../assets/PointInteractionButton2.png")} style = {{width: 170, height:170 }}/>
+          <Image source={closestPoint == null ? require('../assets/PointInteractionButton.png') : require("../assets/PointInteractionButton2.png")} style = {{width: 170, height:170 }}/>
         </TouchableOpacity>
 
       </View>
