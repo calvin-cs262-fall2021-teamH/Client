@@ -49,16 +49,6 @@ function App() {
             )
           })} />
         <Stack.Screen name="Setting" component={SettingScreen} />
-	{/*
-	<Stack.Screen 
-          name="GeoPrototype"
-          component={GeoPrototype}
-          options={({ navigation }) => ({
-            headerRight: () => (
-              <Header navigation={navigation}/>
-            )
-          })}  />
-	*/}
         <Stack.Screen name = "Login" component = {Login}/>
         <Stack.Screen name = "About" component = {About}/>
         <Stack.Screen name = "ProfileScreen" component = {ProfileScreen}/>

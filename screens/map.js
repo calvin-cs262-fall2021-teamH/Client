@@ -12,78 +12,82 @@ import { InteractionButton } from "../components/interactionButton";
 import * as Location from 'expo-location';
 import {getDistance} from 'geolib';
 
+const LOCATION_TASK_NAME = "ecopreserve-location-task";
+
+const MAP_WIDTH = 400;
+const MAP_HEIGHT = 461.487;
+const MAP_Y = 90;
+const MAP_X = 0;
+
+const POINT_WIDTH = 50;
+const POINT_HEIGHT = 50;
+
+const REAL_UPPER_LEFT_CORNER_COORD = { lat: 42.93532617951739, long: -85.58525936106732 };
+const REAL_LOWER_RIGHT_CORNER_COORD = { lat: 42.9297585579178, long: -85.57842713530987 };
+
+// for testing
+const PRINCE_CONFERENCE_CENTER_COORDS = { lat: 42.930270650358146, long: -85.5834892691921 };
+const PRINCE_SCREEN_COORDS = realToPixelCoords(PRINCE_CONFERENCE_CENTER_COORDS.lat, PRINCE_CONFERENCE_CENTER_COORDS.long);
+
+// a list of different locations on the map (only 2 for this prototype)
+// TODO: there should be a better way of setting up these points of interest. having a variable for the coords and then a list entry is lame
+const WHISKEY_POND_COORDS = { lat: 42.93264295748676, long: -85.5831781329471 };
+const CROWN_GAP_COORDS = { lat: 42.93374267151409, long: -85.58030280488913 };
+const POINTS_OF_INTEREST = [
+  { name: 'Whiskey Pond', image: require('../assets/WhiskeyPond.png'),
+      description: 'This secluded pond is fed by a seep on the eastern edge. It is home to ducks,' + 
+                    'frogs, and plants like Buttonbush, Duckweed, and the tiniest vascular' +
+                    'plant in Michigan, water meal. Watch for the Great Blue Heron that often feeds here',
+      lat: WHISKEY_POND_COORDS.lat, long: WHISKEY_POND_COORDS.long,
+      pixelCoords: realToPixelCoords(WHISKEY_POND_COORDS.lat, WHISKEY_POND_COORDS.long),
+      radius: 40},
+  { name: 'Crown Gap', image: require('../assets/CrownGap.png'),
+      description: 'In 1995, this large maple tree fell, removing branches from several neighboring trees. ' +
+                   'The result was a large hole in the canopy, or a crown gap. The gap allows more sunlight to ' +
+                   'reach the forest floor, encouraging growth of seedlings. Eventually one or two of the seedlings ' +
+                   'you see now will out-compete the others and will fill the canopy gap',
+      lat: CROWN_GAP_COORDS.lat, long: CROWN_GAP_COORDS.long,
+      pixelCoords: realToPixelCoords(CROWN_GAP_COORDS.lat, CROWN_GAP_COORDS.long),
+      radius: 15}
+];
+
 function scaleValue(value, oldMin, oldMax, newMin, newMax) {
   return ((value - oldMin) / (oldMax - oldMin)) * (newMax - newMin) + newMin;
 }
 
+function realToPixelCoords(lat, long) {
+  let pixelX = MAP_WIDTH - scaleValue(-long, -REAL_UPPER_LEFT_CORNER_COORD.long, -REAL_LOWER_RIGHT_CORNER_COORD.long, MAP_X, MAP_WIDTH);
+  pixelX -= POINT_WIDTH / 2;
+
+  let pixelY = MAP_HEIGHT - scaleValue(lat, REAL_LOWER_RIGHT_CORNER_COORD.lat, REAL_UPPER_LEFT_CORNER_COORD.lat, 0, MAP_HEIGHT);
+  pixelY += MAP_Y;
+  pixelY -= POINT_HEIGHT / 2;
+
+  return { x: pixelX, y: pixelY };
+}
+
 export default function MapScreen({navigation}) {
-  const MAP_WIDTH = 400;
-  const MAP_HEIGHT = 461.487;
-  const MAP_Y = 90;
-  const MAP_X = 0;
-
-  const POINT_WIDTH = 50;
-  const POINT_HEIGHT = 50;
-
-  const REAL_UPPER_LEFT_CORNER_COORD = { lat: 42.93532617951739, long: -85.58525936106732 };
-  const REAL_LOWER_RIGHT_CORNER_COORD = { lat: 42.9297585579178, long: -85.57842713530987 };
-
-  function realToPixelCoords(lat, long) {
-    // the real coords increase left to right and increase bottom to top
-    
-    let pixelX = MAP_WIDTH - scaleValue(-long, -REAL_UPPER_LEFT_CORNER_COORD.long, -REAL_LOWER_RIGHT_CORNER_COORD.long, MAP_X, MAP_WIDTH);
-    pixelX -= POINT_WIDTH / 2;
-
-    let pixelY = MAP_HEIGHT - scaleValue(lat, REAL_LOWER_RIGHT_CORNER_COORD.lat, REAL_UPPER_LEFT_CORNER_COORD.lat, 0, MAP_HEIGHT);
-    pixelY += MAP_Y;
-    pixelY -= POINT_HEIGHT / 2;
-
-    return { x: pixelX, y: pixelY };
-  }
-
-  // for testing
-  const PRINCE_CONFERENCE_CENTER_COORDS = { lat: 42.930270650358146, long: -85.5834892691921 };
-  const PRINCE_SCREEN_COORDS = realToPixelCoords(PRINCE_CONFERENCE_CENTER_COORDS.lat, PRINCE_CONFERENCE_CENTER_COORDS.long);
-
-  // a list of different locations on the map (only 2 for this prototype)
-  const WHISKEY_POND_COORDS = { lat: 42.93264295748676, long: -85.5831781329471 };
-  const CROWN_GAP_COORDS = { lat: 42.93374267151409, long: -85.58030280488913 };
-  const locations = [
-    { name: 'Whiskey Pond', image: require('../assets/WhiskeyPond.png'),
-        description: 'This secluded pond is fed by a seep on the eastern edge. It is home to ducks,' + 
-                      'frogs, and plants like Buttonbush, Duckweed, and the tiniest vascular' +
-                      'plant in Michigan, water meal. Watch for the Great Blue Heron that often feeds here',
-        lat: WHISKEY_POND_COORDS.lat, long: WHISKEY_POND_COORDS.long,
-        pixelCoords: realToPixelCoords(WHISKEY_POND_COORDS.lat, WHISKEY_POND_COORDS.long),
-        radius: 40},
-    { name: 'Crown Gap', image: require('../assets/CrownGap.png'),
-        description: 'In 1995, this large maple tree fell, removing branches from several neighboring trees. ' +
-                     'The result was a large hole in the canopy, or a crown gap. The gap allows more sunlight to ' +
-                     'reach the forest floor, encouraging growth of seedlings. Eventually one or two of the seedlings ' +
-                     'you see now will out-compete the others and will fill the canopy gap',
-        lat: CROWN_GAP_COORDS.lat, long: CROWN_GAP_COORDS.long,
-        pixelCoords: realToPixelCoords(CROWN_GAP_COORDS.lat, CROWN_GAP_COORDS.long),
-        radius: 15}
-  ];
-
   const [watcher, setWatcher] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
   const [userLocation, setUserLocation] = useState({ pixelCoords: { x: null, y: null }, realCoords: { latitude: null, longitude: null } });
     
   useEffect(() => {
-    (async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        setErrorMsg('Permission to access location was denied');
-        return;
-      }
+    // better pattern for async stuff in useEffect as per https://stackoverflow.com/a/53572588
+    async function updateLocation() {
+      // lots of good location stuff from https://stackoverflow.com/a/58878212
+      // await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
+      //   accuracy: Location.Accuracy.Highest,
+      //   distanceInterval: 1,
+      //   timeInterval: 1000
+      // });
 
-      // todo: figure why this doesn't update often enough
-      await Location.watchPositionAsync({
+      // todo: figure why this doesn't update often enough or find better method
+      let locationResult = await Location.watchPositionAsync({
         accuracy: Location.Accuracy.Highest,
-        distanceInterval: 0.5
-        //timeInterval: 1
-      }, ({coords}) => {
+        distanceInterval: 1,
+        timeInterval: 1000
+      },
+      ({coords}) => {
         if (coords == null) {
           console.log("null coords");
           return;
@@ -98,14 +102,28 @@ export default function MapScreen({navigation}) {
       }).catch((err) => {
         console.log(err);
       });
-      return () => {
-        // TODO: find out if watcher.remove() here interferes with location updates and if we need it
+      return locationResult;
+      // () => {
+      //   // TODO: find out if watcher.remove() here interferes with location updates and if we need it
 
-        // watcher.remove();
-        // TODO: make sure this is getting called when the screen is left.
-        // If it's not called then we could have a memory leak.
+      //   // watcher.remove();
+      //   // TODO: make sure this is getting called when the screen is left.
+      //   // If it's not called then we could have a memory leak.
+      // }
+    }
+
+    async function askForPermissionAndUpdateLocation() {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        console.log("Permission problem: status is " + status);
+        setErrorMsg('Permission to access location was denied');
+        return null;
+      } else {
+        return await updateLocation();
       }
-    })()
+    }
+
+    let result = askForPermissionAndUpdateLocation();
   }, [])
 
   function getClosePoint() {
@@ -113,7 +131,7 @@ export default function MapScreen({navigation}) {
     if (currentLocation.latitude == null)
       return null;
 
-    let sortedByDistance = locations.sort((a, b) => {
+    let sortedByDistance = POINTS_OF_INTEREST.sort((a, b) => {
       let distanceA = getDistance(currentLocation, {latitude: a.lat, longitude: a.long});
       let distanceB = getDistance(currentLocation, {latitude: b.lat, longitude: b.long});
 
@@ -137,8 +155,8 @@ export default function MapScreen({navigation}) {
         <Text style={{ fontSize: 25, color: "#fff", padding: 15, position: 'absolute', top: 0 } }>Walk towards a point on the map to learn more!</Text>
         <ImageBackground source = { require('../assets/ecomap.png')} style = {{position: 'absolute', top: 100, width: MAP_WIDTH, height: MAP_HEIGHT}}/>
 
-        <TouchableOpacity style = {[ styles.mapPoint, {position: 'absolute', top:locations[0].pixelCoords.y, right: locations[0].pixelCoords.x} ]} onPress={() => navigation.navigate('PointInfo', locations[0])}></TouchableOpacity>
-        <TouchableOpacity style = {[ styles.mapPoint, {position: 'absolute', top:locations[1].pixelCoords.y, right: locations[1].pixelCoords.x} ]} onPress={() => navigation.navigate('PointInfo', locations[1])}></TouchableOpacity>
+        <TouchableOpacity style = {[ styles.mapPoint, {position: 'absolute', top:POINTS_OF_INTEREST[0].pixelCoords.y, right: POINTS_OF_INTEREST[0].pixelCoords.x} ]} onPress={() => navigation.navigate('PointInfo', POINTS_OF_INTEREST[0])}></TouchableOpacity>
+        <TouchableOpacity style = {[ styles.mapPoint, {position: 'absolute', top:POINTS_OF_INTEREST[1].pixelCoords.y, right: POINTS_OF_INTEREST[1].pixelCoords.x} ]} onPress={() => navigation.navigate('PointInfo', POINTS_OF_INTEREST[1])}></TouchableOpacity>
 
         { /* the point of the user on the map using the current latitude and longitude */ }
         <TouchableOpacity style = {[
