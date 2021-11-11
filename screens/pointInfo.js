@@ -13,7 +13,7 @@ export default function PointInfoScreen({ route, navigation }) {
     return (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#8C2032' }}>
             <Text style={{ fontSize: 30, color: "#fff", padding: 20 }}>{ route.params.name }</Text>
-            <ImageBackground source = { route.params.image } style = { globalStyles.map }/>
+            <ImageBackground source = { route.params.image } style = { globalStyles.pointImage }/>
             <Text style={{ fontSize: 20, color: "#fff", padding: 20 }}>{ route.params.description }</Text>
         </View>
     );

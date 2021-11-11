@@ -7,19 +7,6 @@ Brian Langejans, David Reidsma, David Heynen, Paul Dick, Kurt Wietelmann
 import { StyleSheet } from 'react-native';
 
 export const globalStyles = StyleSheet.create({
-    mapPoint: {
-        width: 50,
-        height: 50,
-        borderRadius: 100,
-        backgroundColor: 'yellow',
-        borderWidth: 3,
-        borderColor: '#ced20c',
-        opacity: 0.5,
-    },
-    map: {
-        width: 400, 
-        height : 400,
-    },
     setting: {
         width: 30,
         height: 30,
@@ -34,6 +21,20 @@ export const globalStyles = StyleSheet.create({
         justifyContent: 'space-between',
         marginBottom: 20,
     },
+    pointImage: {
+        width: 400, 
+        height : 400
+    },
+    interactionButton: {
+        width: 170, 
+        height:170,
+        alignItems: 'center',
+    },
+    noInteractionButton: {
+        width: 170, 
+        height:170,
+        alignItems: 'center',
+    },
     genericButton: {
         width: "75%",
         borderRadius: 50,
@@ -42,5 +43,5 @@ export const globalStyles = StyleSheet.create({
         justifyContent: "center",
         marginTop: 20,
         backgroundColor: "#fff",
-      },
+    },
 });
