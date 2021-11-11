@@ -10,6 +10,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import HomeScreen from "./screens/home";
 import MapScreen from "./screens/map";
+import GeoPrototype from './screens/GeolocationPrototype';
 import PointInfoScreen from './screens/pointInfo';
 import SettingScreen from './screens/setting';
 import Header from './shared/header';
@@ -47,7 +48,7 @@ function App() {
               <Header navigation={navigation}/>
             )
           })} />
-        <Stack.Screen name = "Setting" component={SettingScreen} />
+        <Stack.Screen name="Setting" component={SettingScreen} />
         <Stack.Screen name = "Login" component = {Login}/>
         <Stack.Screen name = "About" component = {About}/>
         <Stack.Screen name = "ProfileScreen" component = {ProfileScreen}/>
