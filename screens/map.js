@@ -11,6 +11,7 @@ import { globalStyles } from '../styles/global';
 import { InteractionButton } from "../components/interactionButton";
 import * as Location from 'expo-location';
 import {getDistance} from 'geolib';
+import { scaleValue } from '../Utility';
 
 const LOCATION_TASK_NAME = "ecopreserve-location-task";
 
@@ -51,11 +52,8 @@ const POINTS_OF_INTEREST = [
       radius: 15}
 ];
 
-function scaleValue(value, oldMin, oldMax, newMin, newMax) {
-  return ((value - oldMin) / (oldMax - oldMin)) * (newMax - newMin) + newMin;
-}
-
 function realToPixelCoords(lat, long) {
+  // TODO: swap over to use logic from PointOfInterest.js
   let pixelX = MAP_WIDTH - scaleValue(-long, -REAL_UPPER_LEFT_CORNER_COORD.long, -REAL_LOWER_RIGHT_CORNER_COORD.long, MAP_X, MAP_WIDTH);
   pixelX -= POINT_WIDTH / 2;
 
