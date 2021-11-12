@@ -7,7 +7,27 @@ Brian Langejans, David Reidsma, David Heynen, Paul Dick, Kurt Wietelmann
 import { StyleSheet } from 'react-native';
 
 export const globalStyles = StyleSheet.create({
-    setting: {
+    listIcon: {
+        width: 30,
+        height: 30,        
+        borderRadius: 20,
+    },
+    list: {
+        backgroundColor: '#ffffff',
+        padding: 15,
+        borderRadius: 10,        
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        marginBottom: 20,
+    },
+    listText: {
+        fontSize: 20,
+        color: '#000000',
+        fontWeight: 'bold',
+        flexDirection: 'row',
+    },
+    settingIcon: {
         width: 30,
         height: 30,
         borderRadius: 20,
@@ -23,7 +43,7 @@ export const globalStyles = StyleSheet.create({
     },
     pointImage: {
         width: 400, 
-        height : 400
+        height : 400,
     },
     interactionButton: {
         width: 170, 
