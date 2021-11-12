@@ -26,7 +26,8 @@
       },
       "permissions": [
         "ACCESS_FINE_LOCATION"
-      ]
+      ],
+      "package": "com.paulsd.hellocampusd1"
     },
     "web": {
       "favicon": "./assets/favicon.png"

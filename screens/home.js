@@ -1,56 +1,65 @@
-/* home.js  Homepage for Hello Campus
-Team HUH?!
-10/6/2021
-Brian Langejans, David Reidsma, David Heynen, Paul Dick, Kurt Wietelmann
-adapted page navigation from: https://reactnavigation.org/docs/navigating
+/*import * as React from 'react';
+import { Button, Text, View } from 'react-native';
+import * as AuthSession from 'expo-auth-session';
+import * as WebBrowser from 'expo-web-browser';
+
+WebBrowser.maybeCompleteAuthSession();
+
+const useProxy = true;
+
+const redirectUri = AuthSession.makeRedirectUri({
+  useProxy,
+});
+
+export default function App() {
+  const discovery = AuthSession.useAutoDiscovery('https://login.microsoftonline.com/756349b9-0610-4b01-917b-2a4ac10df947/v2.0');//This needs adjustment
+  
+  // Create and load an auth request
+  const [request, result, promptAsync] = AuthSession.useAuthRequest(
+    {
+      clientId: 'f1cd0087-3639-4bb6-a3ac-7a859abae009',//my guess we add in the client id here?
+      redirectUri,
+      scopes: ['openid', 'profile', 'email', 'offline_access'],
+    },
+    discovery
+  );
+
+  return (
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <Button title="Login!" disabled={!request} onPress={() => promptAsync({ useProxy })} />
+      {result && <Text>{JSON.stringify(result, null, 2)}</Text>}
+    </View>
+  );
+}
 */
 
-import React, { useState } from 'react';
-import { Image, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { globalStyles } from '../styles/global';
+import * as React from 'react';
+import * as WebBrowser from 'expo-web-browser';
+import { makeRedirectUri, useAuthRequest, useAutoDiscovery } from 'expo-auth-session';
+import { Button } from 'react-native';
 
-export default function HomeScreen({navigation}) {
-    return (
-        <View style={styles.container}>
-          
-          <Image source={ require('../assets/truelogow_o_background.png')} style={{ width: 300, height: 300 }} />
-          
-          <TouchableOpacity style={globalStyles.genericButton} onPress={() => navigation.navigate('Map')}>
-            <Text style={styles.loginText}>Take a Tour!</Text>
-          </TouchableOpacity>
+WebBrowser.maybeCompleteAuthSession();
 
-          <TouchableOpacity style={globalStyles.genericButton} onPress={() => navigation.navigate('Login')}>
-            <Text style={styles.loginText}>Sign In</Text>
-          </TouchableOpacity>
+export default function App() {
+  // Endpoint
+  const discovery = useAutoDiscovery('https://login.microsoftonline.com/756349b9-0610-4b01-917b-2a4ac10df947/v2.0');
+  // Request
+  const [request, response, promptAsync] = useAuthRequest(
+    {
+      clientId: 'f1cd0087-3639-4bb6-a3ac-7a859abae009',
+      scopes: ['openid', 'profile', 'email', 'offline_access'],
+      redirectUri: 'http://localhost:3000/home'
+    },
+    discovery
+  );
 
-          <TouchableOpacity style={styles.aboutButton} onPress={() => navigation.navigate('About')}>
-            <Text style={styles.aboutText}>About</Text>
-          </TouchableOpacity>
-        </View>
-    );
+  return (
+    <Button
+      disabled={!request}
+      title="Login"
+      onPress={() => {
+        promptAsync();
+        }}
+    />
+  );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#8C2131",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-
-  loginText: {
-    fontWeight: 'bold',
-    color: "#000000"
-  },
-
-aboutButton: {
-  width : "80%",
-  borderRadius: 75,
-  height: 75,
-  alignItems: "center",
-  justifyContent: "center",
-  marginTop: 40,
-  backgroundColor: "#8C2131",
-
-},
-});
