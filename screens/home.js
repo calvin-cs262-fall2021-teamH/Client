@@ -53,4 +53,9 @@ aboutButton: {
   backgroundColor: "#8C2131",
 
 },
+
+aboutText: {
+  fontWeight: 'bold',
+  color: "#d9aa00"
+},
 });
