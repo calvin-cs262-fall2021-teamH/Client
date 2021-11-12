@@ -6,8 +6,8 @@ export const POINTS = [
         'This secluded pond is fed by a seep on the eastern edge. It is home to ducks,' + 
         'frogs, and plants like Buttonbush, Duckweed, and the tiniest vascular' +
         'plant in Michigan, water meal. Watch for the Great Blue Heron that often feeds here',
-        42.932583143988886,//42.93264295748676, // 42.932583143988886, -85.58309647938191
-        -85.58309647938191,//-85.5831781329471,
+        42.932583143988886,
+        -85.58309647938191,
         15,
         null,
         require('../assets/WhiskeyPond.png')),
