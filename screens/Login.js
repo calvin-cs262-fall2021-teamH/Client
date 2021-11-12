@@ -1,8 +1,9 @@
 //Login screen 
 //From: https://inaguirre.medium.com/react-native-login-with-google-quick-guide-fe351e464752
 import React from "react";
-import { StyleSheet, View, Button } from "react-native";
+import { StyleSheet, View, TouchableOpacity, Text} from "react-native";
 import * as Google from "expo-google-app-auth";
+import { globalStyles } from '../styles/global';
 
 const LoginScreen = ({ navigation }) => {
   const signInAsync = async () => {
@@ -25,7 +26,9 @@ const LoginScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Button title="Login with Google" onPress={signInAsync} />
+      <TouchableOpacity style={globalStyles.genericButton} onPress={signInAsync}>
+        <Text style={{fontWeight: 'bold'}}> Login with Google </Text>
+    </TouchableOpacity>
     </View>
   );
 };

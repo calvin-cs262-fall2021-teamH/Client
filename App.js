@@ -17,6 +17,7 @@ import Login from './screens/Login';
 import About from './screens/about';
 import ProfileScreen from './screens/ProfileScreen';
 
+
 const Stack = createNativeStackNavigator();
 
 function App() {
@@ -27,10 +28,9 @@ function App() {
           name="Home" 
           component={HomeScreen}
           options={({ navigation }) => ({
-            headerRight: () => (
-              <Header navigation={navigation}/>
+             headerShown: false}
             )
-          })} />
+          } />
         <Stack.Screen 
           name="Map" 
           component={MapScreen}
