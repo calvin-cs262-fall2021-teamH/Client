@@ -1,27 +1,35 @@
 import { scaleValue } from '../Utility';
 
-const REAL_UPPER_LEFT_CORNER_COORD = { lat: 42.93532617951739, long: -85.58525936106732 };
-const REAL_LOWER_RIGHT_CORNER_COORD = { lat: 42.9297585579178, long: -85.57842713530987 };
+export const REAL_UPPER_LEFT_CORNER_COORD = { lat: 42.93532617951739, long: -85.58525936106732 };
+export const REAL_LOWER_RIGHT_CORNER_COORD = { lat: 42.9297585579178, long: -85.57842713530987 };
 
-class PointOfInterest {
-    constructor(name, imageURL, latitude, longitude, radius) {
+export default class PointOfInterest {
+    constructor(name, description, latitude, longitude, radius, imageURL, image) {
         this.name = name;
-        this.image = downloadOrUncacheImage(imageURL);
+        this.description = description;
         this.latitude = latitude;
         this.longitude = longitude;
         this.radius = radius;
+        this.imageURL = imageURL;
+        this.image = image;
     }
 
-    downloadOrUncacheImage(imageURL) {
-        // TODO: figure out downloading or uncaching images
-        return require('../assets/WhiskeyPond.png');
+    downloadOrUncacheImage() {
+        // TODO: implement
     }
+}
 
-    scaleCoordsToPixelCoords(minX, minY, maxX, maxY) {
-        // TOOD: why did i negate these values
-        // scaleValue(-long, -REAL_UPPER_LEFT_CORNER_COORD.long, -REAL_LOWER_RIGHT_CORNER_COORD.long, MAP_X, MAP_WIDTH);
-        let pixelX = scaleValue(this.longitude, REAL_UPPER_LEFT_CORNER_COORD.long, REAL_LOWER_RIGHT_CORNER_COORD.long, minX, maxX);
-        let pixelY = scaleValue(this.latitude, REAL_LOWER_RIGHT_CORNER_COORD.lat, REAL_UPPER_LEFT_CORNER_COORD.lat, minY, maxY);
-        return { x: pixelX, y: pixelY };
-    }
+export function isCoordWithinBoundaries(point) {
+    return point.latitude >= REAL_LOWER_RIGHT_CORNER_COORD.lat &&
+            point.latitude <= REAL_UPPER_LEFT_CORNER_COORD.lat &&
+            point.longitude >= REAL_UPPER_LEFT_CORNER_COORD.long &&
+            point.longitude <= REAL_LOWER_RIGHT_CORNER_COORD.long; 
+}
+
+export function scaleCoordsToPixelCoords(point, minX, minY, maxX, maxY) {
+    // TOOD: why did i negate these values
+    // scaleValue(-long, -REAL_UPPER_LEFT_CORNER_COORD.long, -REAL_LOWER_RIGHT_CORNER_COORD.long, MAP_X, MAP_WIDTH);
+    let pixelX = scaleValue(point.longitude, REAL_UPPER_LEFT_CORNER_COORD.long, REAL_LOWER_RIGHT_CORNER_COORD.long, minX, maxX);
+    let pixelY = scaleValue(point.latitude, REAL_LOWER_RIGHT_CORNER_COORD.lat, REAL_UPPER_LEFT_CORNER_COORD.lat, minY, maxY);
+    return { x: pixelX, y: pixelY };
 }
