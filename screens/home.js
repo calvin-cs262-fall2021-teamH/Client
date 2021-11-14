@@ -1,18 +1,22 @@
-/* home.js  Homepage for Hello Campus
-Team HUH?!
-10/6/2021
-Brian Langejans, David Reidsma, David Heynen, Paul Dick, Kurt Wietelmann
-adapted page navigation from: https://reactnavigation.org/docs/navigating
-*/
+/**
+ * Homepage for Hello Campus
+ *
+ * @author: Brian Langejans, David Reidsma, David Heynen, Paul Dick, Kurt Wietelmann
+ * 10/6/2021
+ * adapted page navigation from: https://reactnavigation.org/docs/navigating
+ */
 
 import React, { useState } from 'react';
 import { Image, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { globalStyles } from '../styles/global';
 
+/**
+ * HomeScreen is the main screen of the Hello Campus app.
+ * @param {navigation} navigation makes sure navigation is correct for getting to the screen and navigating other screens.
+ */
 export default function HomeScreen({navigation}) {
     return (
         <View style={styles.container}>
-          
           <Image source={ require('../assets/truelogow_o_background.png')} style={{ width: 300, height: 300 }} />
           
           <TouchableOpacity style={globalStyles.genericButton} onPress={() => navigation.navigate('Map')}>
@@ -51,6 +55,5 @@ aboutButton: {
   justifyContent: "center",
   marginTop: 40,
   backgroundColor: "#8C2131",
-
 },
 });
