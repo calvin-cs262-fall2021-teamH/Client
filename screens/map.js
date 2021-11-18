@@ -11,9 +11,9 @@ import { globalStyles } from '../styles/global';
 import * as Location from 'expo-location';
 import { getDistance } from 'geolib';
 import { scaleCoordsToPixelCoords, isCoordWithinBoundaries } from '../models/PointOfInterest';
-import { POINTS } from '../models/TestData.js';
+import { TEST_POINTS_OF_INTEREST as TEST_POINTS_OF_INTEREST } from '../models/TestData.js';
 
-const LOCATION_TASK_NAME = "ecopreserve-location-task";
+const USE_TEST_DATA = false;
 
 const MAP_WIDTH = 400;
 const MAP_HEIGHT = 461.487;
@@ -102,16 +102,30 @@ export default function MapScreen({navigation}) {
             }
         }
 
-        if (!isDataDownloading) {
-            let result = askForPermissionAndUpdateLocation();
-        }
-
         if (isDataDownloading) {
-            fetch(`https://hello-campus.herokuapp.com/pointsofinterest/`)
-                .then((response) => response.json())
-                .then((json) => setPointsOfInterest(json))
-                .catch((error) => setIsDataDownloading(false))
-                .finally(() => setIsDataDownloading(false));
+            if (USE_TEST_DATA) {
+                console.log("Using test point of interest data.");
+                // use test data
+                setPointsOfInterest(TEST_POINTS_OF_INTEREST);
+                setIsDataDownloading(false);
+            } else {
+                console.log("Downloading point of interest data from the dataservice...");
+                // get data from the dataservice
+                fetch(`https://hello-campus.herokuapp.com/pointsofinterest/`)
+                    .then((response) => response.json())
+                    .then((json) => setPointsOfInterest(json))
+                    .catch((error) => {
+                        console.log("Error downloading point of interest data: " + error);
+                        setIsDataDownloading(false);
+                    })
+                    .finally(() => {
+                        console.log("Successfully downloaded point of interest data.");
+                        setIsDataDownloading(false);
+                    }
+                );
+            }
+        } else {
+            let result = askForPermissionAndUpdateLocation();
         }
 
     }, [])
@@ -121,7 +135,7 @@ export default function MapScreen({navigation}) {
         if (currentLocation.latitude == null)
             return null;
 
-        let sortedByDistance = POINTS.sort((a, b) => {
+        let sortedByDistance = TEST_POINTS_OF_INTEREST.sort((a, b) => {
             let distanceA = getDistance(currentLocation, { latitude: a.latitude, longitude: a.longitude });
             let distanceB = getDistance(currentLocation, { latitude: b.latitude, longitude: b.longitude });
 
