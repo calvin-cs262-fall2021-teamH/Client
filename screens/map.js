@@ -165,7 +165,7 @@ export default function MapScreen({navigation}) {
                 pointsOfInterest.map(point => {
                     let pixelCoords = realToPixelCoords(point);
                     return <TouchableOpacity
-                                key={point.id  /* this, I suppose, isn't guaranteed to be unique... but it's good enough as a unique key */ }
+                                key={point.id}
                                 style={[styles.mapPoint, { position: 'absolute', top: pixelCoords.y, right: pixelCoords.x }]}
                                 onPress={() => navigation.navigate('PointInfo', point)}
                             />;
