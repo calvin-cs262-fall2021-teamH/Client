@@ -6,7 +6,7 @@ adapted from the navigation tutorial found at: https://reactnavigation.org/docs/
 */
 
 import React, { useState, useEffect } from 'react';
-import { Image, View, Text, TouchableOpacity, FlatList, ImageBackground, Touchable, StyleSheet } from 'react-native';
+import { Image, View, Text, TouchableOpacity, FlatList, ImageBackground, Touchable, StyleSheet, ActivityIndicator } from 'react-native';
 import { globalStyles } from '../styles/global';
 import * as Location from 'expo-location';
 import { getDistance } from 'geolib';
@@ -42,6 +42,9 @@ export default function MapScreen({navigation}) {
     const [watcher, setWatcher] = useState(null);
     const [errorMsg, setErrorMsg] = useState(null);
     const [userLocation, setUserLocation] = useState({ pixelCoords: { x: null, y: null }, realCoords: { latitude: null, longitude: null } });
+
+    const [isDataDownloading, setIsDataDownloading] = useState(true);
+    const [pointsOfInterest, setPointsOfInterest] = useState([]);
 
     useEffect(() => {
         // better pattern for async stuff in useEffect as per https://stackoverflow.com/a/53572588
@@ -99,7 +102,18 @@ export default function MapScreen({navigation}) {
             }
         }
 
-        let result = askForPermissionAndUpdateLocation();
+        if (!isDataDownloading) {
+            let result = askForPermissionAndUpdateLocation();
+        }
+
+        if (isDataDownloading) {
+            fetch(`https://hello-campus.herokuapp.com/pointsofinterest/`)
+                .then((response) => response.json())
+                .then((json) => setPointsOfInterest(json))
+                .catch((error) => setIsDataDownloading(false))
+                .finally(() => setIsDataDownloading(false));
+        }
+
     }, [])
 
     function getClosePoint() {
@@ -128,6 +142,10 @@ export default function MapScreen({navigation}) {
     
     let userPixelCoords = userLocation.realCoords.latitude != null ? realToPixelCoords(userLocation.realCoords) : { x: -500, y: -500 };
 
+    if (isDataDownloading) {
+        return <ActivityIndicator/>;
+    }
+
     return (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#8C2032' }}>
             <Text style={{ fontSize: 25, color: "#fff", padding: 15, position: 'absolute', top: 0 } }>Walk towards a point on the map to learn more!</Text>
@@ -135,10 +153,10 @@ export default function MapScreen({navigation}) {
 
             { /* dynamically generate the point components from the data */ }
             {
-                POINTS.map(point => {
+                pointsOfInterest.map(point => {
                     let pixelCoords = realToPixelCoords(point);
                     return <TouchableOpacity
-                                key={point.latitude  /* this, I suppose, isn't guaranteed to be unique... but it's good enough as a unique key */ }
+                                key={point.id  /* this, I suppose, isn't guaranteed to be unique... but it's good enough as a unique key */ }
                                 style={[styles.mapPoint, { position: 'absolute', top: pixelCoords.y, right: pixelCoords.x }]}
                                 onPress={() => navigation.navigate('PointInfo', point)}
                             />;
