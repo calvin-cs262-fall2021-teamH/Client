@@ -13,7 +13,7 @@ import { getDistance } from 'geolib';
 import { scaleCoordsToPixelCoords, isCoordWithinBoundaries } from '../models/PointOfInterest';
 import { TEST_POINTS_OF_INTEREST as TEST_POINTS_OF_INTEREST } from '../models/TestData.js';
 
-const USE_TEST_DATA = false;
+const USE_TEST_DATA = true;
 
 const MAP_WIDTH = 400;
 const MAP_HEIGHT = 461.487;
@@ -47,59 +47,22 @@ export default function MapScreen({navigation}) {
     const [pointsOfInterest, setPointsOfInterest] = useState([]);
 
     useEffect(() => {
-        // better pattern for async stuff in useEffect as per https://stackoverflow.com/a/53572588
-        async function updateLocation() {
-            // lots of good location stuff from https://stackoverflow.com/a/58878212
-            // await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
-            //   accuracy: Location.Accuracy.Highest,
-            //   distanceInterval: 1,
-            //   timeInterval: 1000
-            // });
-
-            // todo: figure why this doesn't update often enough or find better method
-            let locationResult = await Location.watchPositionAsync({
-                accuracy: Location.Accuracy.Highest,
-                distanceInterval: 1,
-                timeInterval: 1000
-            },
-                ({coords}) => {
-                    if (coords == null) {
-                        console.log("null coords");
-                        return;
-                    }
-
-                    let pixelCoords = realToPixelCoords({
-                        name: "user's location",
-                        latitude: coords.latitude,
-                        longitude: coords.longitude
-                    });
-                    console.log("Latitude, longitude: " + coords.latitude + ", " + coords.longitude);
-                    console.log("Screen coords: " + pixelCoords.x + ", " + pixelCoords.y);
-                    setUserLocation({ realCoords: coords, pixelCoords: pixelCoords });
-                }).then((locationWatcher) => {
-                    setWatcher(locationWatcher);
-                }).catch((err) => {
-                    console.log(err);
-                });
-            return locationResult;
-            // () => {
-            //   // TODO: find out if watcher.remove() here interferes with location updates and if we need it
-
-            //   // watcher.remove();
-            //   // TODO: make sure this is getting called when the screen is left.
-            //   // If it's not called then we could have a memory leak.
-            // }
-        }
-
-        async function askForPermissionAndUpdateLocation() {
+        async function checkForLocationPermissions() {
             let { status } = await Location.requestForegroundPermissionsAsync();
-            if (status !== 'granted') {
+            const hasPermissions = status === 'granted';
+            if (!hasPermissions) {
                 console.log("Permission problem: status is " + status);
                 setErrorMsg('Permission to access location was denied');
-                return null;
-            } else {
-                return await updateLocation();
             }
+            return hasPermissions;
+        }
+
+        async function getCurrentLatLong() {
+            const locationPromise = await Location.getCurrentPositionAsync({
+                accuracy: Location.Accuracy.Highest,
+                distanceInterval: 1
+            });
+            return locationPromise.coords;
         }
 
         if (isDataDownloading) {
@@ -124,10 +87,38 @@ export default function MapScreen({navigation}) {
                     }
                 );
             }
-        } else {
-            let result = askForPermissionAndUpdateLocation();
         }
 
+        const hasLocationPermissions = checkForLocationPermissions();
+        if (!hasLocationPermissions) {
+            return;
+        }
+
+        const locationUpdateInterval = setInterval(async () => {
+            const realCoords = await getCurrentLatLong();
+            if (realCoords == null) {
+                console.log("null coords");
+                return;
+            }
+    
+            const pixelCoords = realToPixelCoords({
+                name: "user's location",
+                latitude: realCoords.latitude,
+                longitude: realCoords.longitude
+            });
+    
+            console.log("Latitude, longitude: " + realCoords.latitude + ", " + realCoords.longitude);
+            console.log("Screen coords: " + pixelCoords.x + ", " + pixelCoords.y);
+    
+            setUserLocation({
+                realCoords: realCoords,
+                pixelCoords: pixelCoords
+            });
+        }, 1000);
+
+        return () => {
+            clearInterval(locationUpdateInterval);
+        };
     }, [])
 
     function getClosePoint() {
@@ -139,6 +130,7 @@ export default function MapScreen({navigation}) {
             let distanceA = getDistance(currentLocation, { latitude: a.latitude, longitude: a.longitude });
             let distanceB = getDistance(currentLocation, { latitude: b.latitude, longitude: b.longitude });
 
+            // TODO: have some setting for debug output, it's spamming my console
             console.log("Distance to " + a.name + ": " + distanceA + " meters");
             console.log("Distance to " + b.name + ": " + distanceB + " meters");
             return distanceA > distanceB ? 1 : -1
