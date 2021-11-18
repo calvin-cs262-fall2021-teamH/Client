@@ -156,17 +156,13 @@ export default function MapScreen({navigation}) {
     
     let userPixelCoords = userLocation.realCoords.latitude != null ? realToPixelCoords(userLocation.realCoords) : { x: -500, y: -500 };
 
-    if (isDataDownloading) {
-        return <ActivityIndicator/>;
-    }
-
     return (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#8C2032' }}>
             <Text style={{ fontSize: 25, color: "#fff", padding: 15, position: 'absolute', top: 0 } }>Walk towards a point on the map to learn more!</Text>
             <ImageBackground source = { require('../assets/ecomap.png')} style = {{position: 'absolute', top: 100, width: MAP_WIDTH, height: MAP_HEIGHT}}/>
 
             { /* dynamically generate the point components from the data */ }
-            {
+            { isDataDownloading ? <ActivityIndicator/> :
                 pointsOfInterest.map(point => {
                     let pixelCoords = realToPixelCoords(point);
                     return <TouchableOpacity
