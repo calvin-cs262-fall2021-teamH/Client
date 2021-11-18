@@ -4,18 +4,14 @@ export const REAL_UPPER_LEFT_CORNER_COORD = { lat: 42.93532617951739, long: -85.
 export const REAL_LOWER_RIGHT_CORNER_COORD = { lat: 42.9297585579178, long: -85.57842713530987 };
 
 export default class PointOfInterest {
-    constructor(name, description, latitude, longitude, radius, imageURL, image) {
+    constructor(id, name, info, latitude, longitude, radius, imageurl) {
+        this.id = id;
         this.name = name;
-        this.description = description;
+        this.info = info;
         this.latitude = latitude;
         this.longitude = longitude;
         this.radius = radius;
-        this.imageURL = imageURL;
-        this.image = image;
-    }
-
-    downloadOrUncacheImage() {
-        // TODO: implement
+        this.imageurl = imageurl; // this is not in camelcase intentionally; the dataservice delivers this in the same casing, ignoring the correct casing that we put in the database column name
     }
 }
 
