@@ -65,36 +65,7 @@ export default function MapScreen({navigation}) {
             return locationPromise.coords;
         }
 
-        if (isDataDownloading) {
-            if (USE_TEST_DATA) {
-                console.log("Using test point of interest data.");
-                // use test data
-                setPointsOfInterest(TEST_POINTS_OF_INTEREST);
-                setIsDataDownloading(false);
-            } else {
-                console.log("Downloading point of interest data from the dataservice...");
-                // get data from the dataservice
-                fetch(`https://hello-campus.herokuapp.com/pointsofinterest/`)
-                    .then((response) => response.json())
-                    .then((json) => setPointsOfInterest(json))
-                    .catch((error) => {
-                        console.log("Error downloading point of interest data: " + error);
-                        setIsDataDownloading(false);
-                    })
-                    .finally(() => {
-                        console.log("Successfully downloaded point of interest data.");
-                        setIsDataDownloading(false);
-                    }
-                );
-            }
-        }
-
-        const hasLocationPermissions = checkForLocationPermissions();
-        if (!hasLocationPermissions) {
-            return;
-        }
-
-        const locationUpdateInterval = setInterval(async () => {
+        async function updateLocation() {
             const realCoords = await getCurrentLatLong();
             if (realCoords == null) {
                 console.log("null coords");
@@ -114,7 +85,43 @@ export default function MapScreen({navigation}) {
                 realCoords: realCoords,
                 pixelCoords: pixelCoords
             });
-        }, 1000);
+        }
+
+        async function downloadDataFromService() {
+            const response = null;
+            try {
+                response = await fetch(`https://hello-campus.herokuapp.com/pointsofinterest/`);
+            } catch (error) {
+                console.log("Error downloading point of interest data: " + error);
+                setIsDataDownloading(true);
+                return null;
+            }
+
+            return response.json();
+        }
+
+        async function initializePointsOfInterest() {
+            if (isDataDownloading) {
+                if (USE_TEST_DATA) {
+                    console.log("Using test point of interest data.");
+                    setPointsOfInterest(TEST_POINTS_OF_INTEREST);
+                } else {
+                    console.log("Downloading point of interest data from the dataservice...");
+                    const data = await downloadDataFromService();
+                    setPointsOfInterest(data);
+                }
+                setIsDataDownloading(false);
+            }
+        }
+
+        initializePointsOfInterest();
+
+        const hasLocationPermissions = checkForLocationPermissions();
+        if (!hasLocationPermissions) {
+            return;
+        }
+
+        const locationUpdateInterval = setInterval(async () => await updateLocation(), 1000);
 
         return () => {
             clearInterval(locationUpdateInterval);
