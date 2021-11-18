@@ -13,7 +13,7 @@ import { getDistance } from 'geolib';
 import { scaleCoordsToPixelCoords, isCoordWithinBoundaries } from '../models/PointOfInterest';
 import { TEST_POINTS_OF_INTEREST as TEST_POINTS_OF_INTEREST } from '../models/TestData.js';
 
-const USE_TEST_DATA = true;
+const USE_TEST_DATA = false;
 
 const MAP_WIDTH = 400;
 const MAP_HEIGHT = 461.487;
@@ -39,8 +39,7 @@ function realToPixelCoords(point) {
 }
 
 export default function MapScreen({navigation}) {
-    const [watcher, setWatcher] = useState(null);
-    const [errorMsg, setErrorMsg] = useState(null);
+    const [errorMsg, setErrorMsg] = useState(null); // TODO: do something with errorMsg
     const [userLocation, setUserLocation] = useState({ pixelCoords: { x: null, y: null }, realCoords: { latitude: null, longitude: null } });
 
     const [isDataDownloading, setIsDataDownloading] = useState(true);
@@ -88,16 +87,14 @@ export default function MapScreen({navigation}) {
         }
 
         async function downloadDataFromService() {
-            const response = null;
+            let data = null;
             try {
-                response = await fetch(`https://hello-campus.herokuapp.com/pointsofinterest/`);
+                const response = await fetch(`https://hello-campus.herokuapp.com/pointsofinterest/`);
+                data = response.json();
             } catch (error) {
-                console.log("Error downloading point of interest data: " + error);
-                setIsDataDownloading(true);
-                return null;
+                console.log(error);
             }
-
-            return response.json();
+            return data;
         }
 
         async function initializePointsOfInterest() {
@@ -107,8 +104,14 @@ export default function MapScreen({navigation}) {
                     setPointsOfInterest(TEST_POINTS_OF_INTEREST);
                 } else {
                     console.log("Downloading point of interest data from the dataservice...");
+
                     const data = await downloadDataFromService();
+                    if (data == null) {
+                        console.log("Error downloading point of interest data!");
+                    }
                     setPointsOfInterest(data);
+
+                    console.log("Successfully downloaded point of interest data!");
                 }
                 setIsDataDownloading(false);
             }
@@ -121,11 +124,8 @@ export default function MapScreen({navigation}) {
             return;
         }
 
-        const locationUpdateInterval = setInterval(async () => await updateLocation(), 1000);
-
-        return () => {
-            clearInterval(locationUpdateInterval);
-        };
+        const locationUpdateInterval = setInterval(updateLocation, 1000);
+        return () => clearInterval(locationUpdateInterval); // end the interval'd calls when the screen is unmounted
     }, [])
 
     function getClosePoint() {
