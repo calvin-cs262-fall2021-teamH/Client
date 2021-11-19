@@ -44,4 +44,9 @@ export const globalStyles = StyleSheet.create({
         marginTop: 20,
         backgroundColor: "#fff",
     },
+    Question: {
+        fontSize: 20,
+        color: "#fff",
+        padding: 20
+    }
 });

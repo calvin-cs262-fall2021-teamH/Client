@@ -4,7 +4,6 @@ Team HUH?!
 Brian Langejans, David Reidsma, David Heynen, Paul Dick, Kurt Wietelmann
 */
 
-import { TabRouter } from '@react-navigation/routers';
 import React, { useState } from 'react';
 import { Image, Button, View, Text, TouchableOpacity, FlatList, ImageBackground } from 'react-native';
 import { globalStyles } from '../styles/global';
