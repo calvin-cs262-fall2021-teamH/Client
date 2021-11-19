@@ -22,10 +22,6 @@ export default function HomeScreen({navigation}) {
           <TouchableOpacity style={globalStyles.genericButton} onPress={() => navigation.navigate('Login')}>
             <Text style={styles.loginText}>Sign In</Text>
           </TouchableOpacity>
-
-          <TouchableOpacity style={styles.aboutButton} onPress={() => navigation.navigate('About')}>
-            <Text style={styles.aboutText}>About</Text>
-          </TouchableOpacity>
         </View>
     );
 }
@@ -42,20 +38,4 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: "#000000"
   },
-
-aboutButton: {
-  width : "80%",
-  borderRadius: 75,
-  height: 75,
-  alignItems: "center",
-  justifyContent: "center",
-  marginTop: 40,
-  backgroundColor: "#8C2131",
-
-},
-
-aboutText: {
-  fontWeight: 'bold',
-  color: "#d9aa00"
-},
 });
