@@ -12,7 +12,7 @@ export default function About ({navigation}) {
     return (
         <View style={styles.container}>
           
-          <Image source={ require('../assets/truelogow_o_background.png')} style={{ width: 300, height: 300 }} />
+          <Image source={ require('../assets/HelloCampusLogo_NoBackground.png')} style={{ width: 300, height: 300 }} />
           <Text style = {styles.descriptionText}> The HelloCampus application allows students to answer quiz questions based on locations,
                and to explore their college campus.</Text>
           <TouchableOpacity style={styles.loginBtn} onPress={() => navigation.navigate('Home')}>
