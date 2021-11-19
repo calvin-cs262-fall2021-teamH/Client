@@ -91,7 +91,7 @@ export default function MapScreen({navigation}) {
             });
         }
 
-        async function downloadDataFromService() {
+        async function downloadPointsFromService() {
             let downloadedPoints = null;
             try {
                 const response = await fetch(`https://hello-campus.herokuapp.com/pointsofinterest/`);
@@ -111,7 +111,7 @@ export default function MapScreen({navigation}) {
                 } else {
                     console.log("Downloading point of interest data from the dataservice...");
 
-                    points = await downloadDataFromService();
+                    points = await downloadPointsFromService();
                     if (points == null) {
                         console.log("Error downloading point of interest data!");
                     }
