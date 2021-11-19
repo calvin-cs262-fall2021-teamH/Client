@@ -19,7 +19,7 @@ import Login from './screens/Login';
 import About from './screens/about';
 import ProfileScreen from './screens/ProfileScreen';
 import QuestionScreen from './screens/questions';
-import Icon from 'react-native-ionicons';
+//import Icon from 'react-native-ionicons';
 
 
 
@@ -33,11 +33,11 @@ const DrawerNavigator = () => {
         <Drawer.Screen 
           name="Map " 
           component={MapScreen}
-          options={{
-            drawerIcon: () => (
-              <Icon name="settings-outline"></Icon>
-            )
-           }}
+          // options={{
+          //   drawerIcon: () => (
+          //     <Icon name="settings-outline"></Icon>
+          //   )
+          //  }}
           />
     </Drawer.Navigator>
     )
