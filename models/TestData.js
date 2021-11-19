@@ -28,8 +28,16 @@ export const TEST_POINTS_OF_INTEREST = [
         'this is my room.',
         42.93183174900448,
         -85.5875208072886,
-        15,
-        'https://raw.githubusercontent.com/calvin-cs262-fall2021-teamH/Service/connect_points_to_dataservice/point_assets/CrownGap.png')
+        3000,
+        'https://raw.githubusercontent.com/calvin-cs262-fall2021-teamH/Service/connect_points_to_dataservice/point_assets/CrownGap.png'),
+    new PointOfInterest(
+        4,
+        'Lab',
+        'this is my room.',
+        42.931119807199075, 
+        -85.58910687175235,
+        50,
+        'https://raw.githubusercontent.com/calvin-cs262-fall2021-teamH/Service/connect_points_to_dataservice/point_assets/CrownGap.png'),
 ];
 
 export const TEST_ANSWER = [];

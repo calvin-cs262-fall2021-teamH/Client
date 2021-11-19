@@ -16,6 +16,7 @@ export default function QuestionScreen({ route, navigation }) {
     const [question, setQuestion] = useState([]);
     const pointId = route.params.id
     data = []
+    const [text, onChangeText] = React.useState("Useless Text");
 
     useEffect (() => {
         if (isDataDownloading) {
@@ -23,7 +24,7 @@ export default function QuestionScreen({ route, navigation }) {
             .then((response) => response.json())
             .then(
                 (json) => setQuestion(json),
-                data = json.items)
+                data = question)
             .catch((error) => {
                 console.log("Error downloading question data: " + error);
                 setIsDataDownloading(false);
@@ -41,9 +42,9 @@ export default function QuestionScreen({ route, navigation }) {
             <Text style={{ fontSize: 30, color: "#fff", padding: 20 }}>{ route.params.name }</Text>
             <Text style={{ fontSize: 30, color: "#fff", padding: 20 }}>{ data.question }</Text>
             <TextInput
-                style={styles.input}
+                style={globalStyles.input}
                 onChangeText={onChangeText}
-                value={Text}
+                value={text}
             />
             <Text style={ globalStyles.Question }>{ route.params.description }</Text>
         </View>

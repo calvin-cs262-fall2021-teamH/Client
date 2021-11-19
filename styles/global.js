@@ -48,5 +48,9 @@ export const globalStyles = StyleSheet.create({
         fontSize: 20,
         color: "#fff",
         padding: 20
+    },
+    input: {
+        fontSize: 12,
+        color: "#000"
     }
 });

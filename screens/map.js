@@ -13,7 +13,7 @@ import { getDistance } from 'geolib';
 import { scaleCoordsToPixelCoords, isCoordWithinBoundaries } from '../models/PointOfInterest';
 import { TEST_POINTS_OF_INTEREST as TEST_POINTS_OF_INTEREST } from '../models/TestData.js';
 
-const USE_TEST_DATA = false;
+const USE_TEST_DATA = true;
 
 const MAP_WIDTH = 400;
 const MAP_HEIGHT = 461.487;
