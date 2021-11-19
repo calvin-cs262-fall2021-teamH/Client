@@ -13,7 +13,7 @@ import { getDistance } from 'geolib';
 import { scaleCoordsToPixelCoords, isCoordWithinBoundaries } from '../models/PointOfInterest';
 import { TEST_POINTS_OF_INTEREST as TEST_POINTS_OF_INTEREST } from '../models/TestData.js';
 
-const USE_TEST_DATA = true;
+const USE_TEST_DATA = false;
 
 const MAP_WIDTH = 400;
 const MAP_HEIGHT = 461.487;
@@ -23,6 +23,8 @@ const MAP_X = 0;
 const POINT_WIDTH = 50;
 const POINT_HEIGHT = 50;
 
+const LOCATION_REFRESH_INTERVAL = 2000;
+    
 function realToPixelCoords(point) {
     // quick and dirty method to get rid of locations that are off the map to prevent wraparound
     if (!isCoordWithinBoundaries(point)) {
@@ -39,95 +41,99 @@ function realToPixelCoords(point) {
 }
 
 export default function MapScreen({navigation}) {
-    const [watcher, setWatcher] = useState(null);
-    const [errorMsg, setErrorMsg] = useState(null);
+    const [errorMsg, setErrorMsg] = useState(null); // TODO: do something with errorMsg
     const [userLocation, setUserLocation] = useState({ pixelCoords: { x: null, y: null }, realCoords: { latitude: null, longitude: null } });
 
     const [isDataDownloading, setIsDataDownloading] = useState(true);
     const [pointsOfInterest, setPointsOfInterest] = useState([]);
 
     useEffect(() => {
-        // better pattern for async stuff in useEffect as per https://stackoverflow.com/a/53572588
-        async function updateLocation() {
-            // lots of good location stuff from https://stackoverflow.com/a/58878212
-            // await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
-            //   accuracy: Location.Accuracy.Highest,
-            //   distanceInterval: 1,
-            //   timeInterval: 1000
-            // });
-
-            // todo: figure why this doesn't update often enough or find better method
-            let locationResult = await Location.watchPositionAsync({
-                accuracy: Location.Accuracy.Highest,
-                distanceInterval: 1,
-                timeInterval: 1000
-            },
-                ({coords}) => {
-                    if (coords == null) {
-                        console.log("null coords");
-                        return;
-                    }
-
-                    let pixelCoords = realToPixelCoords({
-                        name: "user's location",
-                        latitude: coords.latitude,
-                        longitude: coords.longitude
-                    });
-                    console.log("Latitude, longitude: " + coords.latitude + ", " + coords.longitude);
-                    console.log("Screen coords: " + pixelCoords.x + ", " + pixelCoords.y);
-                    setUserLocation({ realCoords: coords, pixelCoords: pixelCoords });
-                }).then((locationWatcher) => {
-                    setWatcher(locationWatcher);
-                }).catch((err) => {
-                    console.log(err);
-                });
-            return locationResult;
-            // () => {
-            //   // TODO: find out if watcher.remove() here interferes with location updates and if we need it
-
-            //   // watcher.remove();
-            //   // TODO: make sure this is getting called when the screen is left.
-            //   // If it's not called then we could have a memory leak.
-            // }
-        }
-
-        async function askForPermissionAndUpdateLocation() {
+        async function checkForLocationPermissions() {
             let { status } = await Location.requestForegroundPermissionsAsync();
-            if (status !== 'granted') {
+            const hasPermissions = status === 'granted';
+            if (!hasPermissions) {
                 console.log("Permission problem: status is " + status);
                 setErrorMsg('Permission to access location was denied');
-                return null;
-            } else {
-                return await updateLocation();
             }
+            return hasPermissions;
         }
 
-        if (isDataDownloading) {
-            if (USE_TEST_DATA) {
-                console.log("Using test point of interest data.");
-                // use test data
-                setPointsOfInterest(TEST_POINTS_OF_INTEREST);
-                setIsDataDownloading(false);
-            } else {
-                console.log("Downloading point of interest data from the dataservice...");
-                // get data from the dataservice
-                fetch(`https://hello-campus.herokuapp.com/pointsofinterest/`)
-                    .then((response) => response.json())
-                    .then((json) => setPointsOfInterest(json))
-                    .catch((error) => {
-                        console.log("Error downloading point of interest data: " + error);
-                        setIsDataDownloading(false);
-                    })
-                    .finally(() => {
-                        console.log("Successfully downloaded point of interest data.");
-                        setIsDataDownloading(false);
+        async function getCurrentLatLong() {
+            const locationPromise = await Location.getCurrentPositionAsync({
+                accuracy: Location.Accuracy.Highest,
+                distanceInterval: 1
+            });
+            return locationPromise.coords;
+        }
+
+        async function refreshLocation() {
+            // get geographical coordinates
+            const realCoords = await getCurrentLatLong();
+            if (realCoords == null) {
+                console.log("null coords");
+                return;
+            }
+    
+            // convert to on-screen coordinates
+            const pixelCoords = realToPixelCoords({
+                name: "user's location",
+                latitude: realCoords.latitude,
+                longitude: realCoords.longitude
+            });
+    
+            console.log("Latitude, longitude: " + realCoords.latitude + ", " + realCoords.longitude);
+            console.log("Screen coords: " + pixelCoords.x + ", " + pixelCoords.y);
+    
+            // update the location
+            setUserLocation({
+                realCoords: realCoords,
+                pixelCoords: pixelCoords
+            });
+        }
+
+        async function downloadPointsFromService() {
+            let downloadedPoints = null;
+            try {
+                const response = await fetch(`https://hello-campus.herokuapp.com/pointsofinterest/`);
+                downloadedPoints = response.json();
+            } catch (error) {
+                console.log(error);
+            }
+            return downloadedPoints;
+        }
+
+        async function initPointsOfInterest() {
+            if (isDataDownloading) {
+                if (USE_TEST_DATA) {
+                    console.log("Using test point of interest data.");
+                    setPointsOfInterest(TEST_POINTS_OF_INTEREST);
+                } else {
+                    console.log("Downloading point of interest data from the dataservice...");
+
+                    let points = await downloadPointsFromService();
+                    if (points == null) {
+                        console.log("Error downloading point of interest data!");
+                        points = [];
                     }
-                );
+                    setPointsOfInterest(points);
+
+                    console.log("Successfully downloaded point of interest data!");
+                }
+                setIsDataDownloading(false);
             }
-        } else {
-            let result = askForPermissionAndUpdateLocation();
         }
 
+        initPointsOfInterest();
+
+        const hasLocationPermissions = checkForLocationPermissions();
+        if (!hasLocationPermissions) {
+            // if we still don't have location permissions, there's just no point in continuing
+            return;
+        }
+
+        // refresh the location on an interval
+        const locationRefreshIntervalHandle = setInterval(refreshLocation, LOCATION_REFRESH_INTERVAL);
+        return () => clearInterval(locationRefreshIntervalHandle); // end the interval'd calls when the screen is unmounted
     }, [])
 
     function getClosePoint() {
@@ -139,6 +145,7 @@ export default function MapScreen({navigation}) {
             let distanceA = getDistance(currentLocation, { latitude: a.latitude, longitude: a.longitude });
             let distanceB = getDistance(currentLocation, { latitude: b.latitude, longitude: b.longitude });
 
+            // TODO: have some setting for debug output, it's spamming my console
             console.log("Distance to " + a.name + ": " + distanceA + " meters");
             console.log("Distance to " + b.name + ": " + distanceB + " meters");
             return distanceA > distanceB ? 1 : -1
@@ -166,7 +173,7 @@ export default function MapScreen({navigation}) {
                 pointsOfInterest.map(point => {
                     let pixelCoords = realToPixelCoords(point);
                     return <TouchableOpacity
-                                key={point.id  /* this, I suppose, isn't guaranteed to be unique... but it's good enough as a unique key */ }
+                                key={point.id}
                                 style={[styles.mapPoint, { position: 'absolute', top: pixelCoords.y, right: pixelCoords.x }]}
                                 onPress={() => navigation.navigate('Questions', point)}
                             />;
