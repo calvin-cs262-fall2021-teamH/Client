@@ -22,6 +22,7 @@ import QuestionScreen from './screens/questions';
 //import Icon from 'react-native-ionicons';
 
 
+import ListScreen from './screens/list';
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -65,11 +66,12 @@ function App() {
               <Header navigation={navigation}/>
             )
           })} />
-        <Stack.Screen name="Setting" component={SettingScreen} />
+        <Stack.Screen name = "Setting" component = {SettingScreen}/>
         <Stack.Screen name = "Login" component = {Login}/>
         <Stack.Screen name = "About" component = {About}/>
         <Stack.Screen name = "ProfileScreen" component = {ProfileScreen}/>
         <Stack.Screen name = "Questions" component = {QuestionScreen}/>
+        <Stack.Screen name = "Location" component = {ListScreen}/>
       </Stack.Navigator>
     </NavigationContainer>
   );
