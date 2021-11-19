@@ -20,6 +20,6 @@ export const TEST_POINTS_OF_INTEREST = [
         'you see now will out-compete the others and will fill the canopy gap',
         42.93374267151409,
         -85.58030280488913,
-        15,
+        100,
         'https://raw.githubusercontent.com/calvin-cs262-fall2021-teamH/Service/connect_points_to_dataservice/point_assets/CrownGap.png')
 ];

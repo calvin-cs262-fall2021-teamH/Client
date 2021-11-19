@@ -18,6 +18,7 @@ import Header from './shared/header';
 import Login from './screens/Login';
 import About from './screens/about';
 import ProfileScreen from './screens/ProfileScreen';
+import QuestionScreen from './screens/questions';
 import Icon from 'react-native-ionicons';
 
 
@@ -68,6 +69,7 @@ function App() {
         <Stack.Screen name = "Login" component = {Login}/>
         <Stack.Screen name = "About" component = {About}/>
         <Stack.Screen name = "ProfileScreen" component = {ProfileScreen}/>
+        <Stack.Screen name = "Questions" component = {QuestionScreen}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

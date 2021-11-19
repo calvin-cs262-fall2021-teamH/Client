@@ -168,7 +168,7 @@ export default function MapScreen({navigation}) {
                     return <TouchableOpacity
                                 key={point.id  /* this, I suppose, isn't guaranteed to be unique... but it's good enough as a unique key */ }
                                 style={[styles.mapPoint, { position: 'absolute', top: pixelCoords.y, right: pixelCoords.x }]}
-                                onPress={() => navigation.navigate('PointInfo', point)}
+                                onPress={() => navigation.navigate('Questions', point)}
                             />;
                 })
             }
@@ -189,7 +189,7 @@ export default function MapScreen({navigation}) {
                 onPress={() => {
                     if (closestPoint == null)
                         return;
-                    navigation.navigate('PointInfo', closestPoint);
+                    navigation.navigate('Questions', closestPoint);
                 }}>
                 <Image source={closestPoint == null ? require('../assets/PointInteractionButton.png') : require("../assets/PointInteractionButton2.png")} style = {{width: 170, height:170 }}/>
             </TouchableOpacity>
