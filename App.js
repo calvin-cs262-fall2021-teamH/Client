@@ -8,6 +8,7 @@ adapted from the navigation tutorial found at: https://reactnavigation.org/docs/
 import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createDrawerNavigator } from '@react-navigation/drawer';
 import HomeScreen from "./screens/home";
 import MapScreen from "./screens/map";
 import GeoPrototype from './screens/GeolocationPrototype';
@@ -17,8 +18,29 @@ import Header from './shared/header';
 import Login from './screens/Login';
 import About from './screens/about';
 import ProfileScreen from './screens/ProfileScreen';
+import Icon from 'react-native-ionicons';
+
+
 
 const Stack = createNativeStackNavigator();
+const Drawer = createDrawerNavigator();
+
+const DrawerNavigator = () => {
+    return (
+    <Drawer.Navigator initialRouteName="Map " backBehavior="initialRoute">
+        <Drawer.Screen name="Setting" component={SettingScreen} />
+        <Drawer.Screen 
+          name="Map " 
+          component={MapScreen}
+          options={{
+            drawerIcon: () => (
+              <Icon name="settings-outline"></Icon>
+            )
+           }}
+          />
+    </Drawer.Navigator>
+    )
+}
 
 function App() {
   return (
@@ -27,19 +49,13 @@ function App() {
         <Stack.Screen 
           name="Home" 
           component={HomeScreen}
-          options={({ navigation }) => ({
-            headerRight: () => (
-              <Header navigation={navigation}/>
-            )
-          })} />
+          options={{ headerShown: false }}
+          />
         <Stack.Screen 
           name="Map" 
-          component={MapScreen}
-          options={({ navigation }) => ({
-            headerRight: () => (
-              <Header navigation={navigation}/>
-            )
-          })} />
+          component={DrawerNavigator}
+          options={{ headerShown: false }}
+          />
         <Stack.Screen 
           name="PointInfo" 
           component={PointInfoScreen}

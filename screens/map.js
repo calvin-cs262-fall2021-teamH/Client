@@ -22,7 +22,7 @@ const MAP_X = 0;
 
 const POINT_WIDTH = 50;
 const POINT_HEIGHT = 50;
-    
+
 function realToPixelCoords(point) {
     // quick and dirty method to get rid of locations that are off the map to prevent wraparound
     if (!isCoordWithinBoundaries(point)) {
