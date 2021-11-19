@@ -1,61 +1,85 @@
-/* home.js  Homepage for Hello Campus
-Team HUH?!
-10/6/2021
-Brian Langejans, David Reidsma, David Heynen, Paul Dick, Kurt Wietelmann
-adapted page navigation from: https://reactnavigation.org/docs/navigating
-*/
 
-import React, { useState } from 'react';
-import { Image, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { globalStyles } from '../styles/global';
 
-export default function HomeScreen({navigation}) {
-    return (
-        <View style={styles.container}>
-          
-          <Image source={ require('../assets/truelogow_o_background.png')} style={{ width: 300, height: 300 }} />
-          
-          <TouchableOpacity style={globalStyles.genericButton} onPress={() => navigation.navigate('Map')}>
-            <Text style={styles.loginText}>Take a Tour!</Text>
-          </TouchableOpacity>
+import * as React from 'react';
+import * as WebBrowser from 'expo-web-browser';
+import { useAuthRequest, useAutoDiscovery} from 'expo-auth-session';
+import { TouchableOpacity, StyleSheet, Image, Text, ImageBackground, TouchableHighlight} from 'react-native';
 
-          <TouchableOpacity style={globalStyles.genericButton} onPress={() => navigation.navigate('Login')}>
-            <Text style={styles.loginText}>Sign In</Text>
-          </TouchableOpacity>
+WebBrowser.maybeCompleteAuthSession();
 
-          <TouchableOpacity style={styles.aboutButton} onPress={() => navigation.navigate('About')}>
-            <Text style={styles.aboutText}>About</Text>
-          </TouchableOpacity>
-        </View>
-    );
+const HomeScreen =({navigation}) => {
+  // Endpoint
+  const discovery = useAutoDiscovery('https://login.microsoftonline.com/756349b9-0610-4b01-917b-2a4ac10df947/v2.0');
+  // Request
+  const [request, response, promptAsync] = useAuthRequest(
+    {
+      clientId: 'f1cd0087-3639-4bb6-a3ac-7a859abae009',
+      scopes: ['openid', 'profile', 'email', 'offline_access'],
+      redirectUri: 'exp://192.168.0.106:19000',
+    },
+    discovery
+  );
+  return (
+
+    <ImageBackground source={ require('../assets/home_background.jpg')} style ={styles.imageStyle}>
+      <TouchableHighlight onPress = {()=> navigation.navigate('About')}>
+              <Image source={ require('../assets/truelogow_o_background.png')} style={styles.imagest}/> 
+          </TouchableHighlight>
+
+      <TouchableOpacity style={styles.loginBtn} 
+        disabled={!request}
+        onPress={() => {
+        promptAsync()
+       if (type === "success") {
+        console.log("LoginScreen.js 17 | success, navigating to profile");
+        navigation.navigate("Map", { user });
+      }
+        }}>
+        <Text style={styles.loginText}>LOGIN</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity style={styles.loginBtn} onPress ={() => navigation.navigate ('Map')}>
+        <Text style={styles.loginText}>CONTINUE AS GUEST</Text>
+      </TouchableOpacity>
+    </ImageBackground>
+  );
 }
+export default HomeScreen;
 
 const styles = StyleSheet.create({
+
+  imageStyle: {
+    flex: 1,
+  width: '100%',
+  height: '100%',
+  resizeMode: 'contain',
+  justifyContent: 'center',
+  alignItems: "center"
+  },
+  imagest:{
+    width : 150,
+    height: 150,
+    justifyContent: "center"
+  },
   container: {
     flex: 1,
-    backgroundColor: "#8C2131",
+    backgroundColor: "#f8f8ff",
     alignItems: "center",
     justifyContent: "center",
+
+  },
+  loginText:{
+    color: '#fff',
+  },
+  loginBtn: {
+    width: "70%",
+    borderRadius: 20,
+    height: 50,
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 5,
+    marginBottom: 20,
+    backgroundColor: "#8C2131",
   },
 
-  loginText: {
-    fontWeight: 'bold',
-    color: "#000000"
-  },
-
-aboutButton: {
-  width : "80%",
-  borderRadius: 75,
-  height: 75,
-  alignItems: "center",
-  justifyContent: "center",
-  marginTop: 40,
-  backgroundColor: "#8C2131",
-
-},
-
-aboutText: {
-  fontWeight: 'bold',
-  color: "#d9aa00"
-},
 });
