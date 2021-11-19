@@ -22,6 +22,8 @@ const MAP_X = 0;
 
 const POINT_WIDTH = 50;
 const POINT_HEIGHT = 50;
+
+const LOCATION_REFRESH_INTERVAL = 2000;
     
 function realToPixelCoords(point) {
     // quick and dirty method to get rid of locations that are off the map to prevent wraparound
@@ -64,13 +66,15 @@ export default function MapScreen({navigation}) {
             return locationPromise.coords;
         }
 
-        async function updateLocation() {
+        async function refreshLocation() {
+            // get geographical coordinates
             const realCoords = await getCurrentLatLong();
             if (realCoords == null) {
                 console.log("null coords");
                 return;
             }
     
+            // convert to on-screen coordinates
             const pixelCoords = realToPixelCoords({
                 name: "user's location",
                 latitude: realCoords.latitude,
@@ -80,6 +84,7 @@ export default function MapScreen({navigation}) {
             console.log("Latitude, longitude: " + realCoords.latitude + ", " + realCoords.longitude);
             console.log("Screen coords: " + pixelCoords.x + ", " + pixelCoords.y);
     
+            // update the location
             setUserLocation({
                 realCoords: realCoords,
                 pixelCoords: pixelCoords
@@ -87,45 +92,50 @@ export default function MapScreen({navigation}) {
         }
 
         async function downloadDataFromService() {
-            let data = null;
+            let downloadedPoints = null;
             try {
                 const response = await fetch(`https://hello-campus.herokuapp.com/pointsofinterest/`);
-                data = response.json();
+                downloadedPoints = response.json();
             } catch (error) {
                 console.log(error);
             }
-            return data;
+            return downloadedPoints;
         }
 
-        async function initializePointsOfInterest() {
+        async function getPointsOfInterest() {
+            let points = null;
             if (isDataDownloading) {
                 if (USE_TEST_DATA) {
                     console.log("Using test point of interest data.");
-                    setPointsOfInterest(TEST_POINTS_OF_INTEREST);
+                    points = TEST_POINTS_OF_INTEREST;
                 } else {
                     console.log("Downloading point of interest data from the dataservice...");
 
-                    const data = await downloadDataFromService();
-                    if (data == null) {
+                    points = await downloadDataFromService();
+                    if (points == null) {
                         console.log("Error downloading point of interest data!");
                     }
-                    setPointsOfInterest(data);
 
                     console.log("Successfully downloaded point of interest data!");
                 }
                 setIsDataDownloading(false);
             }
+            return points;
         }
 
-        initializePointsOfInterest();
+        // get the points of interest that we'll be using and update our state
+        const pointsOfInterest = getPointsOfInterest();
+        setPointsOfInterest(pointsOfInterest);
 
         const hasLocationPermissions = checkForLocationPermissions();
         if (!hasLocationPermissions) {
+            // if we still don't have location permissions, there's just no point in continuing
             return;
         }
 
-        const locationUpdateInterval = setInterval(updateLocation, 1000);
-        return () => clearInterval(locationUpdateInterval); // end the interval'd calls when the screen is unmounted
+        // refresh the location on an interval
+        const locationRefreshIntervalHandle = setInterval(refreshLocation, LOCATION_REFRESH_INTERVAL);
+        return () => clearInterval(locationRefreshIntervalHandle); // end the interval'd calls when the screen is unmounted
     }, [])
 
     function getClosePoint() {
