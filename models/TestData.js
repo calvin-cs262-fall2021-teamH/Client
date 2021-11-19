@@ -28,7 +28,7 @@ export const TEST_POINTS_OF_INTEREST = [
         'this is my room.',
         42.93183174900448,
         -85.5875208072886,
-        3000,
+        30,
         'https://raw.githubusercontent.com/calvin-cs262-fall2021-teamH/Service/connect_points_to_dataservice/point_assets/CrownGap.png'),
     new PointOfInterest(
         4,
