@@ -6,14 +6,14 @@ adapted from the navigation tutorial found at: https://reactnavigation.org/docs/
 */
 
 import React, { useState, useEffect } from 'react';
-import { Image, View, Text, TouchableOpacity, FlatList, ImageBackground, Touchable, StyleSheet } from 'react-native';
+import { Image, View, Text, TouchableOpacity, FlatList, ImageBackground, Touchable, StyleSheet, ActivityIndicator } from 'react-native';
 import { globalStyles } from '../styles/global';
 import * as Location from 'expo-location';
 import { getDistance } from 'geolib';
 import { scaleCoordsToPixelCoords, isCoordWithinBoundaries } from '../models/PointOfInterest';
-import { POINTS } from '../models/TestData.js';
+import { TEST_POINTS_OF_INTEREST as TEST_POINTS_OF_INTEREST } from '../models/TestData.js';
 
-const LOCATION_TASK_NAME = "ecopreserve-location-task";
+const USE_TEST_DATA = false;
 
 const MAP_WIDTH = 400;
 const MAP_HEIGHT = 461.487;
@@ -42,6 +42,9 @@ export default function MapScreen({navigation}) {
     const [watcher, setWatcher] = useState(null);
     const [errorMsg, setErrorMsg] = useState(null);
     const [userLocation, setUserLocation] = useState({ pixelCoords: { x: null, y: null }, realCoords: { latitude: null, longitude: null } });
+
+    const [isDataDownloading, setIsDataDownloading] = useState(true);
+    const [pointsOfInterest, setPointsOfInterest] = useState([]);
 
     useEffect(() => {
         // better pattern for async stuff in useEffect as per https://stackoverflow.com/a/53572588
@@ -99,7 +102,32 @@ export default function MapScreen({navigation}) {
             }
         }
 
-        let result = askForPermissionAndUpdateLocation();
+        if (isDataDownloading) {
+            if (USE_TEST_DATA) {
+                console.log("Using test point of interest data.");
+                // use test data
+                setPointsOfInterest(TEST_POINTS_OF_INTEREST);
+                setIsDataDownloading(false);
+            } else {
+                console.log("Downloading point of interest data from the dataservice...");
+                // get data from the dataservice
+                fetch(`https://hello-campus.herokuapp.com/pointsofinterest/`)
+                    .then((response) => response.json())
+                    .then((json) => setPointsOfInterest(json))
+                    .catch((error) => {
+                        console.log("Error downloading point of interest data: " + error);
+                        setIsDataDownloading(false);
+                    })
+                    .finally(() => {
+                        console.log("Successfully downloaded point of interest data.");
+                        setIsDataDownloading(false);
+                    }
+                );
+            }
+        } else {
+            let result = askForPermissionAndUpdateLocation();
+        }
+
     }, [])
 
     function getClosePoint() {
@@ -107,7 +135,7 @@ export default function MapScreen({navigation}) {
         if (currentLocation.latitude == null)
             return null;
 
-        let sortedByDistance = POINTS.sort((a, b) => {
+        let sortedByDistance = TEST_POINTS_OF_INTEREST.sort((a, b) => {
             let distanceA = getDistance(currentLocation, { latitude: a.latitude, longitude: a.longitude });
             let distanceB = getDistance(currentLocation, { latitude: b.latitude, longitude: b.longitude });
 
@@ -134,11 +162,11 @@ export default function MapScreen({navigation}) {
             <ImageBackground source = { require('../assets/ecomap.png')} style = {{position: 'absolute', top: 100, width: MAP_WIDTH, height: MAP_HEIGHT}}/>
 
             { /* dynamically generate the point components from the data */ }
-            {
-                POINTS.map(point => {
+            { isDataDownloading ? <ActivityIndicator/> :
+                pointsOfInterest.map(point => {
                     let pixelCoords = realToPixelCoords(point);
                     return <TouchableOpacity
-                                key={point.latitude  /* this, I suppose, isn't guaranteed to be unique... but it's good enough as a unique key */ }
+                                key={point.id  /* this, I suppose, isn't guaranteed to be unique... but it's good enough as a unique key */ }
                                 style={[styles.mapPoint, { position: 'absolute', top: pixelCoords.y, right: pixelCoords.x }]}
                                 onPress={() => navigation.navigate('PointInfo', point)}
                             />;
