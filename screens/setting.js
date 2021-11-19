@@ -59,7 +59,14 @@ export default function SettingScreen({ navigation }) {
                     />
                 </View>
             </View>
-                
+            <View style={{backgroundColor: '#FFF', borderRadius: 10}}>
+                <Button
+                    title='About'
+                    color='black'
+                    alignItems='center'
+                    onPress={() => navigation.navigate('About')}>                    
+                </Button>  
+            </View>
         </View>
     );
 }
