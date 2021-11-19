@@ -102,30 +102,28 @@ export default function MapScreen({navigation}) {
             return downloadedPoints;
         }
 
-        async function getPointsOfInterest() {
-            let points = null;
+        async function initPointsOfInterest() {
             if (isDataDownloading) {
                 if (USE_TEST_DATA) {
                     console.log("Using test point of interest data.");
-                    points = TEST_POINTS_OF_INTEREST;
+                    setPointsOfInterest(TEST_POINTS_OF_INTEREST);
                 } else {
                     console.log("Downloading point of interest data from the dataservice...");
 
-                    points = await downloadPointsFromService();
+                    let points = await downloadPointsFromService();
                     if (points == null) {
                         console.log("Error downloading point of interest data!");
+                        points = [];
                     }
+                    setPointsOfInterest(points);
 
                     console.log("Successfully downloaded point of interest data!");
                 }
                 setIsDataDownloading(false);
             }
-            return points;
         }
 
-        // get the points of interest that we'll be using and update our state
-        const pointsOfInterest = getPointsOfInterest();
-        setPointsOfInterest(pointsOfInterest);
+        initPointsOfInterest();
 
         const hasLocationPermissions = checkForLocationPermissions();
         if (!hasLocationPermissions) {
