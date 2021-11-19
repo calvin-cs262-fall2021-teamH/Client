@@ -14,17 +14,15 @@ import { globalStyles } from '../styles/global';
 export default function QuestionScreen({ route, navigation }) {
     const [isDataDownloading, setIsDataDownloading] = useState(true);
     const [question, setQuestion] = useState([]);
-    const pointId = route.params.id
     data = []
     const [text, onChangeText] = React.useState("Useless Text");
 
     useEffect (() => {
         if (isDataDownloading) {
-            fetch('https://hello-campus.herokuapp.com/questionsAtPoint/:${pointId}')
+            fetch('https://hello-campus.herokuapp.com/questionsAtPoint/${route.params.id}')
             .then((response) => response.json())
-            .then(
-                (json) => setQuestion(json),
-                data = question)
+            .then((json) => setQuestion(json),
+            data = question)
             .catch((error) => {
                 console.log("Error downloading question data: " + error);
                 setIsDataDownloading(false);
@@ -38,15 +36,14 @@ export default function QuestionScreen({ route, navigation }) {
     }, [])
 
     return (
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#8C2032' }}>
-            <Text style={{ fontSize: 30, color: "#fff", padding: 20 }}>{ route.params.name }</Text>
+        <View style={{ flex: 1, backgroundColor: '#8C2032' }}>
+            <Text style={{ fontSize: 30, color: "#fff", padding: 20, position: "absolute", top: 0 }}>{ route.params.name }</Text>
             <Text style={{ fontSize: 30, color: "#fff", padding: 20 }}>{ data.question }</Text>
             <TextInput
                 style={globalStyles.input}
                 onChangeText={onChangeText}
                 value={text}
             />
-            <Text style={ globalStyles.Question }>{ route.params.description }</Text>
         </View>
     );
 }

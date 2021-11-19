@@ -50,7 +50,11 @@ export const globalStyles = StyleSheet.create({
         padding: 20
     },
     input: {
-        fontSize: 12,
-        color: "#000"
+        width: "90%",
+        fontSize: 16,
+        color: "#000",
+        padding: 20,
+        backgroundColor: "#fff",
+        borderRadius: 50,
     }
 });
