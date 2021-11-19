@@ -13,7 +13,7 @@ export default function HomeScreen({navigation}) {
     return (
         <View style={styles.container}>
           
-          <Image source={ require('../assets/truelogow_o_background.png')} style={{ width: 300, height: 300 }} />
+          <Image source={ require('../assets/HelloCampusLogo_NoBackground.png')} style={{ width: 300, height: 300 }} />
           
           <TouchableOpacity style={globalStyles.genericButton} onPress={() => navigation.navigate('Map')}>
             <Text style={styles.loginText}>Take a Tour!</Text>
