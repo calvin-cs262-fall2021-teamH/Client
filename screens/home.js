@@ -1,9 +1,12 @@
 
 
+
+--contains only the login changes.
+
 import * as React from 'react';
 import * as WebBrowser from 'expo-web-browser';
 import { useAuthRequest, useAutoDiscovery} from 'expo-auth-session';
-import { TouchableOpacity, StyleSheet, Image, Text, ImageBackground, TouchableHighlight} from 'react-native';
+import { TouchableOpacity, AsyncStorage, StyleSheet, Image, Text, ImageBackground, TouchableHighlight} from 'react-native';
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -19,6 +22,7 @@ const HomeScreen =({navigation}) => {
     },
     discovery
   );
+  
   return (
 
     <ImageBackground source={ require('../assets/home_background.jpg')} style ={styles.imageStyle}>
@@ -30,10 +34,9 @@ const HomeScreen =({navigation}) => {
         disabled={!request}
         onPress={() => {
         promptAsync()
-       if (type === "success") {
-        console.log("LoginScreen.js 17 | success, navigating to profile");
-        navigation.navigate("Map", { user });
-      }
+        //then(() => navigation.navigate("Map")
+        //onSignIn().then(() => navigation.navigate("Map"))
+       navigation.navigate('Map')
         }}>
         <Text style={styles.loginText}>LOGIN</Text>
       </TouchableOpacity>
@@ -41,6 +44,15 @@ const HomeScreen =({navigation}) => {
       <TouchableOpacity style={styles.loginBtn} onPress ={() => navigation.navigate ('Map')}>
         <Text style={styles.loginText}>CONTINUE AS GUEST</Text>
       </TouchableOpacity>
+
+
+      <TouchableOpacity style={styles.loginBtn} 
+      disabled={!request}
+      onPress={() => {
+        useAuthRequest.revokeAsync()
+      }}>
+        <Text style={styles.loginText}>Log Out</Text>
+      /TouchableOpacity>
     </ImageBackground>
   );
 }
@@ -83,3 +95,4 @@ const styles = StyleSheet.create({
   },
 
 });
+
