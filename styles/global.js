@@ -19,7 +19,7 @@ export const globalStyles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        marginBottom: 20,
+        marginTop:20,
     },
     listText: {
         fontSize: 20,
@@ -57,11 +57,13 @@ export const globalStyles = StyleSheet.create({
     },
     genericButton: {
         width: "75%",
-        borderRadius: 50,
+        borderRadius: 20,
+        borderColor: "#fff",
+        borderWidth: 1,
         height: 60,
         alignItems: "center",
         justifyContent: "center",
-        marginTop: 20,
-        backgroundColor: "#fff",
+        marginTop: 30,
+        backgroundColor: "#8C2131",
     },
 });

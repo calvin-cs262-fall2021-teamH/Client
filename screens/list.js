@@ -5,7 +5,7 @@ Brian Langejans, David Reidsma, David Heynen, Paul Dick, Kurt Wietelmann
 */
 
 import React, { useState } from 'react';
-import { View, Text, CheckBox} from 'react-native';
+import { View, Text, CheckBox, ImageBackground, StyleSheet} from 'react-native';
 import { globalStyles } from '../styles/global';
 
 export default function ListScreen({ navigation }) {
@@ -13,11 +13,14 @@ export default function ListScreen({ navigation }) {
     const [isSelectedTwo, setSelectionTwo] = useState(false);
 
     return (
-        <View style={{ flex: 1, backgroundColor: '#8C2032', padding: 20 }}>
+        <ImageBackground source = {require('../assets/woods_scene.jpg')} style={styles.container}>
+          
             <View style={ globalStyles.list }>
                 <Text style={ globalStyles.listText }>Crown Gap</Text>
                 <View style={{ padding: 15 }}>
-                    <CheckBox
+
+                    
+                    <CheckBox style = {{height: 50, width: 50}}
                         value={isSelectedOne}
                         onValueChange={setSelectionOne}
                     />
@@ -26,12 +29,21 @@ export default function ListScreen({ navigation }) {
             <View style={ globalStyles.list }>
                 <Text style={ globalStyles.listText }>Whiskey Pond</Text>
                 <View style={{ padding: 15 }}>
-                    <CheckBox
+                    <CheckBox style = {{height: 50, width: 50}}
                         value={isSelectedTwo}
                         onValueChange={setSelectionTwo}
                     />
                 </View>
             </View>
-        </View>
+        </ImageBackground>
     );
 }
+
+const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: "#8C2131",
+      alignItems: "stretch",
+      justifyContent: "flex-start",
+    },
+});

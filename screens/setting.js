@@ -5,16 +5,24 @@ Brian Langejans, David Reidsma, David Heynen, Paul Dick, Kurt Wietelmann
 */
 
 import React, { useState, Component } from 'react';
-import { Image, Button, View, Text, TouchableOpacity, Switch } from 'react-native';
+import { Image,
+     Button,
+      View,
+       Text,
+        TouchableOpacity,
+         Switch,
+          ImageBackground,
+        StyleSheet,
+    TouchableHighlight, } from 'react-native';
 import { globalStyles } from '../styles/global';
 
 export default function SettingScreen({ navigation }) {
     const [switchValueOne, setSwitchValueOne] = useState(false);
     const [switchValueTwo, setSwitchValueTwo] = useState(false);
     const [switchValueThree, setSwitchValueThree] = useState(false);
-    const switchOne = (value) => {toggleSwitch(1)};
+    //const switchOne = (value) => {toggleSwitch(1)};
     const switchTwo = (value) => {toggleSwitch(2)};
-    const switchThree = (value) => {toggleSwitch(3)};
+    //const switchThree = (value) => {toggleSwitch(3)};
 
     const toggleSwitch = (index) => {
         if (index == 1) {
@@ -28,45 +36,44 @@ export default function SettingScreen({ navigation }) {
     }
 
     return (
-        <View style={{ flex: 1, backgroundColor: '#8C2032', padding: 20 }}>
+        <ImageBackground source = {require('../assets/light_screen.jpg')} style={styles.container}>
+        
             <View style={globalStyles.settingOption}>
-                <Text>Setting option 1</Text>
+                <Text>About</Text>
                 <View style={{alignItems: 'center'}}>
-                    <Switch        
-                        trackColor={{ false: 'gray', true: 'green' }}
-                        onValueChange={switchOne}
-                        value={switchValueOne}
-                    />
+                <TouchableHighlight onPress = {()=> navigation.navigate('About')} style ={styles.touchableHighlight}>
+              <Image source={ require('../assets/HelloCampusLogo_NoBackground.png')} style={styles.imagest}/> 
+          </TouchableHighlight>
                 </View>
             </View>
             <View style={globalStyles.settingOption}>
-                <Text>Setting option 2</Text>
+                <Text>Light/Dark Mode</Text>
                 <View style={{alignItems: 'center'}}>
                     <Switch                      
-                        trackColor={{ false: 'gray', true: 'green' }}
+                        trackColor={{ false: 'gray', true: 'maroon' }}
                         onValueChange={switchTwo}
                         value={switchValueTwo}                 
                     />
                 </View>
             </View>
-            <View style={globalStyles.settingOption}>
-                <Text>Setting option 3</Text>
-                <View style={{alignItems: 'center'}}>
-                    <Switch                      
-                        trackColor={{ false: 'gray', true: 'green' }}
-                        onValueChange={switchThree}
-                        value={switchValueThree}                   
-                    />
-                </View>
-            </View>
-            <View style={{backgroundColor: '#FFF', borderRadius: 10}}>
-                <Button
-                    title='About'
-                    color='black'
-                    alignItems='center'
-                    onPress={() => navigation.navigate('About')}>                    
-                </Button>  
-            </View>
-        </View>
+        </ImageBackground>
     );
 }
+
+const styles = StyleSheet.create({
+touchableHighlight: {
+    borderRadius: 100,
+},
+container: {
+    flex: 1,
+    alignItems: "stretch",
+    justifyContent: "flex-start",
+    padding: 20,
+  },
+
+imagest:{
+  width : 50,
+  height: 50,
+  justifyContent: "center"
+},
+});
