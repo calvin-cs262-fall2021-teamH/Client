@@ -3,43 +3,42 @@ import React from "react";
 import {
   StyleSheet,
   Text,
-  View,
   Image,
-  TouchableOpacity,
+  ImageBackground,
+  TouchableHighlight,
 } from "react-native";
 
 export default function About ({navigation}) {
     return (
-        <View style={styles.container}>
+      <ImageBackground source = {require('../assets/woods_scene.jpg')} style={styles.container}>
           
-          <Image source={ require('../assets/HelloCampusLogo_NoBackground.png')} style={{ width: 300, height: 300 }} />
-          <Text style = {styles.descriptionText}> The HelloCampus application allows students to answer quiz questions based on locations,
-               and to explore their college campus.</Text>
-          <TouchableOpacity style={styles.loginBtn} onPress={() => navigation.navigate('Setting')}>
-            <Text style={styles.descriptionText}>Back to Setting</Text>
-          </TouchableOpacity>
-        </View>
+          
+          <TouchableHighlight onPress = {()=> navigation.navigate('Home')} style ={styles.touchableHighlight}>
+              <Image source={ require('../assets/HelloCampusLogo_NoBackground.png')} style={styles.imagest}/> 
+          </TouchableHighlight>
+          <Text style={styles.descriptionText}> Through this application, users will gain a deeper understanding of Calvin University’s Ecosystem Preserve, including historical facts, current activities, and services provided by the university. Based on GPS navigation, our application will provide information pertaining to the user’s location and nearby points of interest.</Text>
+
+        </ImageBackground>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: "#8C2131",
       alignItems: "center",
-      justifyContent: "center",
+      justifyContent: "flex-start",
     },
     descriptionText: {
-        color: '#fff',
-        fontWeight: 'bold'
+        color: '#9C1D37',
+        fontWeight: 'bold',
+        fontSize: 20
     },
-  loginBtn: {
-    width: "20%",
-    borderRadius: 75,
-    height: 75,
-    alignItems: "center",
+    touchableHighlight: {
+        borderRadius: 100,
+    },
+  imagest:{
+    width : 150,
+    height: 150,
     justifyContent: "center",
-    marginTop: 10,
-    backgroundColor: "#8C2131",
   },
   });
