@@ -22,8 +22,9 @@ export default function HomeScreen({navigation}) {
         if (type === "success") {
           // Then you can use the Google REST API
           console.log("LoginScreen.js 17 | success, navigating to profile");
-          navigation.navigate("Map");
+          navigation.navigate("StudentView", { user });
         }
+
       } catch (error) {
         console.log("LoginScreen.js 19 | error with login", error);
       }
@@ -31,18 +32,31 @@ export default function HomeScreen({navigation}) {
   
     return (
         <ImageBackground source = {require('../assets/woods_scene.jpg')} style={styles.container}>
+
+                <TouchableOpacity onPress={() => navigation.navigate('Setting')} style = {styles.container1}>
+                    <ImageBackground source = { require('../assets/menuIcon.png')} style = { globalStyles.settingIcon }/> 
+                </TouchableOpacity>
           
           <TouchableHighlight onPress = {()=> navigation.navigate('About')} style ={styles.touchableHighlight}>
               <Image source={ require('../assets/HelloCampusLogo_NoBackground.png')} style={styles.imagest}/> 
           </TouchableHighlight>
           
-          <TouchableOpacity style={globalStyles.genericButton} onPress={() => navigation.navigate('Map')}>
-          <Text style={styles.loginText}>EXPLORE</Text>
+          <TouchableOpacity style={globalStyles.genericButton}
+           onPress={() => navigation.navigate('Map')}>
+          <Text style={{flex:.3, color: "#fff", fontWeight: "bold"}}>EXPLORE</Text>
+          <Image source={require('../assets/map_white.png')} resizeMode='contain' style={{flex: .15 }}/>
           </TouchableOpacity>
 
-          <TouchableOpacity style={globalStyles.genericButton} onPress={() => signInAsync()}>
-            <Text style={styles.loginText}>SIGN IN</Text>
+          <TouchableOpacity style={globalStyles.genericButton}
+           onPress={() => signInAsync()}>
+          <Text style={{flex:.315, color: "#fff", fontWeight: "bold"}}>SIGN IN</Text>
+          <Image source={require('../assets/login_white.png')} resizeMode='contain' style={{flex: .1 }}/>
           </TouchableOpacity>
+
+          <TouchableOpacity onPress = {()=> navigation.navigate('About')} style = {{marginTop:30}}>
+              <Text style = {{color: "#fff", fontWeight: "bold"}}> ABOUT </Text>
+          </TouchableOpacity>
+
         </ImageBackground>
     );
 }
@@ -54,7 +68,18 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-
+  container1: {
+    flex:1,
+    ...StyleSheet.absoluteFillObject,
+    alignSelf: 'flex-end',
+    marginTop: 25,
+    marginRight: 10,
+    left: 300,
+    right: 10,
+   
+    
+   // position: 'absolute', // add if dont work with above
+  },
   loginText: {
     fontWeight: 'bold',
     color: "#fff",

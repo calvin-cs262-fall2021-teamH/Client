@@ -36,18 +36,42 @@ export default function SettingScreen({ navigation }) {
     }
 
     return (
-        <ImageBackground source = {require('../assets/light_screen.jpg')} style={styles.container}>
+        <ImageBackground source = {require('../assets/light_background.jpg')} style={styles.container}>
         
             <View style={globalStyles.settingOption}>
-                <Text>About</Text>
+                <TouchableOpacity onPress = {()=> navigation.navigate('About')} style = {{width: '80%', height: "60%", justifyContents: "left"}}>
+                    <Text style = {{fontWeight: "bold", fontSize: 20, color: "#8C2131"}}>About</Text>
+                </TouchableOpacity>
                 <View style={{alignItems: 'center'}}>
                 <TouchableHighlight onPress = {()=> navigation.navigate('About')} style ={styles.touchableHighlight}>
-              <Image source={ require('../assets/HelloCampusLogo_NoBackground.png')} style={styles.imagest}/> 
-          </TouchableHighlight>
+                    <Image source={ require('../assets/HelloCampusLogo_NoBackground.png')} style={styles.imagest}/> 
+                </TouchableHighlight>
+                </View>
+            </View>
+
+            <View style = {globalStyles.settingOption}>
+                <TouchableOpacity onPress = {()=> navigation.navigate('Location')} style = {{width: '80%', height: "60%", justifyContents: "left"}}>
+                    <Text style = {{fontWeight: "bold", fontSize: 20, color: "#8C2131"}}>Locations</Text>
+                </TouchableOpacity>
+                <View style={{alignItems:'center'}}>
+                    <TouchableOpacity onPress={() => navigation.navigate('Location')}>
+                        <ImageBackground source = { require('../assets/maroon_list_icon.png')} style = {{width: 50, height: "60%", height: 50}}/> 
+                    </TouchableOpacity>
+                </View>
+            </View>
+
+            <View style={globalStyles.settingOption}>
+                <TouchableOpacity onPress = {()=> navigation.navigate('Home')} style = {{width: '80%', height: "60%", justifyContents: "left"}}>
+                    <Text style = {{fontWeight: "bold", fontSize: 20, color: "#8C2131"}}>Logout</Text>
+                </TouchableOpacity>
+                <View style={{alignItems: 'center'}}>
+                <TouchableHighlight onPress = {()=> navigation.navigate('Home')} style = {{width: 50, height: 50}}>
+                    <Image source={ require('../assets/logout_icon.png')} style={styles.imagest}/> 
+                </TouchableHighlight>
                 </View>
             </View>
             <View style={globalStyles.settingOption}>
-                <Text>Light/Dark Mode</Text>
+                <Text style = {{fontWeight: "bold", fontSize: 20, color: "#8C2131"}}>Light/Dark Mode</Text>
                 <View style={{alignItems: 'center'}}>
                     <Switch                      
                         trackColor={{ false: 'gray', true: 'maroon' }}
