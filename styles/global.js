@@ -28,8 +28,8 @@ export const globalStyles = StyleSheet.create({
         flexDirection: 'row',
     },
     settingIcon: {
-        width: 30,
-        height: 30,
+        width: 50,
+        height: 50,
         borderRadius: 20,
     },
     settingOption: {
@@ -61,6 +61,7 @@ export const globalStyles = StyleSheet.create({
         borderColor: "#fff",
         borderWidth: 1,
         height: 60,
+        flexDirection:"row",
         alignItems: "center",
         justifyContent: "center",
         marginTop: 30,

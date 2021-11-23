@@ -13,7 +13,7 @@ export default function About ({navigation}) {
       <ImageBackground source = {require('../assets/woods_scene.jpg')} style={styles.container}>
           
           
-          <TouchableHighlight onPress = {()=> navigation.navigate('Home')} style ={styles.touchableHighlight}>
+          <TouchableHighlight onPress = {()=> navigation.goBack()} style ={styles.touchableHighlight}>
               <Image source={ require('../assets/HelloCampusLogo_NoBackground.png')} style={styles.imagest}/> 
           </TouchableHighlight>
           <Text style={styles.descriptionText}> Through this application, users will gain a deeper understanding of Calvin University’s Ecosystem Preserve, including historical facts, current activities, and services provided by the university. Based on GPS navigation, our application will provide information pertaining to the user’s location and nearby points of interest.</Text>
