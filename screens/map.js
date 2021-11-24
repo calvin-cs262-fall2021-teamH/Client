@@ -139,7 +139,7 @@ export default function MapScreen({navigation}) {
     function getClosePoint() {
         let currentLocation = userLocation.realCoords;
         if (currentLocation.latitude == null)
-            return null;
+            return [ null, -1 ];
 
         let sortedByDistance = TEST_POINTS_OF_INTEREST.sort((a, b) => {
             let distanceA = getDistance(currentLocation, { latitude: a.latitude, longitude: a.longitude });
@@ -153,21 +153,22 @@ export default function MapScreen({navigation}) {
 
         let closePoint = sortedByDistance[0];
         // TODO: don't get the distance twice, this sucks
-        if (getDistance(currentLocation, { latitude: closePoint.latitude, longitude: closePoint.longitude }) <= closePoint.radius) {
-            return closePoint;
+        const distance = getDistance(currentLocation, { latitude: closePoint.latitude, longitude: closePoint.longitude });
+        if (distance <= closePoint.radius) {
+            return [ closestPoint, distance ];
         }
-        return null;
+        return [ null, distance ];
     }
 //add the users name to the map screen//////////////////////////////
     //const { user } = route.params;
     //console.log("user from google", user);
-    const closestPoint = getClosePoint();
+    const [ closestPoint, closestDistance ] = getClosePoint();
     
     let userPixelCoords = userLocation.realCoords.latitude != null ? realToPixelCoords(userLocation.realCoords) : { x: -500, y: -500 };
 
     return (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#8C2032' }}>
-            <Text style={{ fontSize: 15, fontWeight: "bold", color: "#fff", padding: 15, position: 'absolute', top: 0 } }>Welcome, to learn more walk towards a point.</Text>
+            <Text style={{ fontSize: 15, fontWeight: "bold", color: "#fff", padding: 15, position: 'absolute', top: 0 } }>Welcome, to learn more walk towards a point. { closestDistance }</Text>
             <ImageBackground source = { require('../assets/ecomap.png')} style = {{position: 'absolute', top: 100, width: MAP_WIDTH, height: MAP_HEIGHT}}/>
 
             { /* dynamically generate the point components from the data */ }
