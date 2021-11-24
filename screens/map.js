@@ -60,7 +60,7 @@ export default function MapScreen({navigation}) {
 
         async function getCurrentLatLong() {
             const locationPromise = await Location.getCurrentPositionAsync({
-                accuracy: Location.Accuracy.Highest,
+                accuracy: Location.Accuracy.BestForNavigation,
                 distanceInterval: 1
             });
             return locationPromise.coords;
