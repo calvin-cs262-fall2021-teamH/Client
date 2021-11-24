@@ -24,6 +24,7 @@ import QuestionScreen from './screens/questions';
 
 
 import ListScreen from './screens/list';
+import AuthenticatedMapScreen from './screens/studentView'
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -35,6 +36,15 @@ const DrawerNavigator = () => {
         <Drawer.Screen 
           name="Map " 
           component={MapScreen}
+          options={({ navigation }) => ({
+            headerStyle: {
+              backgroundColor: '#fff',
+            },
+            headerTintColor: '#8C2131',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
+          })}
           />
     </Drawer.Navigator>
     )
@@ -47,6 +57,15 @@ const DrawerNavigatorStdt = () => {
         <Drawer.Screen 
           name="Student Map" 
           component={MapStudentScreen}
+          options={({ navigation }) => ({
+            headerStyle: {
+              backgroundColor: '#fff',
+            },
+            headerTintColor: '#8C2131',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
+          })}
           />
     </Drawer.Navigator>
     )
@@ -85,6 +104,10 @@ function App() {
         <Stack.Screen name = "ProfileScreen" component = {ProfileScreen}/>
         <Stack.Screen name = "Questions" component = {QuestionScreen}/>
         <Stack.Screen name = "Location" component = {ListScreen}/>
+        
+        <Stack.Screen name = "StudentView" 
+        component = {AuthenticatedMapScreen} 
+        options={{header: () => null}}/>
       </Stack.Navigator>
     </NavigationContainer>
   );
