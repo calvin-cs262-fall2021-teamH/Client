@@ -16,7 +16,7 @@ const LoginScreen = ({ navigation }) => {
       if (type === "success") {
         // Then you can use the Google REST API
         console.log("LoginScreen.js 17 | success, navigating to profile");
-        navigation.navigate("Map", { user });
+        navigation.navigate("MapStudent", { user });
       }
     } catch (error) {
       console.log("LoginScreen.js 19 | error with login", error);

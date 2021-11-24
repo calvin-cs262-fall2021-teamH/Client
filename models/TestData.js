@@ -38,6 +38,14 @@ export const TEST_POINTS_OF_INTEREST = [
         -85.58910687175235,
         50,
         'https://raw.githubusercontent.com/calvin-cs262-fall2021-teamH/Service/connect_points_to_dataservice/point_assets/CrownGap.png'),
+    new PointOfInterest(
+        4,
+        'Test Location',
+        'this is a test location! Neat!.',
+        42.85929819243669, -85.44681698840668,
+        100,
+        'https://raw.githubusercontent.com/calvin-cs262-fall2021-teamH/Service/connect_points_to_dataservice/point_assets/CrownGap.png'),
+        
 ];
 
 export const TEST_ANSWER = [];
