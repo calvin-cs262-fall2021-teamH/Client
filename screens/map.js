@@ -136,33 +136,46 @@ export default function MapScreen({navigation}) {
         return () => clearInterval(locationRefreshIntervalHandle); // end the interval'd calls when the screen is unmounted
     }, [])
 
+    let closestPoint = null;
+    let closestDistance = -1;
+
     function getClosePoint() {
         let currentLocation = userLocation.realCoords;
-        if (currentLocation.latitude == null)
-            return [ null, -1 ];
+        if (currentLocation.latitude == null) {
+            // return [ null, -1 ];
+            closestPoint = null;
+            closestDistance = -1;
+        }
 
         let sortedByDistance = pointsOfInterest.sort((a, b) => {
             let distanceA = getDistance(currentLocation, { latitude: a.latitude, longitude: a.longitude });
             let distanceB = getDistance(currentLocation, { latitude: b.latitude, longitude: b.longitude });
 
             // TODO: have some setting for debug output, it's spamming my console
-            console.log("Distance to " + a.name + ": " + distanceA + " meters");
-            console.log("Distance to " + b.name + ": " + distanceB + " meters");
+            // console.log("Distance to " + a.name + ": " + distanceA + " meters");
+            // console.log("Distance to " + b.name + ": " + distanceB + " meters");
             return distanceA > distanceB ? 1 : -1
         });
 
-        let closePoint = pointsOfInterest[0];// sortedByDistance[0];
+        let closePoint = sortedByDistance[0];
         // TODO: don't get the distance twice, this sucks
         const distance = getDistance(currentLocation, { latitude: closePoint.latitude, longitude: closePoint.longitude });
         if (distance <= closePoint.radius) {
-            return [ closestPoint, distance ];
+            console.log("Distance to " + closePoint.name + ": " + distance + " meters");
+            // return [ closestPoint, distance ];
+            closestPoint = closePoint;
+            closestDistance = distance;
+        } else {
+            closestPoint = null;
+            closestDistance = -1;
         }
-        return [ null, distance ];
+        // return [ null, distance ];
     }
 //add the users name to the map screen//////////////////////////////
     //const { user } = route.params;
     //console.log("user from google", user);
-    const [ closestPoint, closestDistance ] = getClosePoint();
+    // const [ closestPoint, closestDistance ] = getClosePoint();
+    getClosePoint();
     
     let userPixelCoords = userLocation.realCoords.latitude != null ? realToPixelCoords(userLocation.realCoords) : { x: -500, y: -500 };
 
@@ -197,8 +210,10 @@ export default function MapScreen({navigation}) {
             <TouchableOpacity
                 style={[{ bottom: 0, position: 'absolute', alignItems: 'center' }, globalStyles.noInteractionButton ]}
                 onPress={() => {
-                    if (closestPoint == null)
+                    if (closestPoint == null) {
+                        console.log("No close point!");
                         return;
+                    }
                     navigation.navigate('PointInfo', closestPoint);
                 }}>
                 <Image source={closestPoint == null ? require('../assets/PointInteractionButton.png') : require("../assets/PointInteractionButton2.png")} style = {{width: 170, height:170 }}/>
