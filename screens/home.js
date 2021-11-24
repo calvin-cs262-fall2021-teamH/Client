@@ -10,25 +10,49 @@ import { Image, View, Text, TouchableOpacity, TouchableHighlight, StyleSheet, Im
 import { globalStyles } from '../styles/global';
 import * as Google from "expo-google-app-auth";
 
+
+
 export default function HomeScreen({navigation}) {
+
     const signInAsync = async () => {
       console.log("LoginScreen.js 6 | loggin in");
       try {
         const { type, user } = await Google.logInAsync({
           iosClientId: "2260489795-nvs04mkpqbhrjbd7ne2jb560e2a3dhdm.apps.googleusercontent.com",
           androidClientId: "2260489795-b82e25fatl0ih72e43ii5q6q858fb6ql.apps.googleusercontent.com",
+        
         });
   
         if (type === "success") {
           // Then you can use the Google REST API
           console.log("LoginScreen.js 17 | success, navigating to profile");
+          loggedIn = true;
           navigation.navigate("StudentView", { user });
+
+          fetch(`https://hello-campus.herokuapp.com/users/`,
+          { method: 'POST',
+          headers: new Headers({
+              "Content-Type":"application/json"
+          }),
+          body: JSON.stringify({
+        
+              //personID: userId,
+           
+              email: user.email,
+           
+              name: user.givenName
+           
+            })
+          })
+
+          
         }
 
       } catch (error) {
         console.log("LoginScreen.js 19 | error with login", error);
       }
     };
+    
   
     return (
         <ImageBackground source = {require('../assets/woods_scene.jpg')} style={styles.container}>
@@ -51,10 +75,6 @@ export default function HomeScreen({navigation}) {
            onPress={() => signInAsync()}>
           <Text style={{flex:.315, color: "#fff", fontWeight: "bold"}}>SIGN IN</Text>
           <Image source={require('../assets/login_white.png')} resizeMode='contain' style={{flex: .1 }}/>
-          </TouchableOpacity>
-
-          <TouchableOpacity onPress = {()=> navigation.navigate('About')} style = {{marginTop:30}}>
-              <Text style = {{color: "#fff", fontWeight: "bold"}}> ABOUT </Text>
           </TouchableOpacity>
 
         </ImageBackground>
