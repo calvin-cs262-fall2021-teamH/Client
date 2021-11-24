@@ -145,7 +145,11 @@ export default function MapScreen({navigation}) {
             // return [ null, -1 ];
             closestPoint = null;
             closestDistance = -1;
+            return;
         }
+
+        if (pointsOfInterest.length == 0)
+            return;
 
         let sortedByDistance = pointsOfInterest.sort((a, b) => {
             let distanceA = getDistance(currentLocation, { latitude: a.latitude, longitude: a.longitude });
@@ -154,10 +158,11 @@ export default function MapScreen({navigation}) {
             // TODO: have some setting for debug output, it's spamming my console
             // console.log("Distance to " + a.name + ": " + distanceA + " meters");
             // console.log("Distance to " + b.name + ": " + distanceB + " meters");
-            return distanceA > distanceB ? 1 : -1
+            return distanceA > distanceB ? 1 : -1;
         });
 
         let closePoint = sortedByDistance[0];
+
         // TODO: don't get the distance twice, this sucks
         const distance = getDistance(currentLocation, { latitude: closePoint.latitude, longitude: closePoint.longitude });
         if (distance <= closePoint.radius) {
@@ -181,7 +186,7 @@ export default function MapScreen({navigation}) {
 
     return (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#8C2032' }}>
-            <Text style={{ fontSize: 15, fontWeight: "bold", color: "#fff", padding: 15, position: 'absolute', top: 0 } }>Welcome, to learn more walk towards a point. { closestDistance }</Text>
+            <Text style={{ fontSize: 15, fontWeight: "bold", color: "#fff", padding: 15, position: 'absolute', top: 0 } }>Welcome, to learn more walk towards a point.</Text>
             <ImageBackground source = { require('../assets/ecomap.png')} style = {{position: 'absolute', top: 100, width: MAP_WIDTH, height: MAP_HEIGHT}}/>
 
             { /* dynamically generate the point components from the data */ }
@@ -192,7 +197,7 @@ export default function MapScreen({navigation}) {
                                 key={point.id}
                                 style={[styles.mapPoint, { position: 'absolute', top: pixelCoords.y, right: pixelCoords.x }]}
                                 onPress={() => navigation.navigate('PointInfo', point)}
-                            />;f
+                            />;
                 })
             }
 
