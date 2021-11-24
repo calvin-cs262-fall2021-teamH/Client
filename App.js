@@ -24,7 +24,8 @@ import QuestionScreen from './screens/questions';
 
 
 import ListScreen from './screens/list';
-import AuthenticatedMapScreen from './screens/studentView'
+import AuthenticatedMapScreen from './screens/studentView';
+import Prompt from './screens/prompt';
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -104,7 +105,8 @@ function App() {
         <Stack.Screen name = "ProfileScreen" component = {ProfileScreen}/>
         <Stack.Screen name = "Questions" component = {QuestionScreen}/>
         <Stack.Screen name = "Location" component = {ListScreen}/>
-        
+        <Stack.Screen name = "Prompt" component = {Prompt}/>
+
         <Stack.Screen name = "StudentView" 
         component = {AuthenticatedMapScreen} 
         options={{header: () => null}}/>
