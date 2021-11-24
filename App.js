@@ -17,7 +17,8 @@ import Login from './screens/Login';
 import About from './screens/about';
 import ProfileScreen from './screens/ProfileScreen';
 import ListScreen from './screens/list';
-import AuthenticatedMapScreen from './screens/studentView'
+import AuthenticatedMapScreen from './screens/studentView';
+import Prompt from './screens/prompt';
 
 const Stack = createNativeStackNavigator();
 
@@ -58,7 +59,8 @@ function App() {
         <Stack.Screen name = "About" component = {About}/>
         <Stack.Screen name = "ProfileScreen" component = {ProfileScreen}/>
         <Stack.Screen name = "Location" component = {ListScreen}/>
-        
+        <Stack.Screen name = "Prompt" component = {Prompt}/>
+
         <Stack.Screen name = "StudentView" 
         component = {AuthenticatedMapScreen} 
         options={{header: () => null}}/>
