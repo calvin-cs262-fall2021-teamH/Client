@@ -30,7 +30,6 @@ export default function HomeScreen({navigation}) {
           // Then you can use the Google REST API
           console.log("LoginScreen.js 17 | success, navigating to profile");
           loggedIn = true;
-          navigation.navigate("Student Map", { user, userId });
 
           const response = fetch(`https://hello-campus.herokuapp.com/users/`,
           { method: 'POST',
@@ -47,11 +46,16 @@ export default function HomeScreen({navigation}) {
            
             })
           })
-          userId = response;
-          console.log(response)
+          .then(() => {
+            const response2 = JSON.stringify(response)
+            setUserId(response2)
+          })
+          .finally(() => {
+            console.log("response: " + userId)
+            navigation.navigate("Student Map", { user, userId });
+          })
 
-          
-        }
+      }
 
       } catch (error) {
         console.log("LoginScreen.js 19 | error with login", error);

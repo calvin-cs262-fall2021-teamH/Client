@@ -63,11 +63,11 @@ export default function SettingScreen({ route, navigation }) {
             </View>
 
             <View style={globalStyles.settingOption}>
-                <TouchableOpacity onPress = {()=> navigation.navigate('Prompt')} style = {{width: '80%', height: "60%", justifyContents: "left"}}>
+                <TouchableOpacity onPress = {()=> navigation.navigate('Home')} style = {{width: '80%', height: "60%", justifyContents: "left"}}>
                     <Text style = {{fontWeight: "bold", fontSize: 20, color: "#8C2131"}}>Logout</Text>
                 </TouchableOpacity>
                 <View style={{alignItems: 'center'}}>
-                <TouchableHighlight onPress = {()=> navigation.navigate('Prompt')} style = {{width: 50, height: 50}}>
+                <TouchableHighlight onPress = {()=> navigation.navigate('Home')} style = {{width: 50, height: 50}}>
                     <Image source={ require('../assets/logout_icon.png')} style={styles.imagest}/> 
                 </TouchableHighlight>
                 </View>

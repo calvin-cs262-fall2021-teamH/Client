@@ -16,70 +16,71 @@ import { Image,
     TouchableHighlight, } from 'react-native';
 import { globalStyles } from '../styles/global';
 import * as Google from "expo-google-app-auth";
+import HomeScreen from './home';
+// export default function Prompt ({ navigation }) {
+//     const [accessToken, setAccessToken] = useState('')
+//     const storeToken = async (token) => {
+//         try {
+//             await AsyncStorage.setItem(token, GOOGLE_TOKEN)
+//         } catch (err) {
+//             throw new Error(err)
+//         }
+//     }
+
+//     const signInWithGoogleAsync = async () => {
+//         try {
+//             const result = await Google.logInAsync({
+//                 iosClientId: "2260489795-nvs04mkpqbhrjbd7ne2jb560e2a3dhdm.apps.googleusercontent.com",
+//                 androidClientId: "2260489795-b82e25fatl0ih72e43ii5q6q858fb6ql.apps.googleusercontent.com",
+//                 //scopes: ['profile', 'email'],
+//             });
+
+//             if (result.type === 'success') {
+//                 storeToken(result.accessToken)
+//                 setAccessToken(results.accessToken)
+//             } else {
+//                 return { cancelled: true };
+//             }
+//         } catch (e) {
+//             return { error: true };
+//         }
+//     }
+
+//     const signoutWithGoogleAsync = async () => {
+//         try {
+//             console.log("token in delete", accessToken)
+//             await Google.logOutAsync({ accessToken, 
+//                 iosClientId: "2260489795-nvs04mkpqbhrjbd7ne2jb560e2a3dhdm.apps.googleusercontent.com",
+//                 androidClientId: "2260489795-b82e25fatl0ih72e43ii5q6q858fb6ql.apps.googleusercontent.com", })
+//         } catch (err) {
+//             throw new Error(err)
+//         }
+//     }
+// return(
+//     <View>
+//         <TouchableHighlight onPress={signInWithGoogleAsync}>
+//             <Text>Login with Google</Text>
+//         </TouchableHighlight>
+
+//         <TouchableHighlight onPress={signoutWithGoogleAsync}>
+//             <Text>Logout</Text>
+//         </TouchableHighlight>
+//         </View>
+// );
+// }
+
+
 export default function Prompt ({ navigation }) {
-    const [accessToken, setAccessToken] = useState('')
-    const storeToken = async (token) => {
-        try {
-            await AsyncStorage.setItem(token, GOOGLE_TOKEN)
-        } catch (err) {
-            throw new Error(err)
-        }
-    }
-
-    const signInWithGoogleAsync = async () => {
-        try {
-            const result = await Google.logInAsync({
-                iosClientId: "2260489795-nvs04mkpqbhrjbd7ne2jb560e2a3dhdm.apps.googleusercontent.com",
-                androidClientId: "2260489795-b82e25fatl0ih72e43ii5q6q858fb6ql.apps.googleusercontent.com",
-                //scopes: ['profile', 'email'],
-            });
-
-            if (result.type === 'success') {
-                storeToken(result.accessToken)
-                setAccessToken(results.accessToken)
-            } else {
-                return { cancelled: true };
-            }
-        } catch (e) {
-            return { error: true };
-        }
-    }
-
-    const signoutWithGoogleAsync = async () => {
-        try {
-            console.log("token in delete", accessToken)
-            await Google.logOutAsync({ accessToken, 
-                iosClientId: "2260489795-nvs04mkpqbhrjbd7ne2jb560e2a3dhdm.apps.googleusercontent.com",
-                androidClientId: "2260489795-b82e25fatl0ih72e43ii5q6q858fb6ql.apps.googleusercontent.com", })
-        } catch (err) {
-            throw new Error(err)
-        }
-    }
-return(
-    <View>
-        <TouchableHighlight onPress={signInWithGoogleAsync}>
-            <Text>Login with Google</Text>
-        </TouchableHighlight>
-
-        <TouchableHighlight onPress={signoutWithGoogleAsync}>
-            <Text>Logout</Text>
-        </TouchableHighlight>
-        </View>
-);
-}
-
-/*
-export default function Prompt ({ navigation }) {
-    const signOut = async () => {
-        console.log("LoginScreen.js 6 | loggin out");
-        try {
-          await Google.logOutAsync();
-          //this.setState({ user : null }); // Remember to remove the user from your app's state as well
-          navigation.navigate('Home');
-        } catch (error) {
-          console.error(error);
-        }
-      };
+    // const signOut = async () => {
+    //     console.log("LoginScreen.js 6 | loggin out");
+    //     try {
+    //       await Google.logOutAsync();
+    //       //this.setState({ user : null }); // Remember to remove the user from your app's state as well
+    //       navigation.navigate('Home');
+    //     } catch (error) {
+    //       console.error(error);
+    //     }
+    //   };
     
     return (
         <ImageBackground source = {require('../assets/light_background.jpg')} style={styles.container}>
@@ -90,7 +91,7 @@ export default function Prompt ({ navigation }) {
           </TouchableOpacity>
 
           <TouchableOpacity style={globalStyles.genericButton}
-                onPress={signOut}>
+                onPress={navigation.navigate('Home')}>
                 <Text style={{flex:.315, color: "#fff", fontWeight: "bold"}}>SIGN OUT</Text>
                 <Image source={require('../assets/login_white.png')} resizeMode='contain' style={{flex: .1 }}/>
           </TouchableOpacity>
@@ -108,4 +109,4 @@ const styles = StyleSheet.create({
       justifyContent: "center",
     }
     });
-    */
+    

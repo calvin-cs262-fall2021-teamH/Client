@@ -154,7 +154,6 @@ export default function AuthenticatedMapScreen({route, navigation}) {
         let closePoint = sortedByDistance[0];
         // TODO: don't get the distance twice, this sucks
         if (getDistance(currentLocation, { latitude: closePoint.latitude, longitude: closePoint.longitude }) <= closePoint.radius) {
-            Vibration.vibrate(70)
             return closePoint;
         }
         return null;
