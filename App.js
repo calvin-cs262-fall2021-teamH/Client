@@ -11,7 +11,6 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import HomeScreen from "./screens/home";
 import MapScreen from "./screens/map";
-import MapStudentScreen from "./screens/mapStudent";
 import GeoPrototype from './screens/GeolocationPrototype';
 import PointInfoScreen from './screens/pointInfo';
 import SettingScreen from './screens/setting';
@@ -33,7 +32,6 @@ const Drawer = createDrawerNavigator();
 const DrawerNavigator = () => {
     return (
     <Drawer.Navigator initialRouteName="Map " backBehavior="initialRoute">
-        <Drawer.Screen name="Setting" component={SettingScreen} />
         <Drawer.Screen 
           name="Map " 
           component={MapScreen}
@@ -42,22 +40,23 @@ const DrawerNavigator = () => {
               backgroundColor: '#fff',
             },
             headerTintColor: '#8C2131',
-          headerTitleStyle: {
-            fontWeight: 'bold',
-          },
+            headerTitleStyle: {
+              fontWeight: 'bold',
+            },
           })}
           />
+        <Drawer.Screen name="List" component={ListScreen} />
+        <Drawer.Screen name="Settings" component={SettingScreen} />
     </Drawer.Navigator>
     )
 }
 
-const DrawerNavigatorStdt = () => {
+const DrawerNavigatorStdt = (parentProps) => {
   return (
-    <Drawer.Navigator initialRouteName="MapStdt" backBehavior="initialRoute">
-        <Drawer.Screen name="Setting" component={SettingScreen} />
+    <Drawer.Navigator initialRouteName="Student Map " backBehavior="initialRoute">
         <Drawer.Screen 
-          name="Student Map" 
-          component={MapStudentScreen}
+          name="Student Map " 
+          //component={AuthenticatedMapScreen}
           options={({ navigation }) => ({
             headerStyle: {
               backgroundColor: '#fff',
@@ -67,7 +66,10 @@ const DrawerNavigatorStdt = () => {
             fontWeight: 'bold',
           },
           })}
-          />
+          >{(props) => <AuthenticatedMapScreen {...props} route={parentProps.route}/>}</Drawer.Screen>
+          
+        <Drawer.Screen name="List" component={ListScreen} />
+        <Drawer.Screen name="Settings" component={SettingScreen} />
     </Drawer.Navigator>
     )
 }
@@ -87,11 +89,6 @@ function App() {
           options={{ headerShown: false }}
           />
         <Stack.Screen 
-          name="MapStudent" 
-          component={DrawerNavigatorStdt}
-          options={{ headerShown: false }}
-          />
-        <Stack.Screen 
           name="PointInfo" 
           component={PointInfoScreen}
           options={({ navigation }) => ({
@@ -99,7 +96,7 @@ function App() {
               <Header navigation={navigation}/>
             )
           })} />
-        <Stack.Screen name = "Setting" component = {SettingScreen}/>
+        <Stack.Screen name = "Settings" component = {SettingScreen}/>
         <Stack.Screen name = "Login" component = {Login}/>
         <Stack.Screen name = "About" component = {About}/>
         <Stack.Screen name = "ProfileScreen" component = {ProfileScreen}/>
@@ -107,9 +104,11 @@ function App() {
         <Stack.Screen name = "Location" component = {ListScreen}/>
         <Stack.Screen name = "Prompt" component = {Prompt}/>
 
-        <Stack.Screen name = "StudentView" 
-        component = {AuthenticatedMapScreen} 
-        options={{header: () => null}}/>
+        <Stack.Screen name = "Student Map" 
+        component = {DrawerNavigatorStdt} 
+          options={{ headerShown: false }}
+          >
+        </Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>
   );

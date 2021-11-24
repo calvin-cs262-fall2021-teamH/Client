@@ -11,7 +11,7 @@ import { globalStyles } from '../styles/global';
 
 
 
-export default function QuestionScreen({ route, navigation }) {
+export default function QuestionScreen({ route }) {
     const [isDataDownloading, setIsDataDownloading] = useState(true);
     const [questions, setQuestion] = useState([]);
     const [answer, setAnswer] = useState("");
@@ -21,16 +21,16 @@ export default function QuestionScreen({ route, navigation }) {
 
     useEffect (() => {
         if (isDataDownloading) {
-            fetch(`https://hello-campus.herokuapp.com/questionsAtPoint/${route.params.id}/`)
+            fetch(`https://hello-campus.herokuapp.com/questionsAtPoint/${route.params.point.id}/`)
             .then((response) => {
                 let data = response.json();
                 console.log(JSON.stringify(data));
-                console.log("Successfully downloaded question data.");
+                //console.log("Successfully downloaded question data.");
                 return data;
             })
             .then((json) => setQuestion(json))
             .catch((error) => {
-                console.log("Error downloading question data: " + error);
+                //console.log("Error downloading question data: " + error);
             })
             .finally(() => {
                 setIsDataDownloading(false);
@@ -45,7 +45,20 @@ export default function QuestionScreen({ route, navigation }) {
         }
     }
 
-    onSubmitEdit = () => {
+    const getCircularReplacer = () => {
+        const seen = new WeakSet();
+        return (key, value) => {
+        if (typeof value === "object" && value !== null) {
+            if (seen.has(value)) {
+                return;
+            }
+            seen.add(value);
+        }
+        return value;
+        };
+    };
+    
+    onSubmitEdit = (personId, questionId, answer) => {
         fetch(`https://hello-campus.herokuapp.com/answers/`,
         { method: 'POST',
         headers: new Headers({
@@ -53,15 +66,15 @@ export default function QuestionScreen({ route, navigation }) {
         }),
         body: JSON.stringify({
  
-            personID: route.params.userId,
+            personID: personId,
          
-            questionID: this.pointID,
+            questionID: questionId,
          
-            answer: this.answer,
+            answer: answer
          
-          })
+          }, getCircularReplacer())
         })
-        myTextInput.current.clear();
+        // myTextInput.current.clear();
     }
 
     return (
@@ -84,9 +97,9 @@ export default function QuestionScreen({ route, navigation }) {
                                 multiline={true}
                                 placeholder="Your answer"
                                 numberOfLines={3}
-                                onSubmitEditing={this.onSubmitEdit}
+                                onSubmitEditing={this.onSubmitEdit(route.params.userId, question.id, answer)}
                             />,
-                            <TouchableOpacity key={question.id + 100} style={globalStyles.submitButton} onPress={this.onSubmitEdit}>
+                            <TouchableOpacity key={question.id + 100} style={globalStyles.submitButton} onPress={this.onSubmitEdit(route.params.userId, question.id, answer)}>
                                 <Text style={globalStyles.submitText}>Submit</Text>
                             </TouchableOpacity>
 

@@ -6,7 +6,7 @@ adapted from the navigation tutorial found at: https://reactnavigation.org/docs/
 */
 
 import React, { useState, useEffect } from 'react';
-import { Image, View, Text, TouchableOpacity, FlatList, ImageBackground, Touchable, StyleSheet, ActivityIndicator } from 'react-native';
+import { Image, View, Text, TouchableOpacity, FlatList, ImageBackground, Touchable, StyleSheet, ActivityIndicator, Vibration } from 'react-native';
 import { globalStyles } from '../styles/global';
 import * as Location from 'expo-location';
 import { getDistance } from 'geolib';
@@ -154,6 +154,7 @@ export default function MapScreen({navigation}) {
         let closePoint = sortedByDistance[0];
         // TODO: don't get the distance twice, this sucks
         if (getDistance(currentLocation, { latitude: closePoint.latitude, longitude: closePoint.longitude }) <= closePoint.radius) {
+            Vibration.vibrate(70)
             return closePoint;
         }
         return null;
@@ -198,7 +199,7 @@ export default function MapScreen({navigation}) {
                 onPress={() => {
                     if (closestPoint == null)
                         return;
-                    navigation.navigate('Questions', closestPoint);
+                    navigation.navigate('PointInfo', closestPoint);
                 }}>
                 <Image source={closestPoint == null ? require('../assets/PointInteractionButton.png') : require("../assets/PointInteractionButton2.png")} style = {{width: 170, height:170 }}/>
             </TouchableOpacity>
