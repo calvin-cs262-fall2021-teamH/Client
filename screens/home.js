@@ -35,8 +35,6 @@ export default function HomeScreen({navigation}) {
               "Content-Type":"application/json"
           }),
           body: JSON.stringify({
-        
-              //personID: userId,
            
               email: user.email,
            

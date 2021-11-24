@@ -16,6 +16,7 @@ import { Image,
     TouchableHighlight, } from 'react-native';
 import { globalStyles } from '../styles/global';
 import * as Google from "expo-google-app-auth";
+/*
 export default function Prompt ({ navigation }) {
     const [accessToken, setAccessToken] = useState('')
     const storeToken = async (token) => {
@@ -58,7 +59,7 @@ export default function Prompt ({ navigation }) {
 return(
     <View>
         <TouchableHighlight onPress={signInWithGoogleAsync}>
-            <Text>Login with Google</Text>
+            <Text>Keep Exploring</Text>
         </TouchableHighlight>
 
         <TouchableHighlight onPress={signoutWithGoogleAsync}>
@@ -67,8 +68,9 @@ return(
         </View>
 );
 }
+*/
 
-/*
+
 export default function Prompt ({ navigation }) {
     const signOut = async () => {
         console.log("LoginScreen.js 6 | loggin out");
@@ -90,7 +92,7 @@ export default function Prompt ({ navigation }) {
           </TouchableOpacity>
 
           <TouchableOpacity style={globalStyles.genericButton}
-                onPress={signOut}>
+                onPress={navigation.navigate("Home")}>
                 <Text style={{flex:.315, color: "#fff", fontWeight: "bold"}}>SIGN OUT</Text>
                 <Image source={require('../assets/login_white.png')} resizeMode='contain' style={{flex: .1 }}/>
           </TouchableOpacity>
@@ -108,4 +110,4 @@ const styles = StyleSheet.create({
       justifyContent: "center",
     }
     });
-    */
+    
