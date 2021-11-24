@@ -114,10 +114,10 @@ export default function MapScreen({navigation}) {
                     if (points == null) {
                         console.log("Error downloading point of interest data!");
                         points = [];
+                    } else {
+                        console.log("Successfully downloaded point of interest data!");
                     }
                     setPointsOfInterest(points);
-
-                    console.log("Successfully downloaded point of interest data!");
                 }
                 setIsDataDownloading(false);
             }
