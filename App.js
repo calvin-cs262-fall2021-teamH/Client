@@ -11,6 +11,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import HomeScreen from "./screens/home";
 import MapScreen from "./screens/map";
+import MapStudentScreen from "./screens/mapStudent";
 import GeoPrototype from './screens/GeolocationPrototype';
 import PointInfoScreen from './screens/pointInfo';
 import SettingScreen from './screens/setting';
@@ -34,11 +35,18 @@ const DrawerNavigator = () => {
         <Drawer.Screen 
           name="Map " 
           component={MapScreen}
-          // options={{
-          //   drawerIcon: () => (
-          //     <Icon name="settings-outline"></Icon>
-          //   )
-          //  }}
+          />
+    </Drawer.Navigator>
+    )
+}
+
+const DrawerNavigatorStdt = () => {
+  return (
+    <Drawer.Navigator initialRouteName="MapStdt" backBehavior="initialRoute">
+        <Drawer.Screen name="Setting" component={SettingScreen} />
+        <Drawer.Screen 
+          name="Student Map" 
+          component={MapStudentScreen}
           />
     </Drawer.Navigator>
     )
@@ -56,6 +64,11 @@ function App() {
         <Stack.Screen 
           name="Map" 
           component={DrawerNavigator}
+          options={{ headerShown: false }}
+          />
+        <Stack.Screen 
+          name="MapStudent" 
+          component={DrawerNavigatorStdt}
           options={{ headerShown: false }}
           />
         <Stack.Screen 

@@ -66,8 +66,8 @@ export const globalStyles = StyleSheet.create({
     },
     Question: {
         fontSize: 20,
+        paddingVertical: 10,
         color: "#fff",
-        padding: 20
     },
     input: {
         width: "90%",
@@ -75,6 +75,29 @@ export const globalStyles = StyleSheet.create({
         color: "#000",
         padding: 20,
         backgroundColor: "#fff",
-        borderRadius: 50,
-    }
+        borderRadius: 15,
+        left: 5,
+        textAlignVertical: 'top'
+    },
+    genericText: {
+        fontWeight: 'bold',
+        color: "#000000",
+      },
+    submitText: {
+        fontWeight: 'bold',
+        fontSize: 15,
+        color: "#000000",
+      },
+    submitButton: {
+        width: "20%",
+        height: "10%",
+        borderRadius: 10,
+        height: 60,
+        alignItems: "center",
+        justifyContent: "center",
+        marginTop: 10,
+        alignSelf: 'flex-end',
+        right: 40,
+        backgroundColor: "#81FF8E",
+    },
 });
