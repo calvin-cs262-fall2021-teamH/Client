@@ -141,7 +141,7 @@ export default function MapScreen({navigation}) {
         if (currentLocation.latitude == null)
             return [ null, -1 ];
 
-        let sortedByDistance = TEST_POINTS_OF_INTEREST.sort((a, b) => {
+        let sortedByDistance = pointsOfInterest.sort((a, b) => {
             let distanceA = getDistance(currentLocation, { latitude: a.latitude, longitude: a.longitude });
             let distanceB = getDistance(currentLocation, { latitude: b.latitude, longitude: b.longitude });
 
@@ -151,7 +151,7 @@ export default function MapScreen({navigation}) {
             return distanceA > distanceB ? 1 : -1
         });
 
-        let closePoint = sortedByDistance[0];
+        let closePoint = pointsOfInterest[0];// sortedByDistance[0];
         // TODO: don't get the distance twice, this sucks
         const distance = getDistance(currentLocation, { latitude: closePoint.latitude, longitude: closePoint.longitude });
         if (distance <= closePoint.radius) {
