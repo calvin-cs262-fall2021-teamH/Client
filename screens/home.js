@@ -16,7 +16,7 @@ import * as Google from "expo-google-app-auth";
  * @param {navigation} navigation makes sure navigation is correct for getting to the screen and navigating other screens.
  */
 export default function HomeScreen({navigation}) {
-
+  const [userId, setUserId] = useState();
     const signInAsync = async () => {
       console.log("LoginScreen.js 6 | loggin in");
       try {
@@ -30,9 +30,9 @@ export default function HomeScreen({navigation}) {
           // Then you can use the Google REST API
           console.log("LoginScreen.js 17 | success, navigating to profile");
           loggedIn = true;
-          navigation.navigate("StudentView", { user });
+          navigation.navigate("Student Map", { user, userId });
 
-          fetch(`https://hello-campus.herokuapp.com/users/`,
+          const response = fetch(`https://hello-campus.herokuapp.com/users/`,
           { method: 'POST',
           headers: new Headers({
               "Content-Type":"application/json"
@@ -47,6 +47,8 @@ export default function HomeScreen({navigation}) {
            
             })
           })
+          userId = response;
+          console.log(response)
 
           
         }
