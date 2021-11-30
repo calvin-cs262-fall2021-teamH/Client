@@ -64,38 +64,82 @@ export default function HomeScreen({navigation}) {
     
   
     return (
-        <ImageBackground source = {require('../assets/woods_scene.jpg')} style={styles.container}>
-
-                <TouchableOpacity onPress={() => navigation.navigate('Setting')} style = {styles.container1}>
-                    <ImageBackground source = { require('../assets/menuIcon.png')} style = { globalStyles.settingIcon }/> 
+      <ImageBackground
+        source={require("../assets/woods_scene.jpg")}
+        style={styles.container}
+      >
+        <View style={styles.body}>
+          <TouchableOpacity
+            onPress={() => navigation.navigate("Setting")}
+            style={styles.container1}>
+            <ImageBackground
+              source={require("../assets/menuIcon.png")}
+              style={globalStyles.settingIcon}/>
                 </TouchableOpacity>
           
-          <TouchableHighlight onPress = {()=> navigation.navigate('About')} style ={styles.touchableHighlight}>
-              <Image source={ require('../assets/HelloCampusLogo_NoBackground.png')} style={styles.imagest}/> 
+          <TouchableHighlight
+            onPress={() => navigation.navigate("About")}
+            style={styles.touchableHighlight}>
+            <Image
+              source={require("../assets/HelloCampusLogo_NoBackground.png")}
+              style={styles.imagest}/>
           </TouchableHighlight>
           
-          <TouchableOpacity style={globalStyles.genericButton}
-           onPress={() => navigation.navigate('Map')}>
-          <Text style={{flex:.3, color: "#fff", fontWeight: "bold"}}>EXPLORE</Text>
-          <Image source={require('../assets/map_white.png')} resizeMode='contain' style={{flex: .15 }}/>
+          <TouchableOpacity
+            style={globalStyles.genericButton}
+            onPress={() => navigation.navigate("Map")}>
+            <Text style={{ flex: 0.3, color: "#fff", fontWeight: "bold" }}>
+              EXPLORE
+            </Text>
+            <Image
+              source={require("../assets/map_white.png")}
+              resizeMode="contain"
+              style={{ flex: 0.15 }}/>
           </TouchableOpacity>
 
-          <TouchableOpacity style={globalStyles.genericButton}
+          <TouchableOpacity
+            style={globalStyles.genericButton}
            onPress={() => signInAsync()}>
-          <Text style={{flex:.315, color: "#fff", fontWeight: "bold"}}>SIGN IN</Text>
-          <Image source={require('../assets/login_white.png')} resizeMode='contain' style={{flex: .1 }}/>
+            <Text style={{ flex: 0.315, color: "#fff", fontWeight: "bold" }}>
+              SIGN IN
+            </Text>
+            <Image
+              source={require("../assets/login_white.png")}
+              resizeMode="contain"
+              style={{ flex: 0.1 }}/>
           </TouchableOpacity>
+        </View>
 
+        <View style={styles.footer}>
+          <TouchableOpacity
+            style={globalStyles.genericButton}
+            onPress={() => navigation.navigate("About")}>
+            <Text style={{ flex: 0.315, color: "#fff", fontWeight: "bold" }}>
+              ABOUT
+            </Text>
+            <Image
+              source={require("../assets/question_mark.png")}
+              resizeMode="contain"
+              style={{ flex: 0.1 }}/>
+          </TouchableOpacity>
+        </View>
         </ImageBackground>
     );
 }
 
 const styles = StyleSheet.create({
+  body: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  footer: {
+    alignItems: "center",
+    marginBottom: 15
+  },
   container: {
     flex: 1,
     backgroundColor: "#8C2131",
-    alignItems: "center",
-    justifyContent: "center",
   },
   container1: {
     flex:1,
