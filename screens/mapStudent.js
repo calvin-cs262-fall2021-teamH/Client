@@ -6,7 +6,7 @@ adapted from the navigation tutorial found at: https://reactnavigation.org/docs/
 */
 
 import React, { useState, useEffect } from 'react';
-import { Image, View, Text, TouchableOpacity, FlatList, ImageBackground, Touchable, StyleSheet, ActivityIndicator, Vibration } from 'react-native';
+import { Image, View, Text, TouchableOpacity, FlatList, ImageBackground, Touchable, StyleSheet, ActivityIndicator } from 'react-native';
 import { globalStyles } from '../styles/global';
 import * as Location from 'expo-location';
 import { getDistance } from 'geolib';
@@ -40,7 +40,7 @@ function realToPixelCoords(point) {
     return pixelCoords;
 }
 
-export default function MapScreen({navigation}) {
+export default function MapStudentScreen({navigation}) {
     const [errorMsg, setErrorMsg] = useState(null); // TODO: do something with errorMsg
     const [userLocation, setUserLocation] = useState({ pixelCoords: { x: null, y: null }, realCoords: { latitude: null, longitude: null } });
 
@@ -60,7 +60,7 @@ export default function MapScreen({navigation}) {
 
         async function getCurrentLatLong() {
             const locationPromise = await Location.getCurrentPositionAsync({
-                accuracy: Location.Accuracy.BestForNavigation,
+                accuracy: Location.Accuracy.Highest,
                 distanceInterval: 1
             });
             return locationPromise.coords;
@@ -114,10 +114,10 @@ export default function MapScreen({navigation}) {
                     if (points == null) {
                         console.log("Error downloading point of interest data!");
                         points = [];
-                    } else {
-                        console.log("Successfully downloaded point of interest data!");
                     }
                     setPointsOfInterest(points);
+
+                    console.log("Successfully downloaded point of interest data!");
                 }
                 setIsDataDownloading(false);
             }
@@ -136,57 +136,36 @@ export default function MapScreen({navigation}) {
         return () => clearInterval(locationRefreshIntervalHandle); // end the interval'd calls when the screen is unmounted
     }, [])
 
-    let closestPoint = null;
-    let closestDistance = -1;
-
     function getClosePoint() {
         let currentLocation = userLocation.realCoords;
-        if (currentLocation.latitude == null) {
-            // return [ null, -1 ];
-            closestPoint = null;
-            closestDistance = -1;
-            return;
-        }
+        if (currentLocation.latitude == null)
+            return null;
 
-        if (pointsOfInterest.length == 0)
-            return;
-
-        let sortedByDistance = pointsOfInterest.sort((a, b) => {
+        let sortedByDistance = TEST_POINTS_OF_INTEREST.sort((a, b) => {
             let distanceA = getDistance(currentLocation, { latitude: a.latitude, longitude: a.longitude });
             let distanceB = getDistance(currentLocation, { latitude: b.latitude, longitude: b.longitude });
 
             // TODO: have some setting for debug output, it's spamming my console
-            // console.log("Distance to " + a.name + ": " + distanceA + " meters");
-            // console.log("Distance to " + b.name + ": " + distanceB + " meters");
-            return distanceA > distanceB ? 1 : -1;
+            console.log("Distance to " + a.name + ": " + distanceA + " meters");
+            console.log("Distance to " + b.name + ": " + distanceB + " meters");
+            return distanceA > distanceB ? 1 : -1
         });
 
         let closePoint = sortedByDistance[0];
-
         // TODO: don't get the distance twice, this sucks
-        const distance = getDistance(currentLocation, { latitude: closePoint.latitude, longitude: closePoint.longitude });
-        if (distance <= closePoint.radius) {
-            console.log("Distance to " + closePoint.name + ": " + distance + " meters");
-            // return [ closestPoint, distance ];
-            closestPoint = closePoint;
-            closestDistance = distance;
-        } else {
-            closestPoint = null;
-            closestDistance = -1;
+        if (getDistance(currentLocation, { latitude: closePoint.latitude, longitude: closePoint.longitude }) <= closePoint.radius) {
+            return closePoint;
         }
-        // return [ null, distance ];
+        return null;
     }
-//add the users name to the map screen//////////////////////////////
-    //const { user } = route.params;
-    //console.log("user from google", user);
-    // const [ closestPoint, closestDistance ] = getClosePoint();
-    getClosePoint();
+
+    const closestPoint = getClosePoint();
     
     let userPixelCoords = userLocation.realCoords.latitude != null ? realToPixelCoords(userLocation.realCoords) : { x: -500, y: -500 };
 
     return (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#8C2032' }}>
-            <Text style={{ fontSize: 15, fontWeight: "bold", color: "#fff", padding: 15, position: 'absolute', top: 0 } }>Welcome, to learn more walk towards a point.</Text>
+            <Text style={{ fontSize: 25, color: "#fff", padding: 15, position: 'absolute', top: 0 } }>Walk towards a point on the map to learn more!</Text>
             <ImageBackground source = { require('../assets/ecomap.png')} style = {{position: 'absolute', top: 100, width: MAP_WIDTH, height: MAP_HEIGHT}}/>
 
             { /* dynamically generate the point components from the data */ }
@@ -196,7 +175,7 @@ export default function MapScreen({navigation}) {
                     return <TouchableOpacity
                                 key={point.id}
                                 style={[styles.mapPoint, { position: 'absolute', top: pixelCoords.y, right: pixelCoords.x }]}
-                                onPress={() => navigation.navigate('PointInfo', point)}
+                                onPress={() => navigation.navigate('Questions', {point: point, userId: route.params.id})}
                             />;
                 })
             }
@@ -215,11 +194,9 @@ export default function MapScreen({navigation}) {
             <TouchableOpacity
                 style={[{ bottom: 0, position: 'absolute', alignItems: 'center' }, globalStyles.noInteractionButton ]}
                 onPress={() => {
-                    if (closestPoint == null) {
-                        console.log("No close point!");
+                    if (closestPoint == null)
                         return;
-                    }
-                    navigation.navigate('PointInfo', closestPoint);
+                    navigation.navigate('Questions', closestPoint);
                 }}>
                 <Image source={closestPoint == null ? require('../assets/PointInteractionButton.png') : require("../assets/PointInteractionButton2.png")} style = {{width: 170, height:170 }}/>
             </TouchableOpacity>

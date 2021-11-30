@@ -7,9 +7,29 @@ Brian Langejans, David Reidsma, David Heynen, Paul Dick, Kurt Wietelmann
 import { StyleSheet } from 'react-native';
 
 export const globalStyles = StyleSheet.create({
-    setting: {
+    listIcon: {
         width: 30,
-        height: 30,
+        height: 30,        
+        borderRadius: 20,
+    },
+    list: {
+        backgroundColor: '#ffffff',
+        padding: 15,
+        borderRadius: 10,        
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        marginTop:20,
+    },
+    listText: {
+        fontSize: 20,
+        color: '#000000',
+        fontWeight: 'bold',
+        flexDirection: 'row',
+    },
+    settingIcon: {
+        width: 50,
+        height: 50,
         borderRadius: 20,
     },
     settingOption: {
@@ -23,7 +43,7 @@ export const globalStyles = StyleSheet.create({
     },
     pointImage: {
         width: 400, 
-        height : 400
+        height : 400,
     },
     interactionButton: {
         width: 170, 
@@ -37,11 +57,50 @@ export const globalStyles = StyleSheet.create({
     },
     genericButton: {
         width: "75%",
-        borderRadius: 50,
+        borderRadius: 20,
+        borderColor: "#fff",
+        borderWidth: 1,
+        height: 60,
+        flexDirection:"row",
+        alignItems: "center",
+        justifyContent: "center",
+        marginTop: 30,
+        backgroundColor: "#8C2131",
+    },
+    Question: {
+        fontSize: 20,
+        paddingVertical: 10,
+        color: "#fff",
+    },
+    input: {
+        width: "90%",
+        fontSize: 16,
+        color: "#000",
+        padding: 20,
+        backgroundColor: "#fff",
+        borderRadius: 15,
+        left: 5,
+        textAlignVertical: 'top'
+    },
+    genericText: {
+        fontWeight: 'bold',
+        color: "#000000",
+      },
+    submitText: {
+        fontWeight: 'bold',
+        fontSize: 15,
+        color: "#000000",
+      },
+    submitButton: {
+        width: "20%",
+        height: "10%",
+        borderRadius: 10,
         height: 60,
         alignItems: "center",
         justifyContent: "center",
-        marginTop: 20,
-        backgroundColor: "#fff",
+        marginTop: 10,
+        alignSelf: 'flex-end',
+        right: 40,
+        backgroundColor: "#81FF8E",
     },
 });

@@ -40,7 +40,7 @@ function realToPixelCoords(point) {
     return pixelCoords;
 }
 
-export default function MapScreen({navigation}) {
+export default function AuthenticatedMapScreen({route, navigation}) {
     const [errorMsg, setErrorMsg] = useState(null); // TODO: do something with errorMsg
     const [userLocation, setUserLocation] = useState({ pixelCoords: { x: null, y: null }, realCoords: { latitude: null, longitude: null } });
 
@@ -60,7 +60,7 @@ export default function MapScreen({navigation}) {
 
         async function getCurrentLatLong() {
             const locationPromise = await Location.getCurrentPositionAsync({
-                accuracy: Location.Accuracy.BestForNavigation,
+                accuracy: Location.Accuracy.Highest,
                 distanceInterval: 1
             });
             return locationPromise.coords;
@@ -176,17 +176,16 @@ export default function MapScreen({navigation}) {
         }
         // return [ null, distance ];
     }
-//add the users name to the map screen//////////////////////////////
-    //const { user } = route.params;
-    //console.log("user from google", user);
-    // const [ closestPoint, closestDistance ] = getClosePoint();
+//add the user to the map screen
+    const { user } = route.params;
+    console.log("user from google", user);
     getClosePoint();
     
     let userPixelCoords = userLocation.realCoords.latitude != null ? realToPixelCoords(userLocation.realCoords) : { x: -500, y: -500 };
 
     return (
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#8C2032' }}>
-            <Text style={{ fontSize: 15, fontWeight: "bold", color: "#fff", padding: 15, position: 'absolute', top: 0 } }>Welcome, to learn more walk towards a point.</Text>
+        <ImageBackground source = {require('../assets/light_background.jpg')} style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#8C2032' }}>
+            <Text style={{ fontSize: 20, fontWeight: "bold", color: "#fff", padding: 10, position: 'absolute', top: 30, marginRight: 80 } }>Welcome {user.givenName}, to learn more walk towards a point.</Text>
             <ImageBackground source = { require('../assets/ecomap.png')} style = {{position: 'absolute', top: 100, width: MAP_WIDTH, height: MAP_HEIGHT}}/>
 
             { /* dynamically generate the point components from the data */ }
@@ -196,8 +195,8 @@ export default function MapScreen({navigation}) {
                     return <TouchableOpacity
                                 key={point.id}
                                 style={[styles.mapPoint, { position: 'absolute', top: pixelCoords.y, right: pixelCoords.x }]}
-                                onPress={() => navigation.navigate('PointInfo', point)}
-                            />;
+                                onPress={() => navigation.navigate('Questions', point), Vibration.cancel()}
+                            />;f
                 })
             }
 
@@ -215,16 +214,14 @@ export default function MapScreen({navigation}) {
             <TouchableOpacity
                 style={[{ bottom: 0, position: 'absolute', alignItems: 'center' }, globalStyles.noInteractionButton ]}
                 onPress={() => {
-                    if (closestPoint == null) {
-                        console.log("No close point!");
+                    if (closestPoint == null)
                         return;
-                    }
-                    navigation.navigate('PointInfo', closestPoint);
+                    navigation.navigate('Questions', {point: closestPoint, userId: route.params.userId});
                 }}>
                 <Image source={closestPoint == null ? require('../assets/PointInteractionButton.png') : require("../assets/PointInteractionButton2.png")} style = {{width: 170, height:170 }}/>
             </TouchableOpacity>
 
-        </View>
+        </ImageBackground>
     );
 }
 
@@ -250,5 +247,17 @@ const styles = StyleSheet.create({
         backgroundColor: 'blue',
         borderWidth: 1,
         borderColor: 'grey'
-    }
+    },
+    container1: {
+        flex:1,
+        ...StyleSheet.absoluteFillObject,
+        alignSelf: 'flex-end',
+        marginTop: 25,
+        marginRight: 10,
+        left: 300,
+        right: 10,
+       
+        
+       // position: 'absolute', // add if dont work with above
+      },
 });
