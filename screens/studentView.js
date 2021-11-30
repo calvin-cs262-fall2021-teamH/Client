@@ -10,8 +10,10 @@ import { Image, View, Text, TouchableOpacity, FlatList, ImageBackground, Touchab
 import { globalStyles } from '../styles/global';
 import * as Location from 'expo-location';
 import { getDistance } from 'geolib';
+import Prompt from "./prompt";
 import { scaleCoordsToPixelCoords, isCoordWithinBoundaries } from '../models/PointOfInterest';
 import { TEST_POINTS_OF_INTEREST as TEST_POINTS_OF_INTEREST } from '../models/TestData.js';
+import { useRoute } from '@react-navigation/native';
 
 const USE_TEST_DATA = false;
 
@@ -160,7 +162,9 @@ export default function AuthenticatedMapScreen({route, navigation}) {
         return null;
     }
 //add the user to the map screen
+//props.route.params
     const { user } = route.params;
+    //const {userId} = route.params;
     console.log("user from google", user);
     const closestPoint = getClosePoint();
     
@@ -168,7 +172,7 @@ export default function AuthenticatedMapScreen({route, navigation}) {
 
     return (
         <ImageBackground source = {require('../assets/light_background.jpg')} style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#8C2032' }}>
-            <Text style={{ fontSize: 20, fontWeight: "bold", color: "#fff", padding: 10, position: 'absolute', top: 30, marginRight: 80 } }>Welcome {user.givenName}, to learn more walk towards a point.</Text>
+            <Text style={{ fontSize: 20, fontWeight: "bold", color: "#fff", padding: 10, position: 'absolute', top: 30, marginRight: 80 } }>Welcome {user.given_name}, to learn more walk towards a point.</Text>
             <ImageBackground source = { require('../assets/ecomap.png')} style = {{position: 'absolute', top: 100, width: MAP_WIDTH, height: MAP_HEIGHT}}/>
 
             { /* dynamically generate the point components from the data */ }

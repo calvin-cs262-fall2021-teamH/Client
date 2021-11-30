@@ -28,27 +28,26 @@ export default function HomeScreen({navigation}) {
   
         if (type === "success") {
           // Then you can use the Google REST API
-          console.log("LoginScreen.js 17 | success, navigating to profile");
-          loggedIn = true;
+          console.log("LoginScreen.js 17 | success, navigating to Map");
+          //loggedIn = true;
           navigation.navigate("Student Map", { user, userId });
+      
 
           const response = fetch(`https://hello-campus.herokuapp.com/users/`,
-          { method: 'POST',
+          
+          { 
+            method: 'POST',
           headers: new Headers({
               "Content-Type":"application/json"
           }),
           body: JSON.stringify({
-           
               email: user.email,
-           
               name: user.givenName
            
             })
           })
           userId = response;
-          console.log(response)
-
-          
+          console.log(response)   
         }
 
       } catch (error) {
@@ -60,7 +59,7 @@ export default function HomeScreen({navigation}) {
     return (
         <ImageBackground source = {require('../assets/woods_scene.jpg')} style={styles.container}>
 
-                <TouchableOpacity onPress={() => navigation.navigate('Setting')} style = {styles.container1}>
+                <TouchableOpacity onPress={() => navigation.navigate('Settings')} style = {styles.container1}>
                     <ImageBackground source = { require('../assets/menuIcon.png')} style = { globalStyles.settingIcon }/> 
                 </TouchableOpacity>
           
@@ -99,10 +98,8 @@ const styles = StyleSheet.create({
     marginRight: 10,
     left: 300,
     right: 10,
-   
-    
-   // position: 'absolute', // add if dont work with above
   },
+  
   loginText: {
     fontWeight: 'bold',
     color: "#fff",
