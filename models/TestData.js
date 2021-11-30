@@ -45,7 +45,13 @@ export const TEST_POINTS_OF_INTEREST = [
         42.85929819243669, -85.44681698840668,
         100,
         'https://raw.githubusercontent.com/calvin-cs262-fall2021-teamH/Service/connect_points_to_dataservice/point_assets/CrownGap.png'),
-        
+    new PointOfInterest(
+        5,
+        'Bunker Interpretive Center',
+        'The BIC provides approximately 5,000 square feet of space which serves as a home base for programs, a study center for the university community, and an educational resource for the general public.',
+        42.93189842388794, -85.58215893073103,
+        20,
+        'https://raw.githubusercontent.com/calvin-cs262-fall2021-teamH/Service/connect_points_to_dataservice/point_assets/bunker.png'),
 ];
 
 export const TEST_ANSWER = [];
