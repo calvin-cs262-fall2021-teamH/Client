@@ -31,6 +31,7 @@
     },
     "web": {
       "favicon": "./assets/HelloCampusLogo_NoBackground.png"
-    }
+    },
+    "description": ""
   }
 }

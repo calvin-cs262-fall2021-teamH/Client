@@ -72,6 +72,7 @@ export default function SettingScreen({ route, navigation }) {
                 </TouchableHighlight>
                 </View>
             </View>
+
             <View style={globalStyles.settingOption}>
                 <Text style = {{fontWeight: "bold", fontSize: 20, color: "#8C2131"}}>Light/Dark Mode</Text>
                 <View style={{alignItems: 'center'}}>

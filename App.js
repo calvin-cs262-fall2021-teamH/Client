@@ -17,14 +17,11 @@ import SettingScreen from './screens/setting';
 import Header from './shared/header';
 import Login from './screens/Login';
 import About from './screens/about';
-import ProfileScreen from './screens/ProfileScreen';
+import Prompt from './screens/prompt';
 import QuestionScreen from './screens/questions';
-//import Icon from 'react-native-ionicons';
-
-
 import ListScreen from './screens/list';
 import AuthenticatedMapScreen from './screens/studentView';
-import Prompt from './screens/prompt';
+
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -96,13 +93,12 @@ function App() {
               <Header navigation={navigation}/>
             )
           })} />
-        <Stack.Screen name = "Settings" component = {SettingScreen}/>
-        <Stack.Screen name = "Login" component = {Login}/>
-        <Stack.Screen name = "About" component = {About}/>
-        <Stack.Screen name = "ProfileScreen" component = {ProfileScreen}/>
+        <Stack.Screen name = "Settings"  component = {SettingScreen}/>
+        <Stack.Screen name = "Login"     component = {Login}/>
+        <Stack.Screen name = "About"     component = {About}/>
         <Stack.Screen name = "Questions" component = {QuestionScreen}/>
-        <Stack.Screen name = "Location" component = {ListScreen}/>
-        <Stack.Screen name = "Prompt" component = {Prompt}/>
+        <Stack.Screen name = "Location"  component = {ListScreen}/>
+        <Stack.Screen name = "Prompt"    component = {Prompt}/>
 
         <Stack.Screen name = "Student Map" 
         component = {DrawerNavigatorStdt} 
