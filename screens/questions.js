@@ -5,7 +5,7 @@
  * 11/16/2021
  */
 
-import React, { useEffect, useReducer, useState } from 'react';
+import React, { useEffect, useReducer, useState, createRef } from 'react';
 import { Image, Button, View, Text, TouchableOpacity, FlatList, ImageBackground, TextInput, ActivityIndicator, ScrollView } from 'react-native';
 import { globalStyles } from '../styles/global';
 
@@ -17,14 +17,13 @@ export default function QuestionScreen({ route }) {
     const [answer, setAnswer] = useState("");
     //data = []
     const [text, onChangeText] = React.useState("Useless Text");
-    const myTextInput = React.createRef();
+    const textInput = React.createRef();
 
     useEffect (() => {
         if (isDataDownloading) {
             fetch(`https://hello-campus.herokuapp.com/questionsAtPoint/${route.params.point.id}/`)
             .then((response) => {
                 let data = response.json();
-                console.log(JSON.stringify(data));
                 //console.log("Successfully downloaded question data.");
                 return data;
             })
@@ -58,23 +57,25 @@ export default function QuestionScreen({ route }) {
         };
     };
     
-    onSubmitEdit = (personId, questionId, answer) => {
-        fetch(`https://hello-campus.herokuapp.com/answers/`,
-        { method: 'POST',
-        headers: new Headers({
-            "Content-Type":"application/json"
-        }),
-        body: JSON.stringify({
+    onSubmitEdit = () => {
+        // fetch(`https://hello-campus.herokuapp.com/answers/`,
+        // { method: 'POST',
+        // headers: new Headers({
+        //     "Content-Type":"application/json"
+        // }),
+        // body: JSON.stringify({
  
-            personID: personId,
+        //     personID: personId,
          
-            questionID: questionId,
+        //     questionID: questionId,
          
-            answer: answer
+        //     answer: answer
          
-          }, getCircularReplacer())
-        })
-        // myTextInput.current.clear();
+        //   }, getCircularReplacer())
+        // })
+        // console.log(personId)
+        textInput.current.clear()
+        ;
     }
 
     return (
@@ -91,15 +92,15 @@ export default function QuestionScreen({ route }) {
                                 style={{ fontSize: 25, color: "#fff", padding: 20, justifyContent:'space-between' }}>{question.question}</Text>,
                             <TextInput
                                 key={question.id + 50}
-                                ref={myTextInput}
+                                ref={textInput}
                                 style={globalStyles.input}
                                 onChangeText={_handleMultiInput(this['answer_' + question.id])}
                                 multiline={true}
                                 placeholder="Your answer"
                                 numberOfLines={3}
-                                onSubmitEditing={this.onSubmitEdit(route.params.userId, question.id, answer)}
+                                onSubmitEditing={this.onSubmitEdit}
                             />,
-                            <TouchableOpacity key={question.id + 100} style={globalStyles.submitButton} onPress={this.onSubmitEdit(route.params.userId, question.id, answer)}>
+                            <TouchableOpacity key={question.id + 100} style={globalStyles.submitButton} onPress={this.onSubmitEdit}>
                                 <Text style={globalStyles.submitText}>Submit</Text>
                             </TouchableOpacity>
 
