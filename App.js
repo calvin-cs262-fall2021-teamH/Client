@@ -8,6 +8,7 @@ adapted from the navigation tutorial found at: https://reactnavigation.org/docs/
 import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createDrawerNavigator } from '@react-navigation/drawer';
 import HomeScreen from "./screens/home";
 import MapScreen from "./screens/map";
 import GeoPrototype from './screens/GeolocationPrototype';
@@ -17,8 +18,61 @@ import Header from './shared/header';
 import Login from './screens/Login';
 import About from './screens/about';
 import ProfileScreen from './screens/ProfileScreen';
+import QuestionScreen from './screens/questions';
+//import Icon from 'react-native-ionicons';
+
+
+import ListScreen from './screens/list';
+import AuthenticatedMapScreen from './screens/studentView';
+import Prompt from './screens/prompt';
 
 const Stack = createNativeStackNavigator();
+const Drawer = createDrawerNavigator();
+
+const DrawerNavigator = () => {
+    return (
+    <Drawer.Navigator initialRouteName="Map " backBehavior="initialRoute">
+        <Drawer.Screen 
+          name="Map " 
+          component={MapScreen}
+          options={({ navigation }) => ({
+            headerStyle: {
+              backgroundColor: '#fff',
+            },
+            headerTintColor: '#8C2131',
+            headerTitleStyle: {
+              fontWeight: 'bold',
+            },
+          })}
+          />
+        <Drawer.Screen name="List" component={ListScreen} />
+        <Drawer.Screen name="Settings" component={SettingScreen} />
+    </Drawer.Navigator>
+    )
+}
+
+const DrawerNavigatorStdt = (parentProps) => {
+  return (
+    <Drawer.Navigator initialRouteName="Student Map " backBehavior="initialRoute">
+        <Drawer.Screen 
+          name="Student Map " 
+          //component={AuthenticatedMapScreen}
+          options={({ navigation }) => ({
+            headerStyle: {
+              backgroundColor: '#fff',
+            },
+            headerTintColor: '#8C2131',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
+          })}
+          >{(props) => <AuthenticatedMapScreen {...props} route={parentProps.route}/>}</Drawer.Screen>
+          
+        <Drawer.Screen name="List" component={ListScreen} />
+        <Drawer.Screen name="Settings" component={SettingScreen} />
+    </Drawer.Navigator>
+    )
+}
 
 function App() {
   return (
@@ -27,19 +81,13 @@ function App() {
         <Stack.Screen 
           name="Home" 
           component={HomeScreen}
-          options={({ navigation }) => ({
-            headerRight: () => (
-              <Header navigation={navigation}/>
-            )
-          })} />
+          options={{ headerShown: false }}
+          />
         <Stack.Screen 
           name="Map" 
-          component={MapScreen}
-          options={({ navigation }) => ({
-            headerRight: () => (
-              <Header navigation={navigation}/>
-            )
-          })} />
+          component={DrawerNavigator}
+          options={{ headerShown: false }}
+          />
         <Stack.Screen 
           name="PointInfo" 
           component={PointInfoScreen}
@@ -48,10 +96,19 @@ function App() {
               <Header navigation={navigation}/>
             )
           })} />
-        <Stack.Screen name="Setting" component={SettingScreen} />
+        <Stack.Screen name = "Settings" component = {SettingScreen}/>
         <Stack.Screen name = "Login" component = {Login}/>
         <Stack.Screen name = "About" component = {About}/>
         <Stack.Screen name = "ProfileScreen" component = {ProfileScreen}/>
+        <Stack.Screen name = "Questions" component = {QuestionScreen}/>
+        <Stack.Screen name = "Location" component = {ListScreen}/>
+        <Stack.Screen name = "Prompt" component = {Prompt}/>
+
+        <Stack.Screen name = "Student Map" 
+        component = {DrawerNavigatorStdt} 
+          options={{ headerShown: false }}
+          >
+        </Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>
   );
