@@ -20,7 +20,7 @@ import About from './screens/about';
 import Prompt from './screens/prompt';
 import QuestionScreen from './screens/questions';
 import ListScreen from './screens/list';
-import AuthenticatedMapScreen from './screens/studentView';
+//import AuthenticatedMapScreen from './screens/studentView';
 
 
 const Stack = createNativeStackNavigator();
@@ -28,10 +28,10 @@ const Drawer = createDrawerNavigator();
 
 const DrawerNavigator = () => {
     return (
-    <Drawer.Navigator initialRouteName="Map " backBehavior="initialRoute">
+    <Drawer.Navigator initialRouteName="Home" backBehavior="initialRoute">
         <Drawer.Screen 
-          name="Map " 
-          component={MapScreen}
+          name="Home" 
+          component={HomeScreen}
           options={({ navigation }) => ({
             headerStyle: {
               backgroundColor: '#fff',
@@ -44,15 +44,16 @@ const DrawerNavigator = () => {
           />
         <Drawer.Screen name="List" component={ListScreen} />
         <Drawer.Screen name="Settings" component={SettingScreen} />
+        <Drawer.Screen name = "Map" component = {MapScreen}/>
     </Drawer.Navigator>
     )
 }
 
 const DrawerNavigatorStdt = (parentProps) => {
   return (
-    <Drawer.Navigator initialRouteName="Student Map " backBehavior="initialRoute">
+    <Drawer.Navigator initialRouteName="Home Screen" backBehavior="initialRoute">
         <Drawer.Screen 
-          name="Student Map " 
+          name="Back to Home" 
           //component={AuthenticatedMapScreen}
           options={({ navigation }) => ({
             headerStyle: {
@@ -64,9 +65,10 @@ const DrawerNavigatorStdt = (parentProps) => {
           },
           })}
           >{(props) => <AuthenticatedMapScreen {...props} route={parentProps.route}/>}</Drawer.Screen>
-          
+        <Drawer.Screen name = "Map" component = {MapScreen}/>
         <Drawer.Screen name="List" component={ListScreen} />
         <Drawer.Screen name="Settings" component={SettingScreen} />
+        
     </Drawer.Navigator>
     )
 }
@@ -77,12 +79,14 @@ function App() {
       <Stack.Navigator initialRouteName="Home">
         <Stack.Screen 
           name="Home" 
-          component={HomeScreen}
+          component={DrawerNavigator}
           options={{ headerShown: false }}
           />
         <Stack.Screen 
           name="Map" 
-          component={DrawerNavigator}
+          //component = {MapScreen}
+          component = {DrawerNavigatorStdt}
+          //component={DrawerNavigator}
           options={{ headerShown: false }}
           />
         <Stack.Screen 
@@ -100,11 +104,11 @@ function App() {
         <Stack.Screen name = "Location"  component = {ListScreen}/>
         <Stack.Screen name = "Prompt"    component = {Prompt}/>
 
-        <Stack.Screen name = "Student Map" 
+        {/*<Stack.Screen name = "Student Map" 
         component = {DrawerNavigatorStdt} 
           options={{ headerShown: false }}
           >
-        </Stack.Screen>
+        </Stack.Screen>*/}
       </Stack.Navigator>
     </NavigationContainer>
   );

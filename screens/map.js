@@ -10,8 +10,10 @@ import { Image, View, Text, TouchableOpacity, FlatList, ImageBackground, Touchab
 import { globalStyles } from '../styles/global';
 import * as Location from 'expo-location';
 import { getDistance } from 'geolib';
+import Prompt from "./prompt";
 import { scaleCoordsToPixelCoords, isCoordWithinBoundaries } from '../models/PointOfInterest';
 import { TEST_POINTS_OF_INTEREST as TEST_POINTS_OF_INTEREST } from '../models/TestData.js';
+import { useRoute } from '@react-navigation/native';
 
 const USE_TEST_DATA = false;
 
@@ -40,7 +42,7 @@ function realToPixelCoords(point) {
     return pixelCoords;
 }
 
-export default function MapScreen({navigation}) {
+export default function MapScreen({route, navigation}) {
     const [errorMsg, setErrorMsg] = useState(null); // TODO: do something with errorMsg
     const [userLocation, setUserLocation] = useState({ pixelCoords: { x: null, y: null }, realCoords: { latitude: null, longitude: null } });
 
@@ -159,16 +161,18 @@ export default function MapScreen({navigation}) {
         }
         return null;
     }
-//add the users name to the map screen//////////////////////////////
+//add the user to the map screen
+//props.route.params
     //const { user } = route.params;
+    //const {userId} = route.params;
     //console.log("user from google", user);
     const closestPoint = getClosePoint();
     
     let userPixelCoords = userLocation.realCoords.latitude != null ? realToPixelCoords(userLocation.realCoords) : { x: -500, y: -500 };
-
+    let textMessage = route.params == null ? "Walk towards a point on the map." : "Welcome " + route.params.user.given_name + ", walk towards a point to answer questions.";
     return (
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#8C2032' }}>
-            <Text style={{ fontSize: 15, fontWeight: "bold", color: "#fff", padding: 15, position: 'absolute', top: 0 } }>Welcome, to learn more walk towards a point.</Text>
+        <ImageBackground source = {require('../assets/light_background.jpg')} style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#8C2032' }}>
+            <Text style={{ fontSize: 20, fontWeight: "bold", color: "#fff", padding: 10, position: 'absolute', top: 30, marginRight: 80 } }>{textMessage}</Text>
             <ImageBackground source = { require('../assets/ecomap.png')} style = {{position: 'absolute', top: 100, width: MAP_WIDTH, height: MAP_HEIGHT}}/>
 
             { /* dynamically generate the point components from the data */ }
@@ -178,7 +182,7 @@ export default function MapScreen({navigation}) {
                     return <TouchableOpacity
                                 key={point.id}
                                 style={[styles.mapPoint, { position: 'absolute', top: pixelCoords.y, right: pixelCoords.x }]}
-                                onPress={() => navigation.navigate('PointInfo', point)}
+                                onPress={() => navigation.navigate('Questions', point), Vibration.cancel()}
                             />;f
                 })
             }
@@ -199,12 +203,17 @@ export default function MapScreen({navigation}) {
                 onPress={() => {
                     if (closestPoint == null)
                         return;
-                    navigation.navigate('PointInfo', closestPoint);
+
+                    if (route.params == null){//ie we are not logged in...
+                        navigation.navigate('PointInfo', closestPoint);
+                    }else{//if the user is logged in (need to update further)
+                        navigation.navigate('Questions', {point: closestPoint, userId: route.params.user.email});//This is a user from google not necc. the user from our DB, should update!
+                    }
                 }}>
                 <Image source={closestPoint == null ? require('../assets/PointInteractionButton.png') : require("../assets/PointInteractionButton2.png")} style = {{width: 170, height:170 }}/>
             </TouchableOpacity>
 
-        </View>
+        </ImageBackground>
     );
 }
 
@@ -230,5 +239,17 @@ const styles = StyleSheet.create({
         backgroundColor: 'blue',
         borderWidth: 1,
         borderColor: 'grey'
-    }
+    },
+    container1: {
+        flex:1,
+        ...StyleSheet.absoluteFillObject,
+        alignSelf: 'flex-end',
+        marginTop: 25,
+        marginRight: 10,
+        left: 300,
+        right: 10,
+       
+        
+       // position: 'absolute', // add if dont work with above
+      },
 });
