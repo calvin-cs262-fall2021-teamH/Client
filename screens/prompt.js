@@ -1,7 +1,7 @@
 //https://docs.expo.dev/versions/v43.0.0/sdk/app-auth/#usage
 
 import React, { useEffect, useState } from 'react';
-import { AsyncStorage, Button, StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
+import { AsyncStorage, Button, StyleSheet, Text, View, Image, TouchableOpacity, Platform} from 'react-native';
 import * as AppAuth from 'expo-app-auth';
 import { globalStyles } from '../styles/global';
 
@@ -63,12 +63,17 @@ const styles = StyleSheet.create({
   },
 });
 
+
+//getting our clientId into the (Probably should put into the DB to hide from the user)
+let andoidClientId= "2260489795-b82e25fatl0ih72e43ii5q6q858fb6ql.apps.googleusercontent.com"//androidclientID
+let iosClientId ="2260489795-nvs04mkpqbhrjbd7ne2jb560e2a3dhdm.apps.googleusercontent.com"//iosclientID
+
+let myclientId = Platform.OS =="android" ? andoidClientId : iosClientId;
+
 let config = {
-  issuer: 'https://accounts.google.com',
-  scopes: ['openid', 'profile', 'email'],
-  iosClientId: "2260489795-nvs04mkpqbhrjbd7ne2jb560e2a3dhdm.apps.googleusercontent.com",
-  androidClientId: "2260489795-b82e25fatl0ih72e43ii5q6q858fb6ql.apps.googleusercontent.com",//androidClientID need to fix this so it works accross platforms
-  clientId: "2260489795-b82e25fatl0ih72e43ii5q6q858fb6ql.apps.googleusercontent.com",//This is simply the acid
+    issuer: 'https://accounts.google.com',
+    scopes: ['openid', 'profile', 'email'],
+    clientId: myclientId,  
 };
 
 
@@ -83,7 +88,7 @@ export async function signInAsync() {
   if(await isInDB(user.email) == false){//this is for new users
     console.log("User does not exist in our DB, we are creating a user.");
     addUser(user);
-  }else{//this is for returning users isInDB returns true
+  }else{//this is for returning users, ie isInDB returns true
       var returningUserID = await getID(user.email);
       console.log(returningUserID, "user.Id, from our database");///This is important!!!
   }
@@ -174,14 +179,12 @@ async function refreshAuthAsync({ refreshToken }) {
 
 export async function signOutAsync({accessToken }) {
   //let clientId = null
- if(isAndroidClientIdProvided == true){
+ if(Platform.OS === null){
    console.log("WHO IN THE WORLD DESIGNED THIS!?")
  }
   try {
     await AppAuth.revokeAsync(config, {
       token: accessToken,
-      //isAndroidClientIdProvided: true,
-      //isIosclientIdProvided: true,
       isClientIdProvided: true,
     });
     await AsyncStorage.removeItem(StorageKey);
