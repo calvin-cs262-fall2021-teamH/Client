@@ -1,7 +1,7 @@
 import React from 'react';
 import { TouchableOpacity, View, Text, ImageBackground } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
-import SettingScreen from '../screens/setting';
+
 import { createDrawerNavigator } from '@react-navigation/drawer';
 
 import { globalStyles } from '../styles/global';
