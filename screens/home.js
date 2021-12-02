@@ -33,25 +33,7 @@ export default function HomeScreen({navigation}) {
           navigation.navigate("Student Map", { user, userId });
       
 
-          /*const response = fetch(`https://hello-campus.herokuapp.com/users/`,
-          
-          { 
-            method: 'POST',
-          headers: new Headers({
-              "Content-Type":"application/json"
-          }),
-          body: JSON.stringify({
-              email: user.email,
-              name: user.givenName
-           
-            })
-          })
-          userId = response;
-          console.log(response)   
-        }*/
-      }
-
-      } catch (error) {
+        }}catch (error) {
         console.log("LoginScreen.js 19 | error with login", error);
       }
     };
