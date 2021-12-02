@@ -1,5 +1,5 @@
 //https://docs.expo.dev/versions/v43.0.0/sdk/app-auth/#usage
-
+//this functionality has been transfered to the homescreen this file is null and void and should be deleted
 import React, { useEffect, useState } from 'react';
 import { AsyncStorage, Button, StyleSheet, Text, View, Image, TouchableOpacity, Platform} from 'react-native';
 import * as AppAuth from 'expo-app-auth';
@@ -13,7 +13,6 @@ export default function Prompt({navigation}) {
       let cachedAuth = await getCachedAuthAsync();
       if (cachedAuth && !authState) {
         setAuthState(cachedAuth);
-        //userId = (fetchUserInfo(cachedAuth.accessToken))
       }
     })();
   }, []);
@@ -30,7 +29,7 @@ export default function Prompt({navigation}) {
           //await postUserInfo(user);
           //response;
           navigation.navigate("Student Map", {user});
-          console.log(user.given_name, "WEmadeit wow");
+          console.log(user.given_name, "Made it to the student map, user is logged in!");
         }}
       />
 
@@ -65,7 +64,7 @@ const styles = StyleSheet.create({
 
 
 //getting our clientId into the (Probably should put into the DB to hide from the user)
-let andoidClientId= "2260489795-b82e25fatl0ih72e43ii5q6q858fb6ql.apps.googleusercontent.com"//androidclientID
+let andoidClientId = "2260489795-b82e25fatl0ih72e43ii5q6q858fb6ql.apps.googleusercontent.com"//androidclientID
 let iosClientId ="2260489795-nvs04mkpqbhrjbd7ne2jb560e2a3dhdm.apps.googleusercontent.com"//iosclientID
 
 let myclientId = Platform.OS =="android" ? andoidClientId : iosClientId;
@@ -75,7 +74,6 @@ let config = {
     scopes: ['openid', 'profile', 'email'],
     clientId: myclientId,  
 };
-
 
 let StorageKey = '@MyApp:CustomGoogleOAuthKey';
 
@@ -178,10 +176,6 @@ async function refreshAuthAsync({ refreshToken }) {
 }
 
 export async function signOutAsync({accessToken }) {
-  //let clientId = null
- if(Platform.OS === null){
-   console.log("WHO IN THE WORLD DESIGNED THIS!?")
- }
   try {
     await AppAuth.revokeAsync(config, {
       token: accessToken,

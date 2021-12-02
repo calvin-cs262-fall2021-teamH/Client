@@ -1,4 +1,4 @@
-import REact from 'react';
+import React from 'react';
 import {View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { GeolocationPrototype } from '../screens/GeolocationPrototype';
 import { globalStyles } from '../styles/global';
