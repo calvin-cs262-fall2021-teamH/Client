@@ -29,37 +29,14 @@ export default function HomeScreen({navigation}) {
   }, []);
 
   if (authState == null){
-  
-//console.log(response)
+    //let user = null;
   return (
-    //<View style={styles.container}>
-      
-
-        
-      /*This is the signout button!
-        <TouchableOpacity style={globalStyles.genericButton} onPress={async()=>{ await
-        signOutAsync(authState);
-        setAuthState(null);
-        navigation.navigate("Home");
-        }}>
-                <Text style={{flex:.315, color: "#fff", fontWeight: "bold"}}>SIGN OUT</Text>
-                <Image source={require('../assets/login_white.png')} resizeMode='contain' style={{flex: .1 }}/>
-      </TouchableOpacity>*/
 
 <ImageBackground
 			source={require("../assets/woods_scene.jpg")}
 			style={styles.container}
 		>
 			<View style={styles.body}>
-				<TouchableOpacity
-					onPress={() => navigation.navigate("Setting")}
-					style={styles.container1}
-				>
-					<ImageBackground
-						source={require("../assets/menuIcon.png")}
-						style={globalStyles.settingIcon}
-					/>
-				</TouchableOpacity>
 
 				<TouchableHighlight
 					onPress={() => navigation.navigate("About")}
@@ -73,7 +50,7 @@ export default function HomeScreen({navigation}) {
 
 				<TouchableOpacity
 					style={globalStyles.genericButton}
-					onPress={() => navigation.navigate("Map")}
+          onPress={() => navigation.navigate("Map", null)}
 				>
 					<Text style={{ flex: 0.3, color: "#fff", fontWeight: "bold" }}>
 						EXPLORE
@@ -93,7 +70,7 @@ export default function HomeScreen({navigation}) {
           const user = await fetchUserInfo(_authState.accessToken);//this should be done in the sign in function.
           //await postUserInfo(user);
           //response;
-          navigation.navigate("Student Map", {user});
+          navigation.navigate("Map", {user, _authState });
           console.log(user.given_name, "Made it to the student map, user is logged in!");
         }}
       >
@@ -114,6 +91,11 @@ export default function HomeScreen({navigation}) {
 					<Text style={{ flex: 0.315, color: "#fff", fontWeight: "bold" }}>
 						ABOUT
 					</Text>
+          <Image
+						source={require("../assets/question_mark.png")}
+						resizeMode="contain"
+						style={{ flex: 0.1 }}
+					/>
 				</TouchableOpacity>
 			</View>
       <Text>{JSON.stringify(authState, null, 2)}</Text>
@@ -129,28 +111,18 @@ export default function HomeScreen({navigation}) {
         style={styles.container}
       >
         <View style={styles.body}>
-          <TouchableOpacity
-            onPress={() => navigation.navigate("Setting")}
-            style={styles.container1}
-          >
-            <ImageBackground
-              source={require("../assets/menuIcon.png")}
-              style={globalStyles.settingIcon}
-            />
-          </TouchableOpacity>
-  
             <Image
               source={require("../assets/HelloCampusLogo_NoBackground.png")}
               style={styles.imagest}
             />
           
 {/*Navigates to student map screen*/}
-          <TouchableOpacity
+        <TouchableOpacity
 					style={globalStyles.genericButton}
           onPress= {async () => {
-            
-          const user = await fetchUserInfo(authState.accessToken);//this should be done in the sign in function.
-          navigation.navigate("Student Map", {user});}}
+          const user = await fetchUserInfo(authState.accessToken);
+          navigation.navigate("Map", {user, authState});
+        }}
 				>
 					<Text style={{ flex: 0.3, color: "#fff", fontWeight: "bold" }}>
 						BACK TO MAP
@@ -167,7 +139,7 @@ export default function HomeScreen({navigation}) {
                 setAuthState(null);
                 navigation.navigate("Home");
                 }}>
-                <Text style={{flex:.315, color: "#fff", fontWeight: "bold"}}>SIGN OUT </Text>{/*include a "your answers will be saved" message*/}
+                <Text style={{flex:.315, color: "#fff", fontWeight: "bold"}}> SIGN OUT </Text>{/*include a "your answers will be saved" message*/}
                 <Image source={require('../assets/login_white.png')} resizeMode='contain' style={{flex: .1 }}/>
       </TouchableOpacity>
         </View>
@@ -180,6 +152,11 @@ export default function HomeScreen({navigation}) {
             <Text style={{ flex: 0.315, color: "#fff", fontWeight: "bold" }}>
               ABOUT
             </Text>
+            <Image
+						source={require("../assets/question_mark.png")}
+						resizeMode="contain"
+						style={{ flex: 0.1 }}
+					/>
           </TouchableOpacity>
         </View>
       </ImageBackground>)
