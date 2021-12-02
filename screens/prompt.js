@@ -67,8 +67,10 @@ let config = {
   issuer: 'https://accounts.google.com',
   scopes: ['openid', 'profile', 'email'],
   iosClientId: "2260489795-nvs04mkpqbhrjbd7ne2jb560e2a3dhdm.apps.googleusercontent.com",
-  clientId: "2260489795-b82e25fatl0ih72e43ii5q6q858fb6ql.apps.googleusercontent.com"//androidClientID need to fix this so it works accross platforms
+  androidClientId: "2260489795-b82e25fatl0ih72e43ii5q6q858fb6ql.apps.googleusercontent.com",//androidClientID need to fix this so it works accross platforms
+  clientId: "2260489795-b82e25fatl0ih72e43ii5q6q858fb6ql.apps.googleusercontent.com",//This is simply the acid
 };
+
 
 let StorageKey = '@MyApp:CustomGoogleOAuthKey';
 
@@ -79,7 +81,7 @@ export async function signInAsync() {
   console.log('signinInAsync', authState.accessToken);//we get here
   const user = await fetchUserInfo(authState.accessToken);
   if(await isInDB(user.email) == false){//this is for new users
-    console.log("USER Does not exist in the DB and GOt INTO THE IF signIn Async section");
+    console.log("User does not exist in our DB, we are creating a user.");
     addUser(user);
   }else{//this is for returning users isInDB returns true
       var returningUserID = await getID(user.email);
@@ -171,13 +173,18 @@ async function refreshAuthAsync({ refreshToken }) {
 }
 
 export async function signOutAsync({accessToken }) {
+  //let clientId = null
+ if(isAndroidClientIdProvided == true){
+   console.log("WHO IN THE WORLD DESIGNED THIS!?")
+ }
   try {
     await AppAuth.revokeAsync(config, {
       token: accessToken,
+      //isAndroidClientIdProvided: true,
+      //isIosclientIdProvided: true,
       isClientIdProvided: true,
     });
     await AsyncStorage.removeItem(StorageKey);
-
 
     return null;
   } catch (e) {
