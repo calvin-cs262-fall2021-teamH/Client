@@ -67,7 +67,7 @@ let config = {
   issuer: 'https://accounts.google.com',
   scopes: ['openid', 'profile', 'email'],
   iosClientId: "2260489795-nvs04mkpqbhrjbd7ne2jb560e2a3dhdm.apps.googleusercontent.com",
-  clientId: "2260489795-b82e25fatl0ih72e43ii5q6q858fb6ql.apps.googleusercontent.com"//androidClientID
+  clientId: "2260489795-b82e25fatl0ih72e43ii5q6q858fb6ql.apps.googleusercontent.com"//androidClientID need to fix this so it works accross platforms
 };
 
 let StorageKey = '@MyApp:CustomGoogleOAuthKey';
@@ -78,45 +78,59 @@ export async function signInAsync() {
   await cacheAuthAsync(authState);
   console.log('signinInAsync', authState.accessToken);//we get here
   const user = await fetchUserInfo(authState.accessToken);
-  console.log(user);//important user information
-  fetch(`https://hello-campus.herokuapp.com/users/`,
-    {
-        method: 'POST',
-        headers: new Headers({
-            "Content-Type": "application/json",
-        }),
-        
-        body: JSON.stringify({
-            email: user.email,
-            name: user.given_name
-        })
-    })
+  if(await isInDB(user.email) == false){//this is for new users
+    console.log("USER Does not exist in the DB and GOt INTO THE IF signIn Async section");
+    addUser(user);
+  }else{//this is for returning users isInDB returns true
+      var returningUserID = await getID(user.email);
+      console.log(returningUserID, "user.Id, from our database");///This is important!!!
+  }
   return authState;
 }
-/*
-//should return boole, true if user is in the db already, false otherwise
-function checkUser(user){
-  const data = user.values(arr.reduce((obj, {id, name, roleId, roleTitle})
-  fetch `https://hello-campus.herokuapp.com/users/:$`,
-  { => {
-      if (!(id in obj)) {
-        obj[id] = {
-          id,
-          name,
-          roles: {},
-        };
-      }
+
+//should return boolean, true if email is in the db already, false otherwise
+async function isInDB(email) {
+  try{
+    const resp = await fetch( `https://hello-campus.herokuapp.com/usersByEmail/`+ email );
+    const data = await resp.json();
+    console.log( data );
+    return true; //should be only if the User is in the database!
+  }catch (e){
+    console.log(`User is not in DB: ${e.message}`);//for testing only
+    return false;//returns false signaling that we should add the user to the db
   }
 }
+
+async function addUser(userFromGoogle){
+  fetch(`https://hello-campus.herokuapp.com/users/`,
+  {
+      method: 'POST',
+      headers: new Headers({
+          "Content-Type": "application/json",
+      }),
+      
+      body: JSON.stringify({
+          email: userFromGoogle.email,
+          name: userFromGoogle.given_name
+      })
+  })
 }
-*/
-//const { authentication: { accessToken } } = response;
+
+//should return the ID of a given user from the DB.
+async function getID(email){
+  const resp = await fetch( `https://hello-campus.herokuapp.com/usersByEmail/`+ email );
+  const data = await resp.json();
+  console.log(data.id, "retrieved Data.id from our DBASE....");
+  var userID = data.id;
+  return userID;
+}
+
 
 async function cacheAuthAsync(authState) {
   return await AsyncStorage.setItem(StorageKey, JSON.stringify(authState));
 }
 
-/////////////////////////////////////////////////////////////////////////////////////
+//Gets user info from Google, uses the auth token to do this.
 async function fetchUserInfo(token) {
     const response =  await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
       method: 'GET',
@@ -128,10 +142,6 @@ async function fetchUserInfo(token) {
     });
    return await response.json();
   }
-
-
-    //const user = fetchUserInfo(token);
-
 
 
   
