@@ -127,67 +127,6 @@ export default function ListScreen({ navigation }) {
     );
 }
 
-function QuestionList(locationID) {
-    const [isQuestionDataDownloading, setQuestionIsDataDownloading] = useState(true);
-    const [questions, setQuestion] = useState([]);
-
-    const [isLocationDataDownloading, setLocationIsDataDownloading] = useState(true);
-    const [locations, setLocation] = useState([]);
-    const [answers, setAnswer] = useState([]);
-
-    useEffect (() => {
-        if (isLocationDataDownloading) {
-            fetch(`https://hello-campus.herokuapp.com/pointsofinterest/`)
-            .then((response) => {
-                let data = response.json();
-                console.log(JSON.stringify(data));
-                //console.log("Successfully downloaded question data.");
-                return data;
-            })
-            .then((json) => setLocation(json))
-            .catch((error) => {
-                //console.log("Error downloading question data: " + error);
-            })
-            .finally(() => {
-                setLocationIsDataDownloading(false);
-            }
-        );
-        }
-    }, [])
-    
-    useEffect (() => {
-        if (isQuestionDataDownloading) {
-            fetch(`https://hello-campus.herokuapp.com/questions/`)
-            .then((response) => {
-                let data = response.json();
-                console.log(JSON.stringify(data));
-                //console.log("Successfully downloaded question data.");
-                return data;
-            })
-            .then((json) => setQuestion(json))
-            .catch((error) => {
-                //console.log("Error downloading question data: " + error);
-            })
-            .finally(() => {
-                setQuestionIsDataDownloading(false);
-            }
-        );
-        }
-    }, [])
-
-    return (
-        questions.map(question => locations.map(location => {
-            if(question.pointid == location.id) {
-                return [
-                    <Text style={globalStyles.Qlist}>
-                        Question: {question.question}
-                    </Text>
-                ]
-            }
-        }))
-    );
-}
-
 const styles = StyleSheet.create({
     container: {
       flex: 1,
