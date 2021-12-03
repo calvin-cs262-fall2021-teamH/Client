@@ -21,6 +21,14 @@ export const globalStyles = StyleSheet.create({
         justifyContent: 'space-between',
         marginTop:20,
     },
+    QAlist: {
+        backgroundColor: '#ffffff',
+        padding: 15,
+        borderRadius: 10,        
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+    },
     listText: {
         fontSize: 20,
         color: '#000000',

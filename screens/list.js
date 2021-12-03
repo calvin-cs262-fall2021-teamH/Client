@@ -1,41 +1,190 @@
-/* list.js screen that allows user to check off locations that they have already visited
+/* list.js screen that allows user to check locations and questions that they have answered
 Team HUH?!
 11/11/2021
 Brian Langejans, David Reidsma, David Heynen, Paul Dick, Kurt Wietelmann
 */
 
-import React, { useState } from 'react';
-import { View, Text, CheckBox, ImageBackground, StyleSheet} from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, ScrollView, ImageBackground, StyleSheet, ActivityIndicator} from 'react-native';
 import { globalStyles } from '../styles/global';
 
 export default function ListScreen({ navigation }) {
-    const [isSelectedOne, setSelectionOne] = useState(false);
-    const [isSelectedTwo, setSelectionTwo] = useState(false);
+    const [isDataDownloading, setIsDataDownloading] = useState(true);
+    const [locations, setLocation] = useState([]);
+    const [questions, setQuestion] = useState([]);
+    const [answers, setAnswer] = useState([]);
+    const [users, setUser] = useState([]);
+
+    useEffect (() => {
+        if (isDataDownloading) {
+            fetch(`https://hello-campus.herokuapp.com/pointsofinterest/`)
+            .then((response) => {
+                let data = response.json();
+                console.log(JSON.stringify(data));
+                //console.log("Successfully downloaded question data.");
+                return data;
+            })
+            .then((json) => setLocation(json))
+            .catch((error) => {
+                //console.log("Error downloading question data: " + error);
+            })
+            .finally(() => {
+                setIsDataDownloading(false);
+            }
+        );
+        }
+    }, [])
+
+    useEffect (() => {
+        if (isDataDownloading) {
+            fetch(`https://hello-campus.herokuapp.com/questions/`)
+            .then((response) => {
+                let data = response.json();
+                console.log(JSON.stringify(data));
+                //console.log("Successfully downloaded question data.");
+                return data;
+            })
+            .then((json) => setQuestion(json))
+            .catch((error) => {
+                //console.log("Error downloading question data: " + error);
+            })
+            .finally(() => {
+                setIsDataDownloading(false);
+            }
+        );
+        }
+    }, [])
+
+    useEffect (() => {
+        if (isDataDownloading) {
+            fetch(`https://hello-campus.herokuapp.com/answers/`)
+            .then((response) => {
+                let data = response.json();
+                console.log(JSON.stringify(data));
+                //console.log("Successfully downloaded question data.");
+                return data;
+            })
+            .then((json) => setAnswer(json))
+            .catch((error) => {
+                //console.log("Error downloading question data: " + error);
+            })
+            .finally(() => {
+                setIsDataDownloading(false);
+            }
+        );
+        }
+    }, [])
+
+    useEffect (() => {
+        if (isDataDownloading) {
+            fetch(`https://hello-campus.herokuapp.com/users/`)
+            .then((response) => {
+                let data = response.json();
+                console.log(JSON.stringify(data));
+                //console.log("Successfully downloaded question data.");
+                return data;
+            })
+            .then((json) => setUser(json))
+            .catch((error) => {
+                //console.log("Error downloading question data: " + error);
+            })
+            .finally(() => {
+                setIsDataDownloading(false);
+            }
+        );
+        }
+    }, [])
 
     return (
         <ImageBackground source = {require('../assets/woods_scene.jpg')} style={styles.container}>
           
-            <View style={ globalStyles.list }>
-                <Text style={ globalStyles.listText }>Crown Gap</Text>
-                <View style={{ padding: 15 }}>
-
-                    
-                    <CheckBox style = {{height: 50, width: 50}}
-                        value={isSelectedOne}
-                        onValueChange={setSelectionOne}
-                    />
-                </View>
-            </View>
-            <View style={ globalStyles.list }>
-                <Text style={ globalStyles.listText }>Whiskey Pond</Text>
-                <View style={{ padding: 15 }}>
-                    <CheckBox style = {{height: 50, width: 50}}
-                        value={isSelectedTwo}
-                        onValueChange={setSelectionTwo}
-                    />
-                </View>
-            </View>
+            <ScrollView>
+                { isDataDownloading ? <ActivityIndicator/> :
+                    locations.map(location => 
+                        questions.map(question => 
+                            answers.map(answer => 
+                                users.map(user => {
+                                    if (location.id == question.pointid 
+                                        && answer.questionid == question.id
+                                        && answer.personid == user.id) {
+                                        return [
+                                            <View>
+                                                <Text key={location.id} style={globalStyles.list}>
+                                                    {location.name}
+                                                </Text>
+                                                <Text key={question.id} style={globalStyles.QAlist}>Question: {question.question}</Text>
+                                                <Text key={answer.id} style={globalStyles.QAlist}>{user.name} Answer: {answer.answer}</Text>
+                                            </View>
+                                        ]
+                                    }
+                                })
+                            )
+                        )
+                    )
+                }
+            </ScrollView>
         </ImageBackground>
+    );
+}
+
+function QuestionList(locationID) {
+    const [isQuestionDataDownloading, setQuestionIsDataDownloading] = useState(true);
+    const [questions, setQuestion] = useState([]);
+
+    const [isLocationDataDownloading, setLocationIsDataDownloading] = useState(true);
+    const [locations, setLocation] = useState([]);
+    const [answers, setAnswer] = useState([]);
+
+    useEffect (() => {
+        if (isLocationDataDownloading) {
+            fetch(`https://hello-campus.herokuapp.com/pointsofinterest/`)
+            .then((response) => {
+                let data = response.json();
+                console.log(JSON.stringify(data));
+                //console.log("Successfully downloaded question data.");
+                return data;
+            })
+            .then((json) => setLocation(json))
+            .catch((error) => {
+                //console.log("Error downloading question data: " + error);
+            })
+            .finally(() => {
+                setLocationIsDataDownloading(false);
+            }
+        );
+        }
+    }, [])
+    
+    useEffect (() => {
+        if (isQuestionDataDownloading) {
+            fetch(`https://hello-campus.herokuapp.com/questions/`)
+            .then((response) => {
+                let data = response.json();
+                console.log(JSON.stringify(data));
+                //console.log("Successfully downloaded question data.");
+                return data;
+            })
+            .then((json) => setQuestion(json))
+            .catch((error) => {
+                //console.log("Error downloading question data: " + error);
+            })
+            .finally(() => {
+                setQuestionIsDataDownloading(false);
+            }
+        );
+        }
+    }, [])
+
+    return (
+        questions.map(question => locations.map(location => {
+            if(question.pointid == location.id) {
+                return [
+                    <Text style={globalStyles.Qlist}>
+                        Question: {question.question}
+                    </Text>
+                ]
+            }
+        }))
     );
 }
 
