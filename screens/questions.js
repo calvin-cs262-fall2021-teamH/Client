@@ -24,7 +24,6 @@ export default function QuestionScreen({ route }) {
             fetch(`https://hello-campus.herokuapp.com/questionsAtPoint/${route.params.point.id}/`)
             .then((response) => {
                 let data = response.json();
-                console.log(JSON.stringify(data));
                 //console.log("Successfully downloaded question data.");
                 return data;
             })
@@ -58,22 +57,27 @@ export default function QuestionScreen({ route }) {
         };
     };
     
-    onSubmitEdit = (personId, questionId, answer) => {
-        fetch(`https://hello-campus.herokuapp.com/answers/`,
-        { method: 'POST',
-        headers: new Headers({
-            "Content-Type":"application/json"
-        }),
-        body: JSON.stringify({
- 
-            personID: personId,
-         
-            questionID: questionId,
-         
-            answer: answer
-         
-          }, getCircularReplacer())
-        })
+    onSubmitEdit = () => {
+        for (i=0; i<questions.length; i++) {
+            console.log(questions[i].id)
+            console.log(answer)
+            fetch(`https://hello-campus.herokuapp.com/answers/`,
+            { method: 'POST',
+            headers: new Headers({
+                "Content-Type":"application/json"
+            }),
+            body: JSON.stringify({
+     
+                email: route.params.user.email,
+             
+                questionID: questions[i].id,
+             
+                answer: answer
+             
+              }, getCircularReplacer())
+            })
+        }
+
         // myTextInput.current.clear();
     }
 
@@ -97,16 +101,15 @@ export default function QuestionScreen({ route }) {
                                 multiline={true}
                                 placeholder="Your answer"
                                 numberOfLines={3}
-                                onSubmitEditing={this.onSubmitEdit(route.params.userId, question.id, answer)}
-                            />,
-                            <TouchableOpacity key={question.id + 100} style={globalStyles.submitButton} onPress={this.onSubmitEdit(route.params.userId, question.id, answer)}>
-                                <Text style={globalStyles.submitText}>Submit</Text>
-                            </TouchableOpacity>
-
+                            />
                         ]
+
 
                         })
                     }
+                    <TouchableOpacity style={globalStyles.submitButton} onPress={onSubmitEdit()}>
+                        <Text style={globalStyles.submitText}>Submit</Text>
+                    </TouchableOpacity>
         </ScrollView>
 
         
