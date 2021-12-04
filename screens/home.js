@@ -70,7 +70,8 @@ export default function HomeScreen({navigation}) {
           const user = await fetchUserInfo(_authState.accessToken);//this should be done in the sign in function.
           //await postUserInfo(user);
           //response;
-          navigation.navigate("Map", {user, _authState });
+          var returningUserID = await getID(user.email);
+          navigation.navigate("Map", {user, _authState,  returningUserID});
           console.log(user.given_name, "Made it to the student map, user is logged in!");
         }}
       >
@@ -121,7 +122,8 @@ export default function HomeScreen({navigation}) {
 					style={globalStyles.genericButton}
           onPress= {async () => {
           const user = await fetchUserInfo(authState.accessToken);
-          navigation.navigate("Map", {user, authState});
+          var returningUserID = await getID(user.email);
+          navigation.navigate("Map", {user, authState, returningUserID});
         }}
 				>
 					<Text style={{ flex: 0.3, color: "#fff", fontWeight: "bold" }}>

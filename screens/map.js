@@ -14,6 +14,7 @@ import Prompt from "./prompt";
 import { scaleCoordsToPixelCoords, isCoordWithinBoundaries } from '../models/PointOfInterest';
 import { TEST_POINTS_OF_INTEREST as TEST_POINTS_OF_INTEREST } from '../models/TestData.js';
 import { useRoute } from '@react-navigation/native';
+import {HomeScreen} from './home'
 
 const USE_TEST_DATA = false;
 
@@ -156,7 +157,6 @@ export default function MapScreen({route, navigation}) {
         let closePoint = sortedByDistance[0];
         // TODO: don't get the distance twice, this sucks
         if (getDistance(currentLocation, { latitude: closePoint.latitude, longitude: closePoint.longitude }) <= closePoint.radius) {
-            Vibration.vibrate(70)
             return closePoint;
         }
         return null;
@@ -182,7 +182,7 @@ export default function MapScreen({route, navigation}) {
                     return <TouchableOpacity
                                 key={point.id}
                                 style={[styles.mapPoint, { position: 'absolute', top: pixelCoords.y, right: pixelCoords.x }]}
-                                onPress={() => navigation.navigate('Questions', point), Vibration.cancel()}
+                                onPress={() => navigation.navigate('Questions', {point: closestPoint, user: route.params.user}), Vibration.cancel()}
                             />;f
                 })
             }
@@ -203,11 +203,10 @@ export default function MapScreen({route, navigation}) {
                 onPress={() => {
                     if (closestPoint == null)
                         return;
-
                     if (route.params == null){//ie we are not logged in...
                         navigation.navigate('PointInfo', closestPoint);
                     }else{//if the user is logged in (need to update further)
-                        navigation.navigate('Questions', {point: closestPoint, userId: route.params.user.email});//This is a user from google not necc. the user from our DB, should update!
+                        navigation.navigate('Questions', {point: closestPoint, user: route.params.user});//This is a user from google not necc. the user from our DB, should update!
                     }
                 }}>
                 <Image source={closestPoint == null ? require('../assets/PointInteractionButton.png') : require("../assets/PointInteractionButton2.png")} style = {{width: 170, height:170 }}/>
