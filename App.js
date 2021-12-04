@@ -30,9 +30,9 @@ const Drawer = createDrawerNavigator();
 
 const DrawerNavigator = () => {
     return (
-    <Drawer.Navigator initialRouteName="Home" backBehavior="initialRoute">
+    <Drawer.Navigator initialRouteName="Home " backBehavior="initialRoute">
         <Drawer.Screen 
-          name="Home" 
+          name="Home " 
           component={HomeScreen}
           options={({ navigation }) => ({
             headerStyle: {
@@ -50,27 +50,27 @@ const DrawerNavigator = () => {
     )
 }
 
-const DrawerNavigatorStdt = (parentProps) => {
-  return (
-    <Drawer.Navigator initialRouteName="Home Screen" backBehavior="initialRoute">
-        <Drawer.Screen 
-          name="Back to Home" 
-          //component={AuthenticatedMapScreen}
-          options={({ navigation }) => ({
-            headerStyle: {
-              backgroundColor: '#fff',
-            },
-            headerTintColor: '#8C2131',
-          headerTitleStyle: {
-            fontWeight: 'bold',
-          },
-          })}
-          >{(props) => <AuthenticatedMapScreen {...props} route={parentProps.route}/>}</Drawer.Screen>
-        <Drawer.Screen name = "Map" component = {MapScreen}/>
-        <Drawer.Screen name="List" component={ListScreen} />
-    </Drawer.Navigator>
-    )
-}
+// const DrawerNavigatorStdt = (parentProps) => {
+//   return (
+//     <Drawer.Navigator initialRouteName="Home " backBehavior="initialRoute">
+//         <Drawer.Screen 
+//           name="Back to Home" 
+//           //component={AuthenticatedMapScreen}
+//           options={({ navigation }) => ({
+//             headerStyle: {
+//               backgroundColor: '#fff',
+//             },
+//             headerTintColor: '#8C2131',
+//           headerTitleStyle: {
+//             fontWeight: 'bold',
+//           },
+//           })}
+//           >{(props) => <AuthenticatedMapScreen {...props} route={parentProps.route}/>}</Drawer.Screen>
+//         <Drawer.Screen name = "Map" component = {MapScreen}/>
+//         <Drawer.Screen name="List" component={ListScreen} />
+//     </Drawer.Navigator>
+//     )
+// }
 
 function App() {
   return (
@@ -84,7 +84,7 @@ function App() {
         <Stack.Screen 
           name="Map" 
           //component = {MapScreen}
-          component = {DrawerNavigatorStdt}
+          component = {DrawerNavigator}
           //component={DrawerNavigator}
           options={{ headerShown: false }}
           />
