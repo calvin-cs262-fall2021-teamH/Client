@@ -7,18 +7,21 @@
  */
 
 import React, { useEffect, useState } from 'react';
-import { AsyncStorage, Button, StyleSheet, Text, View, Image, ImageBackground, TouchableHighlight, TouchableOpacity, Platform} from 'react-native';
+import { Button, StyleSheet, Text, View, Image, ImageBackground, TouchableHighlight, TouchableOpacity, Platform} from 'react-native';
 import { globalStyles } from '../styles/global';
 import * as AppAuth from 'expo-app-auth';
+import { AsyncStorage } from 'react-native';
+//import DrawerNavigator from './App';
 
 /*
  * HomeScreen is the main screen of the Hello Campus app.
  * @param {navigation} navigation makes sure navigation is correct for getting to the screen and navigating other screens.
  */
+
 export default function HomeScreen({navigation}) {
   //https://docs.expo.dev/versions/v43.0.0/sdk/app-auth/#usage
   let [authState, setAuthState, userId] = useState(null);
-  
+  //AsyncStorage.getItem(StorageKey);
   useEffect(() => {
     (async () => {
       let cachedAuth = await getCachedAuthAsync();
@@ -27,8 +30,15 @@ export default function HomeScreen({navigation}) {
       }
     })();
   }, []);
+  /////////////////////////
+  const toCreateQuiz = (authState) => {
+    //navigation.navigate('DrawerNavigator', {screen: 'CreateQuiz', params: {myAuthState: authState}});
+    navigation.navigate('DrawerNavigator', {screen: 'Map', params: {user,_authState}});
+  };
 
   if (authState == null){
+
+    
     //let user = null;
   return (
 
@@ -61,6 +71,14 @@ export default function HomeScreen({navigation}) {
 						style={{ flex: 0.15 }}
 					/>
 				</TouchableOpacity>
+        {/*<Button
+        title = "TITLE"
+        mode="contained"
+        uppercase={false}
+        onPress={() => toCreateQuiz(user, authState)}
+        >
+        
+        </Button>*/}
 
         <TouchableOpacity style= {globalStyles.genericButton}
         
@@ -71,6 +89,7 @@ export default function HomeScreen({navigation}) {
           //await postUserInfo(user);
           //response;
           navigation.navigate("Map", {user, _authState });
+          //navigation.navigate('Drawer', {screen: 'Map', params: {user, _authState}});
           console.log(user.given_name, "Made it to the student map, user is logged in!");
         }}
       >
@@ -84,19 +103,6 @@ export default function HomeScreen({navigation}) {
 			</View>
 
 			<View style={styles.footer}>
-				<TouchableOpacity
-					style={globalStyles.genericButton}
-					onPress={() => navigation.navigate("About")}
-				>
-					<Text style={{ flex: 0.315, color: "#fff", fontWeight: "bold" }}>
-						ABOUT
-					</Text>
-          <Image
-						source={require("../assets/question_mark.png")}
-						resizeMode="contain"
-						style={{ flex: 0.1 }}
-					/>
-				</TouchableOpacity>
 			</View>
       <Text>{JSON.stringify(authState, null, 2)}</Text>
 		</ImageBackground>
@@ -111,10 +117,6 @@ export default function HomeScreen({navigation}) {
         style={styles.container}
       >
         <View style={styles.body}>
-            <Image
-              source={require("../assets/HelloCampusLogo_NoBackground.png")}
-              style={styles.imagest}
-            />
           
 {/*Navigates to student map screen*/}
         <TouchableOpacity
@@ -142,22 +144,18 @@ export default function HomeScreen({navigation}) {
                 <Text style={{flex:.315, color: "#fff", fontWeight: "bold"}}> SIGN OUT </Text>{/*include a "your answers will be saved" message*/}
                 <Image source={require('../assets/login_white.png')} resizeMode='contain' style={{flex: .1 }}/>
       </TouchableOpacity>
+
+      <TouchableOpacity style={globalStyles.genericButton} onPress= {async () => {
+          const user = await fetchUserInfo(authState.accessToken);
+          navigation.navigate("Dashboard", {user});
+        }}>
+                <Text style={{flex:.315, color: "#fff", fontWeight: "bold"}}>MANAGE COURSE </Text>{/*include a "your answers will be saved" message*/}
+                <Image source={require('../assets/login_white.png')} resizeMode='contain' style={{flex: .1 }}/>
+      </TouchableOpacity>
         </View>
   
         <View style={styles.footer}>
-          <TouchableOpacity
-            style={globalStyles.genericButton}
-            onPress={() => navigation.navigate("About")}
-          >
-            <Text style={{ flex: 0.315, color: "#fff", fontWeight: "bold" }}>
-              ABOUT
-            </Text>
-            <Image
-						source={require("../assets/question_mark.png")}
-						resizeMode="contain"
-						style={{ flex: 0.1 }}
-					/>
-          </TouchableOpacity>
+         
         </View>
       </ImageBackground>)
     }
@@ -231,7 +229,7 @@ let config = {
     clientId: myclientId,  
 };
 
-let StorageKey = '@MyApp:CustomGoogleOAuthKey';
+StorageKey = '@MyApp:CustomGoogleOAuthKey';
 
 export async function signInAsync() {
     //{authState, user}
@@ -248,6 +246,8 @@ export async function signInAsync() {
   }
   return authState;
 }
+
+
 
 //should return boolean, true if email is in the db already, false otherwise
 async function isInDB(email) {
@@ -285,7 +285,7 @@ async function getID(email){
   var userID = data.id;
   return userID;
 }
-
+////////////////////////////////////////////////////////////////////
 
 async function cacheAuthAsync(authState) {
   return await AsyncStorage.setItem(StorageKey, JSON.stringify(authState));
@@ -338,7 +338,6 @@ export async function signOutAsync({accessToken }) {
       isClientIdProvided: true,
     });
     await AsyncStorage.removeItem(StorageKey);
-
     return null;
   } catch (e) {
     alert(`Failed to revoke token: ${e.message}`);
