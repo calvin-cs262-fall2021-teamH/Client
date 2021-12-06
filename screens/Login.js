@@ -27,6 +27,7 @@ const LoginScreen = ({ navigation }) => {
     <View style={styles.container}>
       <Button title="Login with Google" onPress={signInAsync} />
     </View>
+    
   );
 };
 
