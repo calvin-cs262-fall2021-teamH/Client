@@ -76,7 +76,7 @@ export default function QuestionScreen({ navigation, route }) {
 
     return (
         <ScrollView style={{ flex: 1, backgroundColor: '#8C2032' }}>
-            <Text style={{ fontSize: 40, color: "#fff", padding: 20, padding:10, flex:2 }}>{ route.params.name }</Text>
+            <Text style={{ fontSize: 40, color: "#fff", padding: 20, padding:10, flex:2 }}>{ route.params.point.name }</Text>
             {/* { isDataDownloading ? <ActivityIndicator/>:
                 <Text style={{ fontSize: 30, color: "#fff", padding: 20, position: "absolute" }}>{ question[0].question }</Text>
             } */}

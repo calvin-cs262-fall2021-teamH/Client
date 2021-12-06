@@ -63,7 +63,7 @@ export default function MapScreen({route, navigation}) {
 
         async function getCurrentLatLong() {
             const locationPromise = await Location.getCurrentPositionAsync({
-                accuracy: Location.Accuracy.Highest,
+                accuracy: Location.Accuracy.BestForNavigation,
                 distanceInterval: 1
             });
             return locationPromise.coords;
@@ -139,34 +139,46 @@ export default function MapScreen({route, navigation}) {
         return () => clearInterval(locationRefreshIntervalHandle); // end the interval'd calls when the screen is unmounted
     }, [])
 
+    let closestPoint = null;
+    let closestDistance = -1;
+
     function getClosePoint() {
         let currentLocation = userLocation.realCoords;
-        if (currentLocation.latitude == null)
-            return null;
+        if (currentLocation.latitude == null) {
+            // return [ null, -1 ];
+            closestPoint = null;
+            closestDistance = -1;
+            return;
+        }
 
-        let sortedByDistance = TEST_POINTS_OF_INTEREST.sort((a, b) => {
+        if (pointsOfInterest.length == 0)
+            return;
+
+        let sortedByDistance = pointsOfInterest.sort((a, b) => {
             let distanceA = getDistance(currentLocation, { latitude: a.latitude, longitude: a.longitude });
             let distanceB = getDistance(currentLocation, { latitude: b.latitude, longitude: b.longitude });
 
             // TODO: have some setting for debug output, it's spamming my console
-            console.log("Distance to " + a.name + ": " + distanceA + " meters");
-            console.log("Distance to " + b.name + ": " + distanceB + " meters");
-            return distanceA > distanceB ? 1 : -1
+            // console.log("Distance to " + a.name + ": " + distanceA + " meters");
+            // console.log("Distance to " + b.name + ": " + distanceB + " meters");
+            return distanceA > distanceB ? 1 : -1;
         });
 
         let closePoint = sortedByDistance[0];
+
         // TODO: don't get the distance twice, this sucks
         if (getDistance(currentLocation, { latitude: closePoint.latitude, longitude: closePoint.longitude }) <= closePoint.radius) {
             return closePoint;
         }
-        return null;
+        // return [ null, distance ];
     }
 //add the user to the map screen
 //props.route.params
     //const { user } = route.params;
     //const {userId} = route.params;
     //console.log("user from google", user);
-    const closestPoint = getClosePoint();
+    // const [ closestPoint, closestDistance ] = getClosePoint();
+    getClosePoint();
     
     let userPixelCoords = userLocation.realCoords.latitude != null ? realToPixelCoords(userLocation.realCoords) : { x: -500, y: -500 };
     let textMessage = route.params == null ? "Walk towards a point on the map." : "Welcome " + route.params.user.given_name + ", walk towards a point to answer questions.";
@@ -183,7 +195,7 @@ export default function MapScreen({route, navigation}) {
                                 key={point.id}
                                 style={[styles.mapPoint, { position: 'absolute', top: pixelCoords.y, right: pixelCoords.x }]}
                                 onPress={() => navigation.navigate('Questions', {point: closestPoint, user: route.params.user}), Vibration.cancel()}
-                            />;f
+                            />
                 })
             }
 
@@ -201,8 +213,10 @@ export default function MapScreen({route, navigation}) {
             <TouchableOpacity
                 style={[{ bottom: 0, position: 'absolute', alignItems: 'center' }, globalStyles.noInteractionButton ]}
                 onPress={() => {
-                    if (closestPoint == null)
+                    if (closestPoint == null) {
+                        console.log("No close point!");
                         return;
+                    }
                     if (route.params == null){//ie we are not logged in...
                         navigation.navigate('PointInfo', closestPoint);
                     }else{//if the user is logged in (need to update further)
