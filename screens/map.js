@@ -15,6 +15,7 @@ import { scaleCoordsToPixelCoords, isCoordWithinBoundaries } from '../models/Poi
 import { TEST_POINTS_OF_INTEREST as TEST_POINTS_OF_INTEREST } from '../models/TestData.js';
 import { useRoute } from '@react-navigation/native';
 import {HomeScreen} from './home'
+import MapInfoText from '../components/mapInfoText'
 
 const USE_TEST_DATA = false;
 
@@ -195,9 +196,11 @@ export default function MapScreen({route, navigation}) {
                                 key={point.id}
                                 style={[styles.mapPoint, { position: 'absolute', top: pixelCoords.y, right: pixelCoords.x }]}
                                 onPress={() => navigation.navigate('Questions', {point: closestPoint, user: route.params.user}), Vibration.cancel()}
-                            />
+                        />
                 })
             }
+
+            <MapInfoText/>
 
             { /* the point of the user on the map using the current latitude and longitude */}
             <TouchableOpacity style={[
