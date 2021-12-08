@@ -7,19 +7,30 @@ Brian Langejans, David Reidsma, David Heynen, Paul Dick, Kurt Wietelmann
 import { StyleSheet } from 'react-native';
 
 export const globalStyles = StyleSheet.create({
+    QAlist: {
+        padding: 15,
+        borderRadius: 10,        
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        color: "#fff",
+    },
     listIcon: {
         width: 30,
         height: 30,        
         borderRadius: 20,
     },
     list: {
-        backgroundColor: '#ffffff',
+        backgroundColor: '#fff',
         padding: 15,
         borderRadius: 10,        
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
         marginTop:20,
+        fontWeight: "bold",
+        fontSize: 20,
+        color: "maroon"
     },
     listText: {
         fontSize: 20,
@@ -103,4 +114,37 @@ export const globalStyles = StyleSheet.create({
         right: 40,
         backgroundColor: "#81FF8E",
     },
+    body: {
+		flex: 1,
+		alignItems: "center",
+		justifyContent: "center",
+	},
+	footer: {
+		alignItems: "center",
+		marginBottom: 15,
+	},
+	imageBackGround: {
+		flex: 1,
+		backgroundColor: "#8C2131",
+	},
+	
+	genericButtonText: {
+		fontWeight: "bold",
+		color: "#fff",
+		flex:.315,
+	},
+	helpModal: {
+		alignItems: "center",
+		marginTop: 76,
+		backgroundColor: "#fff",
+		borderRadius: 15,
+	},
+	touchableHighlight: {
+		borderRadius: 100,
+	},
+
+	logo: {
+		width: 150,
+		height: 150,
+	},
 });

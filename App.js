@@ -14,7 +14,7 @@ import MapScreen from "./screens/map";
 import GeoPrototype from './screens/GeolocationPrototype';
 import PointInfoScreen from './screens/pointInfo';
 
-import Header from './shared/header';
+//import Header from './shared/header';
 import Login from './screens/Login';
 import About from './screens/about';
 import DrawerScreen from './screens/DrawerScreen'
@@ -22,40 +22,65 @@ import myStudents from './screens/myStudents'
 import QuestionScreen from './screens/questions';
 import myDashBoard from './screens/dashboard';
 import locationQuestion from './screens/locationlist';
+import SignedOutLocationList from './screens/signedOutLocations';
 //import Icon from 'react-native-ionicons';
 
 
 import ListScreen from './screens/list';
 
 import Prompt from './screens/prompt';
+import { TouchableOpacity , Text, Header} from 'react-native';
 
 
 const Stack = createNativeStackNavigator();
 
 function App() {
+
+  Stack.navigationOptions =(
+  {
+      headerLeft: () => (
+            <TouchableOpacity
+              onPress={() => alert('Left Menu Clicked')}
+              style={{marginLeft: 10}}>
+              <Text style={{color: 'white'}}>Left Menu</Text>
+            </TouchableOpacity>
+          )
+      }
+  )
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Home">
         <Stack.Screen 
           name="Home" 
-          component={DrawerScreen}
-          options={{ headerShown: false  }}
+          component={HomeScreen}
+          options={{ headerShown: true,
+            headerStyle: {
+              backgroundColor: '#fff',
+            },
+            headerTintColor: '#8C2131',
+            headerTitleStyle: {
+              fontWeight: 'bold',
+            },
+          }}
           />
         <Stack.Screen 
           name="Map" 
           component={MapScreen}
-          options={{ headerShown: true }}
+          options={{ headerShown: true,
+          headerTitleAlign: "center",
+          headerTintColor: "maroon",
+        }
+          }
+          
           />
         <Stack.Screen 
           name="PointInfo" 
           component={PointInfoScreen}
-          options={({ navigation }) => ({
-            headerRight: () => (
-              <Header navigation={navigation}/>
-            )
-          })} />
-        <Stack.Screen name = "Login" component = {Login}/>
-        <Stack.Screen name = "About" component = {About}/>
+          />
+        <Stack.Screen name = "About" component = {About} options={{ headerShown: true,
+          headerTitleAlign: "center",
+          headerTintColor: "maroon",
+        }}/>
         <Stack.Screen name = "Questions" component = {QuestionScreen}/>
         <Stack.Screen name = "Location" component = {ListScreen}/>
         <Stack.Screen name = "Prompt" component = {Prompt}/>
@@ -63,6 +88,7 @@ function App() {
         <Stack.Screen name = "My Students" component = {myStudents} />
         <Stack.Screen name = "Dashboard" component = {myDashBoard}/>
         <Stack.Screen name = "Location List" component = {locationQuestion}/>
+        <Stack.Screen name = "Points of Interest" component = {SignedOutLocationList}/>
         
       </Stack.Navigator>
     </NavigationContainer>
