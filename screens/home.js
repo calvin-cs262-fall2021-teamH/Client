@@ -375,7 +375,7 @@ React.useLayoutEffect(() => {
 							const user = await fetchUserInfo(authState.accessToken);
 							navigation.navigate("Location", {user});
 						}}>
-						<Text style={globalStyles.genericButtonText}>Assignment</Text>{/*include a "your answers will be saved" message*/}
+						<Text style={globalStyles.genericButtonText}>Assignment </Text>{/*Location get the user stuff*/}
 						<Image source={require('../assets/course_icon.png')} resizeMode='contain' style={{flex: .135 }}/>
 					</TouchableOpacity>
         		</View>
