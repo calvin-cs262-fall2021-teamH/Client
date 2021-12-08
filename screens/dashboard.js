@@ -40,7 +40,7 @@ export default function myDashBoard({route, navigation}) {
           navigation.navigate("My Students", {name});
         }}>
                 <Text style={{flex:.315, color: "#fff", fontWeight: "bold"}}> Your Students </Text>{/*include a "your answers will be saved" message*/}
-                <Image source={require('../assets/login_white.png')} resizeMode='contain' style={{flex: .1 }}/>
+                <Image source={require('../assets/people.png')} resizeMode='contain' style={{flex: .13 }}/>
       </TouchableOpacity>
 
       <TouchableOpacity style={globalStyles.genericButton} onPress= {async () => {
@@ -48,7 +48,7 @@ export default function myDashBoard({route, navigation}) {
           navigation.navigate("Location List", {name});
         }}>
                 <Text style={{flex:.315, color: "#fff", fontWeight: "bold"}}> Locations/Questions </Text>{/*include a "your answers will be saved" message*/}
-                <Image source={require('../assets/login_white.png')} resizeMode='contain' style={{flex: .1 }}/>
+                <Image source={require('../assets/checklist.png')} resizeMode='contain' style={{flex: .1 }}/>
       </TouchableOpacity>
         </ImageBackground>
     )

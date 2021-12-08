@@ -8,9 +8,10 @@ Brian Langejans, David Reidsma, David Heynen, Paul Dick, Kurt Wietelmann
 
 import { globalStyles } from '../styles/global';
 import React, { useState, useEffect } from 'react';
-import { View, Text, ScrollView, ImageBackground, StyleSheet, ActivityIndicator} from 'react-native';
+import { View, Text, ScrollView, ImageBackground, StyleSheet, ActivityIndicator, TouchableOpacity} from 'react-native';
 
-    export default function ListScreen({ navigation }) {
+
+export default function SignedOutLocationList({ route, navigation }) {
     const [isDataDownloading, setIsDataDownloading] = useState(true);
     const [locations, setLocation] = useState([]);
     const [questions, setQuestion] = useState([]);
@@ -95,38 +96,35 @@ import { View, Text, ScrollView, ImageBackground, StyleSheet, ActivityIndicator}
         );
         }
     }, [])
+
+locations.map(location=>
+    console.log(location.name, "THIs is in the other part")
+    )
+    //console.log(route.params.isSignedIn, "THIS IS>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+
     return (
         <ImageBackground source = {require('../assets/light_background.jpg')} style={styles.container}>
-          
           <ScrollView>
                 { isDataDownloading ? <ActivityIndicator/> :
-                    locations.map(location => 
-                        questions.map(question => 
-                            answers.map(answer => 
-                                users.map(user => {
-                                    if (location.id == question.pointid 
-                                        && answer.questionid == question.id
-                                        && answer.personid == user.id) {
-                                        return [
-                                            <View>
-                                                <Text key={location.id} style={globalStyles.list}>
-                                                    {location.name}
-                                                </Text>
-                                                <Text key={question.id} style={globalStyles.QAlist}>Question: {question.question}</Text>
-                                                <Text key={answer.id} style={globalStyles.QAlist}>{user.name} Answer: {answer.answer}</Text>
-                                            </View>
-                                        ]
-                                    }
-                                })
-                            )
-                        )
+                    locations.map(location =>
+                         // locationName= location.name
+                         // locationInfo = location.info
+                        <View>
+                            <TouchableOpacity onPress = {()=> navigation.navigate("PointInfo", {locationName:(location.name), info: (location.info)})}>
+                               
+                              <Text key = {location.id} style={globalStyles.list}>
+                                {location.name}
+                              </Text>
+                            </TouchableOpacity>                     
+                         </View>  
+                                 
                     )
                 }
             </ScrollView>
         </ImageBackground>
     );
-}
 
+}
 const styles = StyleSheet.create({
     container: {
       flex: 1,

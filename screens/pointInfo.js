@@ -4,16 +4,41 @@ Team HUH?!
 Brian Langejans, David Reidsma, David Heynen, Paul Dick, Kurt Wietelmann
 */
 
-import React, { useState } from 'react';
+import React from 'react';
 import { Image, Button, View, Text, TouchableOpacity, FlatList, ImageBackground } from 'react-native';
-import { globalStyles } from '../styles/global';
+import globalStyles from "../styles/global";
+
 
 export default function PointInfoScreen({ route, navigation }) {
     return (
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#8C2032' }}>
-            <Text style={{ fontSize: 30, color: "#fff", padding: 20 }}>{ route.params.name }</Text>
-            <ImageBackground source = {{ uri: route.params.imageurl }} style = { globalStyles.pointImage }/>
-            <Text style={{ fontSize: 20, color: "#fff", padding: 20 }}>{ route.params.info }</Text>
-        </View>
+        <ImageBackground
+				source={require("../assets/woods_scene.jpg")}
+				style={{flex: 1,
+                    backgroundColor: "#8C2131",
+                    alignItems: "stretch",
+                    justifyContent: "flex-start",}}
+			>
+            <Text style={{ 
+                color: '#9C1D37',
+                fontWeight: 'bold',
+                fontSize: 24,
+                textAlign: "center",
+                margin: 30,
+                backgroundColor: "#fff",
+                borderRadius: 10
+                 }}>{ route.params.locationName }</Text>
+            
+            <Text style={{ 
+                color: '#9C1D37',
+                fontWeight: 'bold',
+                fontSize: 24,
+                textAlign: "center",
+                margin: 30,
+                backgroundColor: "#fff",
+                borderRadius: 10
+                 }}
+          >{ route.params.info}</Text>
+        </ImageBackground>
     );
 }
+//<ImageBackground source = {{ uri: route.params.imageurl }} style = { globalStyles.pointImage }/>
