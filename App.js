@@ -33,6 +33,7 @@ import { TouchableOpacity , Text, Header} from 'react-native';
 
 
 const Stack = createNativeStackNavigator();
+console.disableYellowBox = true;
 
 function App() {
 
@@ -76,19 +77,47 @@ function App() {
         <Stack.Screen 
           name="PointInfo" 
           component={PointInfoScreen}
+          options={{ headerShown: true,
+            headerTitleAlign: "center",
+            headerTintColor: "maroon",
+          }}
           />
         <Stack.Screen name = "About" component = {About} options={{ headerShown: true,
           headerTitleAlign: "center",
           headerTintColor: "maroon",
         }}/>
-        <Stack.Screen name = "Questions" component = {QuestionScreen}/>
-        <Stack.Screen name = "Location" component = {ListScreen}/>
-        <Stack.Screen name = "Prompt" component = {Prompt}/>
-        <Stack.Screen name = "DrawerScreen" component = {DrawerScreen}/>
-        <Stack.Screen name = "My Students" component = {myStudents} />
-        <Stack.Screen name = "Dashboard" component = {myDashBoard}/>
-        <Stack.Screen name = "Location List" component = {locationQuestion}/>
-        <Stack.Screen name = "Points of Interest" component = {SignedOutLocationList}/>
+        <Stack.Screen name = "Questions" component = {QuestionScreen} options={{ headerShown: true,
+          headerTitleAlign: "center",
+          headerTintColor: "maroon",
+        }}/>
+        <Stack.Screen name = "Location" component = {ListScreen} options={{ headerShown: true,
+          headerTitleAlign: "center",
+          headerTintColor: "maroon",
+        }}/>
+        <Stack.Screen name = "Prompt" component = {Prompt} options={{ headerShown: true,
+          headerTitleAlign: "center",
+          headerTintColor: "maroon",
+        }}/>
+        <Stack.Screen name = "DrawerScreen" component = {DrawerScreen} options={{ headerShown: true,
+          headerTitleAlign: "center",
+          headerTintColor: "maroon",
+        }}/>
+        <Stack.Screen name = "My Students" component = {myStudents} options={{ headerShown: true,
+          headerTitleAlign: "center",
+          headerTintColor: "maroon",
+        }} />
+        <Stack.Screen name = "Dashboard" component = {myDashBoard} options={{ headerShown: true,
+          headerTitleAlign: "center",
+          headerTintColor: "maroon",
+        }}/>
+        <Stack.Screen name = "Location List" component = {locationQuestion} options={{ headerShown: true,
+          headerTitleAlign: "center",
+          headerTintColor: "maroon",
+        }}/>
+        <Stack.Screen name = "Points of Interest" component = {SignedOutLocationList} options={{ headerShown: true,
+          headerTitleAlign: "center",
+          headerTintColor: "maroon",
+        }}/>
         
       </Stack.Navigator>
     </NavigationContainer>
