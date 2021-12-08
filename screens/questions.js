@@ -1,4 +1,4 @@
-/**
+/*
  * Screen that contains questions about the user's current location.
  *
  * @author: Brian Langejans, David Reidsma, David Heynen, Paul Dick, Kurt Wietelmann
@@ -11,7 +11,7 @@ import { globalStyles } from '../styles/global';
 
 
 
-export default function QuestionScreen({ route }) {
+export default function QuestionScreen({ navigation, route }) {
     const [isDataDownloading, setIsDataDownloading] = useState(true);
     const [questions, setQuestion] = useState([]);
     const [answer, setAnswer] = useState("");
@@ -24,7 +24,6 @@ export default function QuestionScreen({ route }) {
             fetch(`https://hello-campus.herokuapp.com/questionsAtPoint/${route.params.point.id}/`)
             .then((response) => {
                 let data = response.json();
-                console.log(JSON.stringify(data));
                 //console.log("Successfully downloaded question data.");
                 return data;
             })
@@ -41,39 +40,37 @@ export default function QuestionScreen({ route }) {
 
     function _handleMultiInput(answerText) {
         return (text) => {
-            setAnswer({ [answerText]:text })
+            setAnswer(prevState => ({
+                ...prevState,
+                [answerText]:text
+              }));
         }
     }
 
-    const getCircularReplacer = () => {
-        const seen = new WeakSet();
-        return (key, value) => {
-        if (typeof value === "object" && value !== null) {
-            if (seen.has(value)) {
-                return;
-            }
-            seen.add(value);
-        }
-        return value;
-        };
-    };
     
-    onSubmitEdit = (personId, questionId, answer) => {
-        fetch(`https://hello-campus.herokuapp.com/answers/`,
-        { method: 'POST',
-        headers: new Headers({
-            "Content-Type":"application/json"
-        }),
-        body: JSON.stringify({
- 
-            personID: personId,
-         
-            questionID: questionId,
-         
-            answer: answer
-         
-          }, getCircularReplacer())
-        })
+    submit = () => {
+        for (i=0; i<questions.length; i++) {
+            console.log(questions[i].id)
+            console.log(answer["answer_3"])
+            console.log(answer["answer_4"])
+            console.log(answer["answer_5"])
+            fetch(`https://hello-campus.herokuapp.com/answers/`,
+            { method: 'POST',
+            headers: new Headers({
+                "Content-Type":"application/json"
+            }),
+            body: JSON.stringify({
+     
+                email: route.params.user.email,
+             
+                questionID: questions[i].id,
+             
+                answer: answer["answer_" + questions[i].id]
+             
+              })
+            })
+        }
+
         // myTextInput.current.clear();
     }
 
@@ -93,20 +90,19 @@ export default function QuestionScreen({ route }) {
                                 key={question.id + 50}
                                 ref={myTextInput}
                                 style={globalStyles.input}
-                                onChangeText={_handleMultiInput(this['answer_' + question.id])}
+                                onChangeText={_handleMultiInput(['answer_' + question.id])}
                                 multiline={true}
                                 placeholder="Your answer"
                                 numberOfLines={3}
-                                onSubmitEditing={this.onSubmitEdit(route.params.userId, question.id, answer)}
-                            />,
-                            <TouchableOpacity key={question.id + 100} style={globalStyles.submitButton} onPress={this.onSubmitEdit(route.params.userId, question.id, answer)}>
-                                <Text style={globalStyles.submitText}>Submit</Text>
-                            </TouchableOpacity>
-
+                            />
                         ]
+
 
                         })
                     }
+                    <TouchableOpacity style={globalStyles.submitButton} onPress={() => {this.submit(), navigation.goBack()}}>
+                        <Text style={globalStyles.submitText}>Submit</Text>
+                    </TouchableOpacity>
         </ScrollView>
 
         

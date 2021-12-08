@@ -21,7 +21,7 @@ export const globalStyles = StyleSheet.create({
         borderRadius: 20,
     },
     list: {
-        backgroundColor: '#fff',
+        backgroundColor: 'grey',
         padding: 15,
         borderRadius: 10,        
         flexDirection: 'row',
@@ -30,7 +30,7 @@ export const globalStyles = StyleSheet.create({
         marginTop:20,
         fontWeight: "bold",
         fontSize: 20,
-        color: "maroon"
+        color: "white"
     },
     listText: {
         fontSize: 20,
