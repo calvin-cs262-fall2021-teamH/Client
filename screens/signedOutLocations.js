@@ -100,7 +100,6 @@ export default function SignedOutLocationList({ route, navigation }) {
 locations.map(location=>
     console.log(location.name, "THIs is in the other part")
     )
-    //console.log(route.params.isSignedIn, "THIS IS>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
 
     return (
         <ImageBackground source = {require('../assets/light_background.jpg')} style={styles.container}>
