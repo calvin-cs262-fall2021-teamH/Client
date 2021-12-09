@@ -118,7 +118,7 @@ export default function myStudents({route, navigation}) {
                     keyExtractor={({ id }, index) => id.toString()}
                     ListHeaderComponent={renderHeader()} 
                     renderItem={({ item }) => (
-                    <TouchableOpacity onPress={() => {navigation.navigate("Location")}}>
+                    <TouchableOpacity onPress={() => {navigation.navigate("Location", {user: item})}}>
                     <Text style={{ color: "#8C2131" , fontSize: 18}}> {item.email} {"\n"} </Text>
                     </TouchableOpacity>
                  )}
