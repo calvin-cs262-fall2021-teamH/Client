@@ -17,12 +17,13 @@ export default function ListScreen({ route, navigation }) {
     const [answers, setAnswer] = useState([]);
     const [locations, setLocation] = useState([]);
     const[user, setUser] = useState([]);
+    const[buttonColor, setButtonColor] = useState("#8C2032");
+    const[textColor, setTextColor] = useState("#8C2032");
     //data = []
-    const [text, onChangeText] = React.useState("Useless Text");
+    //const [text, onChangeText] = React.useState("Useless Text");
     const myTextInput = React.createRef();
+    const [text, setText] = useState('');
 
-    
-   
     useEffect (() => {
         if (isDataDownloading) {
             //fetch(`https://hello-campus.herokuapp.com/questions/`)
@@ -85,11 +86,10 @@ export default function ListScreen({ route, navigation }) {
         );
         }
     }, [])
-
     //gets answers
     useEffect (() => {
         if (isDataDownloading) {
-            fetch(`https://hello-campus.herokuapp.com/answersForPerson/${route.params.user.id}`)
+            fetch('https://hello-campus.herokuapp.com/answersForPerson/' + route.params.user.id)
 
             .then((response) => {
                 let data = response.json();
@@ -108,6 +108,30 @@ export default function ListScreen({ route, navigation }) {
         }
     }, [])
     //console.log(answers, "THis is my answer")
+
+    function submit(questionId){
+        console.log(text);
+        console.log(questionId);
+        console.log(route.params.user.id);
+        
+            fetch(`https://hello-campus.herokuapp.com/updateAnswer/`,
+            { method: 'PUT',
+            headers: new Headers({
+                "Content-Type":"application/json"
+            }),
+            body: JSON.stringify({
+     
+                personID: route.params.user.id,
+             
+                questionID: questionId,
+             
+                answer: text,
+             
+              })
+            })
+    }
+
+        // myTextInput.current.clear();
 
     function _handleMultiInput(answerText) {
         return (text) => {
@@ -147,32 +171,7 @@ export default function ListScreen({ route, navigation }) {
         // myTextInput.current.clear();
 
     }
-
-    function submit() {
-        for (i=0; i<questions.length; i++) {
-            console.log(questions[i].id)
-            console.log(answer["answer_3"])
-            console.log(answer["answer_4"])
-            console.log(answer["answer_5"])
-            fetch(`https://hello-campus.herokuapp.com/answers/`,
-            { method: 'POST',
-            headers: new Headers({
-                "Content-Type":"application/json"
-            }),
-            body: JSON.stringify({
-     
-                email: route.params.user.email,
-             
-                questionID: questions[i].id,
-             
-                answer: answer["answer_" + questions[i].id]
-             
-              })
-            })
-        }
-
-        // myTextInput.current.clear();
-    }
+    
 
     return (
         <ScrollView style={{ flex: 1, backgroundColor: '#8C2032' }}>
@@ -206,22 +205,33 @@ export default function ListScreen({ route, navigation }) {
                                 
 
                                 answers.map(answer =>{
-                                    console.log("HI THERE", answer)
                                 if(answer.questionid == question.id){
                                     return[
-                                <TextInput
-                                    //key={answer.id + 50}
-                                    ref={myTextInput}
-                                    style={globalStyles.input}
-                                    //onChangeText={_handleMultiInput(this['answer_' + question.id])}
-                                    multiline={true}
-                                    placeholder={answer.answer}
-                                    numberOfLines={3}
-                                //onSubmitEditing={this.onSubmitEdit(route.params.userId, question.id, answer)}
-                                />,
+                                    <TextInput
+                                        //key={answer.id + 50}
+                                        editable = {true}
+                                        ref={myTextInput}
+                                        style={globalStyles.input}
+                                        multiline={true}
+                                        numberOfLines={3}
+                                        defaultValue={answer.answer}
+                                        onChangeText={text => {setText(text), setButtonColor("yellow"), setTextColor("black")}}//THISSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
+                                    //onSubmitEditing={this.onSubmitEdit(route.params.userId, question.id, answer)}
+                                    />,
                             //onPress={() => onSubmitEdit(user.id, question.id, answer.id)
-                                    <TouchableOpacity key={question.id + 100} style={globalStyles.submitButton} onPress={() => submit()}>
-                                        <Text style={globalStyles.submitText}>Edit</Text>
+                                    <TouchableOpacity key={question.id + 100} style={{
+                                        width: "20%",
+                                        height: "10%",
+                                        borderRadius: 10,
+                                        height: 60,
+                                        alignItems: "center",
+                                        justifyContent: "center",
+                                        marginTop: 10,
+                                        alignSelf: 'flex-end',
+                                        right: 40,
+                                        backgroundColor: buttonColor,
+                                    }} onPress={() => {submit(question.id), console.log("SUBMITTED!"), setButtonColor("#8C2032"),setTextColor("#8C2032")}}>
+                                        <Text style={{color:textColor, fontWeight: "bold"}}>Submit</Text>
                                     </TouchableOpacity>,
                                     ]
                                 }
@@ -239,7 +249,6 @@ export default function ListScreen({ route, navigation }) {
         
     );
 }
-
 
 
 

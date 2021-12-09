@@ -385,9 +385,6 @@ React.useLayoutEffect(() => {
 							const userFromGoogle = await fetchUserInfo(authState.accessToken);
 							console.log(userFromGoogle);
 							const myUser = await getUserFromDB(userFromGoogle.email);
-							console.log(myUser, "This is actually the user??");
-							console.log("MADE IT HERE MADE IT HERE MADE IT HERE")
-
 							navigation.navigate("Location", {user: myUser});
 						}}>
 						<Text style={globalStyles.genericButtonText}>Assignment </Text>{/*Location get the user stuff*/}
