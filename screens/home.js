@@ -36,6 +36,8 @@ let config = {
     clientId: myclientId,  
 };
 
+
+
 StorageKey = '@MyApp:CustomGoogleOAuthKey';
 
 export async function signInAsync() {
@@ -58,12 +60,20 @@ async function isInDB(email) {
   try{
     const resp = await fetch( `https://hello-campus.herokuapp.com/usersByEmail/`+ email );
     const data = await resp.json();
-    console.log( data );
+	console.log( data );
     return true; //should be only if the User is in the database!
   }catch (e){
     console.log(`User is not in DB: ${e.message}`);//for testing only
     return false;//returns false signaling that we should add the user to the db
   }
+}
+
+
+async function getUserFromDB(email){
+		const resp = await fetch( `https://hello-campus.herokuapp.com/usersByEmail/`+ email );
+		const data = await resp.json();
+		console.log( data );
+		return data; //should be only if the User is in the database
 }
 
 async function addUser(userFromGoogle){
@@ -223,7 +233,7 @@ React.useLayoutEffect(() => {
         </HeaderButtons>
         ),
     });
-  }, [navigation])
+  }, [navigation])//authstate///////////////////////////////////////////////////////////////
 
   
 
@@ -372,8 +382,13 @@ React.useLayoutEffect(() => {
 
 					<TouchableOpacity style={globalStyles.genericButton} 
 						onPress= {async () => {
-							const user = await fetchUserInfo(authState.accessToken);
-							navigation.navigate("Location", {user});
+							const userFromGoogle = await fetchUserInfo(authState.accessToken);
+							console.log(userFromGoogle);
+							const myUser = await getUserFromDB(userFromGoogle.email);
+							console.log(myUser, "This is actually the user??");
+							console.log("MADE IT HERE MADE IT HERE MADE IT HERE")
+
+							navigation.navigate("Location", {user: myUser});
 						}}>
 						<Text style={globalStyles.genericButtonText}>Assignment </Text>{/*Location get the user stuff*/}
 						<Image source={require('../assets/course_icon.png')} resizeMode='contain' style={{flex: .135 }}/>
