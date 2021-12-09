@@ -34,7 +34,9 @@ export default function myStudents({route, navigation}) {
     const [isLoading, setIsLoading] = useState(true);
     const [data, setData] = useState([]);
     const [fullData, setFullData] = useState([]);
-    const [error, setError] = useState(null);
+    const [thoseWhoAreNotStudents, setThoseWhoAreNotStudents] = useState([]);
+    //const [error, setError] = useState(null);
+    const [error, setError] = useState([]);
     //const [isLoading, setIsLoading] = useState(false);
     /*useEffect(() => {
         fetch('https://hello-campus.herokuapp.com/users/')
@@ -50,7 +52,7 @@ export default function myStudents({route, navigation}) {
       useEffect(() => {
         setIsLoading(true);
       
-        fetch('https://hello-campus.herokuapp.com/users/')
+        fetch('https://hello-campus.herokuapp.com/allStudentUsers/')
           .then(response => response.json())
           .then((json) => {
             setData(json);
@@ -63,8 +65,23 @@ export default function myStudents({route, navigation}) {
           .catch(err => {
             setIsLoading(false);
             setError(err);
-          });
+          });   
       }, []);
+
+      useEffect(() => {
+        setIsLoading(true);
+      
+        fetch('https://hello-campus.herokuapp.com/allGuestUsers/')
+          .then(response => response.json())
+          .then((json) => {
+            setThoseWhoAreNotStudents(json);
+      
+            setIsLoading(false);
+          })
+           
+      }, []);
+
+      
 
     const [modalVisible, setModalVisible] = useState(false);
     const [addRemoveModalVisible, setAddRemoveModalVisible] = useState(false);
@@ -136,9 +153,9 @@ export default function myStudents({route, navigation}) {
         >
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
-            <Text>Add Student</Text>
+            <Text>   Add Student    </Text>
             <FlatList
-                    data={data}
+                    data={thoseWhoAreNotStudents}
                     keyExtractor={({ id }, index) => id.toString()}
                     ListHeaderComponent={renderHeader()} 
                     renderItem={({ item }) => (
@@ -146,7 +163,6 @@ export default function myStudents({route, navigation}) {
                     <Text style={{ color: "#8C2131" , fontSize: 18}}> {item.email} {"\n"} </Text>
                     </TouchableOpacity>
 
-         
                  )}
                  
             />
