@@ -6,7 +6,7 @@ adapted from the navigation tutorial found at: https://reactnavigation.org/docs/
 */
 
 import React, { useState, useEffect } from 'react';
-import { Image, View, Text, TouchableOpacity, FlatList, ImageBackground, Touchable, StyleSheet, ActivityIndicator, Vibration } from 'react-native';
+import { Image, View, Text, TouchableOpacity, FlatList, ImageBackground, Touchable, StyleSheet, ActivityIndicator, Vibration, Animated } from 'react-native';
 import { globalStyles } from '../styles/global';
 import * as Location from 'expo-location';
 import { getDistance } from 'geolib';
@@ -15,6 +15,8 @@ import { scaleCoordsToPixelCoords, isCoordWithinBoundaries } from '../models/Poi
 import { TEST_POINTS_OF_INTEREST as TEST_POINTS_OF_INTEREST } from '../models/TestData.js';
 import { useRoute } from '@react-navigation/native';
 import {HomeScreen} from './home'
+import MapInfoText from '../components/mapInfoText'
+import InteractionButton from '../components/interactionButton'
 
 const USE_TEST_DATA = false;
 
@@ -159,8 +161,8 @@ export default function MapScreen({route, navigation}) {
             let distanceB = getDistance(currentLocation, { latitude: b.latitude, longitude: b.longitude });
 
             // TODO: have some setting for debug output, it's spamming my console
-            // console.log("Distance to " + a.name + ": " + distanceA + " meters");
-            // console.log("Distance to " + b.name + ": " + distanceB + " meters");
+            console.log("Distance to " + a.name + ": " + distanceA + " meters");
+            console.log("Distance to " + b.name + ": " + distanceB + " meters");
             return distanceA > distanceB ? 1 : -1;
         });
 
@@ -195,7 +197,7 @@ export default function MapScreen({route, navigation}) {
                                 key={point.id}
                                 style={[styles.mapPoint, { position: 'absolute', top: pixelCoords.y, right: pixelCoords.x }]}
                                 onPress={() => navigation.navigate('Questions', {point: closestPoint, user: route.params.user}), Vibration.cancel()}
-                            />
+                        />
                 })
             }
 
@@ -225,7 +227,9 @@ export default function MapScreen({route, navigation}) {
                 }}>
                 <Image source={closestPoint == null ? require('../assets/PointInteractionButton.png') : require("../assets/PointInteractionButton2.png")} style = {{width: 170, height:170 }}/>
             </TouchableOpacity>
-
+            <TouchableOpacity onPress = {()=> navigation.navigate("Questions", {point: {id: 1, name:"Whiskey Pond"}})}>
+                            <Text>THIS IS A BUTTON</Text>
+            </TouchableOpacity>
         </ImageBackground>
     );
 }
