@@ -5,6 +5,7 @@
  * 11/16/2021
  */
 
+import { NavigationRouteContext } from '@react-navigation/native';
 import React, { useEffect, useReducer, useState } from 'react';
 import { Image, Button, View, Text, TouchableOpacity, FlatList, ImageBackground, TextInput, ActivityIndicator, ScrollView } from 'react-native';
 import { globalStyles } from '../styles/global';
@@ -89,7 +90,7 @@ export default function ListScreen({ route, navigation }) {
     //gets answers
     useEffect (() => {
         if (isDataDownloading) {
-            fetch('https://hello-campus.herokuapp.com/answersForPerson/' + route.params.user.id)
+            fetch('https://hello-campus.herokuapp.com/answers/')
 
             .then((response) => {
                 let data = response.json();
@@ -156,7 +157,7 @@ export default function ListScreen({ route, navigation }) {
 
     return (
         <ScrollView style={{ flex: 1, backgroundColor: '#8C2032' }}>
-            <Text style={{ fontSize: 22, color: "#fff", padding: 20, padding:10, flex:2 }}>Questions and responses for {route.params.user.email},</Text>
+            <Text style={{ fontSize: 22, color: "#fff", padding: 20, padding:10, flex:2 }}>Questions and responses for {route.params.user.name},</Text>
             
             {/* { isDataDownloading ? <ActivityIndicator/>:
                 <Text style={{ fontSize: 30, color: "#fff", padding: 20, position: "absolute" }}>{ question[0].question }</Text>
@@ -164,12 +165,15 @@ export default function ListScreen({ route, navigation }) {
             { isDataDownloading ? <ActivityIndicator/> :
             locations.map(location=>{
                 return[
-                    <TouchableOpacity onPress = {()=> navigation.navigate("PointInfo", {locationName:(location.name), info: (location.info)})}>
+                    <Text key={location.id} style={globalStyles.list}>
+                        {location.name}
+                    </Text>
+                    /*<TouchableOpacity onPress = {()=> navigation.navigate("PointInfo", {locationName:(location.name), info: (location.info)})}>
                                
                               <Text key = {location.id} style={globalStyles.list}>
                                 {location.name}
                               </Text>
-                        </TouchableOpacity>,
+                        </TouchableOpacity>*/,
                         
                     questions.map(question => {
                     //console.log(location.name, "THIS IS MY NAME!!!!!")
@@ -181,13 +185,18 @@ export default function ListScreen({ route, navigation }) {
                                 //console.log(answers.get(answer)),            
                                 <Text
                                     key={question.id}
-                                    style={{ fontSize: 25, color: "#fff", padding: 20, justifyContent:'space-between' }}>{question.question}
+                                    style={globalStyles.Qlist}>{question.question}
                                 </Text>,
                                 
 
                                 answers.map(answer =>{
-                                if(answer.questionid == question.id){
+                                if(answer.questionid == question.id && answer.personid == route.params.user.id){
                                     return[
+                                        <Text
+                                            key={answer.id} 
+                                            style={globalStyles.Alist}>     Answer: {answer.answer}
+                                        </Text>
+                                    /*
                                     <TextInput
                                         //key={answer.id + 50}
                                         editable = {true}
@@ -214,6 +223,7 @@ export default function ListScreen({ route, navigation }) {
                                     }} onPress={() => {submit(question.id), console.log("SUBMITTED!"), setButtonColor("#8C2032"),setTextColor("#8C2032")}}>
                                         <Text style={{color:textColor, fontWeight: "bold"}}>Submit</Text>
                                     </TouchableOpacity>,
+                                    */
                                     ]
                                 }
 

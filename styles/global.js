@@ -7,8 +7,18 @@ Brian Langejans, David Reidsma, David Heynen, Paul Dick, Kurt Wietelmann
 import { StyleSheet } from 'react-native';
 
 export const globalStyles = StyleSheet.create({
-    QAlist: {
+    Qlist: {
         padding: 15,
+        fontSize: 20,
+        borderRadius: 10,        
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        color: "#fff",
+    },
+    Alist: {
+        padding: 15,
+        fontSize: 15,
         borderRadius: 10,        
         flexDirection: 'row',
         alignItems: 'center',
