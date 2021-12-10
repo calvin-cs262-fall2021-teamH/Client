@@ -20,6 +20,7 @@ import About from './screens/about';
 import Prompt from './screens/prompt';
 import QuestionScreen from './screens/questions';
 import ListScreen from './screens/list';
+import ProfessorHome from "./screens/professorhome";
 
 //import AuthenticatedMapScreen from './screens/studentView';
 
@@ -101,6 +102,7 @@ function App() {
         <Stack.Screen name = "Questions" component = {QuestionScreen}/>
         <Stack.Screen name = "Location"  component = {ListScreen}/>
         <Stack.Screen name = "Prompt"    component = {Prompt}/>
+        <Stack.Screen name = "ProfessorHome" component = {ProfessorHome}/>
       </Stack.Navigator>
     </NavigationContainer>
   );
