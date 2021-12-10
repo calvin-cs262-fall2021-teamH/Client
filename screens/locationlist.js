@@ -157,8 +157,7 @@ export default function locationQuestion({route, navigation}) {
             </TouchableOpacity>
             <TouchableOpacity
               style={{backgroundColor:"#8C2131", marginTop:50, borderRadius:5}}
-              onPress={() => {
-                setQuestionModalVisible(!questionModalVisible)}}
+              onPress={() => {setQuestionModalVisible(!questionModalVisible)}}
             >
               <Text style={{fontSize: 18, color: "#fff", margin: 15}}>Return</Text>
             </TouchableOpacity>
@@ -196,21 +195,35 @@ export default function locationQuestion({route, navigation}) {
                placeholderTextColor = "grey"
                autoCapitalize = "none"
                />
+              <TextInput style = {styles.input}
+               underlineColorAndroid = "transparent"
+               placeholder = "Description"
+               placeholderTextColor = "grey"
+               autoCapitalize = "none"
+               multiline={true}
+               numberOfLines={3}
+               />
             
+
+            {/* <TouchableOpacity
+                style={{backgroundColor:"#8C2131", margin:10, borderRadius:5}}
+                onPress={() => setModalVisible(!modalVisible)}
+              >
+                <Text style={{fontSize: 18, fontWeight:'bold', color: '#fff', margin:10}}>Use Current Location?</Text>
+            </TouchableOpacity> */}
 
             <TouchableOpacity
                 style={{backgroundColor:"#8C2131", margin:10, borderRadius:5}}
                 onPress={() => setModalVisible(!modalVisible)}
               >
-                <Text style={{fontSize: 18, fontWeight:'bold', color: '#fff', margin:10}}>Use Current Location?</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={{backgroundColor:"#8C2131", margin:10, borderRadius:5}}
-                onPress={() => setModalVisible(!modalVisible)}
-              >
-                <Text style={{fontSize: 18, fontWeight:'bold', color: '#fff', margin:10}}>Set</Text>
-              </TouchableOpacity>
+                  <Text style={{fontSize: 18, fontWeight:'bold', color: '#fff', margin:10}}>Set</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{backgroundColor:"#8C2131", marginTop:50, borderRadius:5}}
+              onPress={() => {setModalVisible(!modalVisible)}}
+            >
+              <Text style={{fontSize: 18, color: "#fff", margin: 15}}>Return</Text>
+            </TouchableOpacity>
             </View>
           </View>
         </Modal>
@@ -219,7 +232,7 @@ export default function locationQuestion({route, navigation}) {
           style= {styles.AddButtonStyle}
           onPress={() => setModalVisible(true)}
         >
-          <Text style={styles.textStyle}> + </Text>
+          <Text style={styles.textStyle}> Add Location </Text>
         </TouchableOpacity>
       </ImageBackground>
     );
@@ -245,7 +258,7 @@ export default function locationQuestion({route, navigation}) {
       margin: 0,
       backgroundColor: "#fff",
       borderRadius: 20,
-      padding: 40,
+      padding: 30,
       alignItems: "center",
       shadowColor: "#000",
       shadowOffset: {
@@ -269,9 +282,9 @@ export default function locationQuestion({route, navigation}) {
     },
     textStyle: {
       color: "white",
-      fontWeight: "bold",
       textAlign: "center",
-      fontSize: 70
+      fontWeight: 'bold',
+      fontSize: 35
     },
     modalText: {
       marginBottom: 15,
@@ -285,7 +298,8 @@ export default function locationQuestion({route, navigation}) {
         alignItems: 'center',
         justifyContent: 'center',
         bottom: 30,
-        position: 'absolute'
+        position: 'absolute',
+        padding: 25
     },
     locationButton: {
       width: "100%",
