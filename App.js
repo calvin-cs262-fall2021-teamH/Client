@@ -22,6 +22,7 @@ import myStudents from './screens/myStudents'
 import QuestionScreen from './screens/questions';
 import myDashBoard from './screens/dashboard';
 import locationQuestion from './screens/locationlist';
+import AddQuestionsScreen from './screens/addQuestions';
 //import Icon from 'react-native-ionicons';
 
 
@@ -63,6 +64,7 @@ function App() {
         <Stack.Screen name = "My Students" component = {myStudents} />
         <Stack.Screen name = "Dashboard" component = {myDashBoard}/>
         <Stack.Screen name = "Location List" component = {locationQuestion}/>
+        <Stack.Screen name = "Add Question" component = {AddQuestionsScreen}/>
         
       </Stack.Navigator>
     </NavigationContainer>

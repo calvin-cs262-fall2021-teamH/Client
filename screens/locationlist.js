@@ -35,6 +35,9 @@ export default function locationQuestion({route, navigation}) {
     const [data, setData] = useState([]);
     const [fullData, setFullData] = useState([]);
     const [error, setError] = useState(null);
+    const [latitude, setLatitude] = useState("");
+    const [longitude, setLongitude] = useState("");
+    const [locName, setLocName] = useState("");
     //const [isLoading, setIsLoading] = useState(false);
     /*useEffect(() => {
         fetch('https://hello-campus.herokuapp.com/users/')
@@ -69,6 +72,7 @@ export default function locationQuestion({route, navigation}) {
     const [modalVisible, setModalVisible] = useState(false);
     const [questionModalVisible, setQuestionModalVisible] = useState(false);
     const [query, setQuery] = useState('');
+    const [location, setLocation] = useState();
 
     function renderHeader() {
         return (
@@ -80,15 +84,6 @@ export default function locationQuestion({route, navigation}) {
               borderRadius: 20
             }}
           >
-            <TextInput
-              autoCapitalize="none"
-              autoCorrect={false}
-              clearButtonMode="always"
-              value={query}
-              onChangeText={queryText => handleSearch(queryText)}
-              placeholder="Search"
-              style={{ backgroundColor: '#fff', paddingHorizontal: 20 }}
-            />
           </View>
         );
       }
@@ -109,24 +104,41 @@ export default function locationQuestion({route, navigation}) {
         return false;
       };
 
+      submit = () => {
+          fetch(`https://hello-campus.herokuapp.com/locations/`,
+              { method: 'POST',
+              headers: new Headers({
+                  "Content-Type":"application/json"
+              }),
+              body: JSON.stringify({
+     
+                  email: route.params.user.email,
+             
+                  questionID: questions[i].id,
+             
+                  answer: answer["answer_" + questions[i].id]
+             
+              })
+            })
+        }
+
 
     return (
-        <ImageBackground source = {require('../assets/light_background.jpg')} style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#8C2032' }}>
-          <Text style = {{fontSize: 18, fontWeight: 'bold', color: "#8C2131"}} > Select a location to edit.</Text>
+        <ImageBackground source = {require('../assets/light_background.jpg')} style={{ flex: 1, justifyContent: 'center', backgroundColor: '#8C2032', alignItems: 'center' }}>
+          <Text style = {{fontSize: 25, fontWeight: 'bold', color: "#FFF", top: 10}} > Select a location to edit.</Text>
             <FlatList
                     data={data}
-                    keyExtractor={({ id }, index) => id.toString()}
-                    ListHeaderComponent={renderHeader()} 
+                    keyExtractor={({ id }, index) => id.toString()} 
                     renderItem={({ item }) => (
-                    <TouchableOpacity onPress={() => {setQuestionModalVisible(true)}}>
-                    <Text style={{ color: "#8C2131" , fontSize: 18}}> {item.name} {"\n"} </Text>
+                    <TouchableOpacity style={styles.locationButton} onPress={() => {setQuestionModalVisible(true), setLocation({location: item})}}>
+                    <Text style={{fontSize: 20, color: "#fff", fontWeight: "bold"}}> {item.name} </Text>
                     </TouchableOpacity>
                  )}
                  
             />
         <Modal
             animationType = "slide"
-            tranparent = {true}
+            transparent = {true}
             visible = {questionModalVisible}
             onRequestClose={() =>{
                 Alert.alert("Modal has been closed.");
@@ -135,15 +147,21 @@ export default function locationQuestion({route, navigation}) {
         >
             <View style={styles.centeredView}>
             <View style={styles.modalView}>
-            <TouchableOpacity onPress={() => {setQuestionModalVisible(!questionModalVisible)}} 
-                              style={{backgroundColor:"#8C2131", margin:10, borderRadius:5}}>
-                    <Text style={{ color: "#8C2131" , fontSize: 18, color: "#fff", margin: 15}}>Delete Location?</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => {navigation.navigate("Questions")}}
+            <TouchableOpacity onPress={() => {navigation.navigate("Add Question", location), setQuestionModalVisible(!questionModalVisible)}}
              style={{backgroundColor:"#8C2131", margin:15, borderRadius:5}}>
-                    <Text style={{ color: "#8C2131" , fontSize: 18, color: "#fff", margin: 15}}>Edit Location Questions</Text>
+                    <Text style={{ color: "#8C2131" , fontSize: 18, color: "#fff", margin: 15}}>Edit Questions</Text>
             </TouchableOpacity>
-
+            <TouchableOpacity onPress={() => {setQuestionModalVisible(!questionModalVisible)}} 
+                              style={{backgroundColor:"red", margin:10, borderRadius:5}}>
+                    <Text style={{fontSize: 18, color: "#fff", margin: 15}}>Delete</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{backgroundColor:"#8C2131", marginTop:50, borderRadius:5}}
+              onPress={() => {
+                setQuestionModalVisible(!questionModalVisible)}}
+            >
+              <Text style={{fontSize: 18, color: "#fff", margin: 15}}>Return</Text>
+            </TouchableOpacity>
             </View>
             </View>
         </Modal>
@@ -160,24 +178,22 @@ export default function locationQuestion({route, navigation}) {
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
             <Text style = {{fontWeight: "bold", color: "#8C2131"}}>Add A New Location</Text>
-            
-
             <TextInput style = {styles.input}
                underlineColorAndroid = "transparent"
-               placeholder = "Location Name Here:"
-               placeholderTextColor = "#8C2131"
+               placeholder = "Location Name"
+               placeholderTextColor = "grey"
                autoCapitalize = "none"
                />{/*on change text*/}
                <TextInput style = {styles.input}
                underlineColorAndroid = "transparent"
-               placeholder = "Longitude:"
-               placeholderTextColor = "#8C2131"
+               placeholder = "Longitude"
+               placeholderTextColor = "grey"
                autoCapitalize = "none"
                />
                <TextInput style = {styles.input}
                underlineColorAndroid = "transparent"
-               placeholder = "Latitude:"
-               placeholderTextColor = "#8C2131"
+               placeholder = "Latitude"
+               placeholderTextColor = "grey"
                autoCapitalize = "none"
                />
             
@@ -193,7 +209,7 @@ export default function locationQuestion({route, navigation}) {
                 style={{backgroundColor:"#8C2131", margin:10, borderRadius:5}}
                 onPress={() => setModalVisible(!modalVisible)}
               >
-                <Text style={{fontSize: 18, fontWeight:'bold', color: '#fff', margin:10}}>SET</Text>
+                <Text style={{fontSize: 18, fontWeight:'bold', color: '#fff', margin:10}}>Set</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -255,20 +271,33 @@ export default function locationQuestion({route, navigation}) {
       color: "white",
       fontWeight: "bold",
       textAlign: "center",
-      fontSize: 50
+      fontSize: 70
     },
     modalText: {
       marginBottom: 15,
       textAlign: "center"
     },
     AddButtonStyle: {
-        borderRadius: 10,
-        backgroundColor: "#8C2131",
-        borderWidth:1,
+        borderRadius: 20,
+        backgroundColor: "#32CD30",
+        borderWidth:2,
         borderColor: "#fff",
-        bottom: 5,
-        left: 5,
+        alignItems: 'center',
+        justifyContent: 'center',
+        bottom: 30,
         position: 'absolute'
-}
+    },
+    locationButton: {
+      width: "100%",
+      borderRadius: 20,
+      borderColor: "#fff",
+      borderWidth: 1,
+      height: 60,
+      flexDirection:"row",
+      alignItems: "center",
+      justifyContent: "center",
+      marginTop: 30,
+      backgroundColor: "#8C2131",
+    }
     },
   );
