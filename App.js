@@ -17,12 +17,13 @@ import PointInfoScreen from './screens/pointInfo';
 //import Header from './shared/header';
 import Login from './screens/Login';
 import About from './screens/about';
-import DrawerScreen from './screens/DrawerScreen'
+import DrawerScreen from './screens/Navigator2'
 import myStudents from './screens/myStudents'
 import QuestionScreen from './screens/questions';
 import myDashBoard from './screens/dashboard';
 import locationQuestion from './screens/locationlist';
 import SignedOutLocationList from './screens/signedOutLocations';
+import addStudentsToCourse from './screens/addStudent';
 //import Icon from 'react-native-ionicons';
 
 
@@ -33,6 +34,10 @@ import { TouchableOpacity , Text, Header} from 'react-native';
 
 
 const Stack = createNativeStackNavigator();
+const Stack1= createNativeStackNavigator();
+
+
+
 console.disableYellowBox = true;
 
 function App() {
@@ -98,7 +103,7 @@ function App() {
           headerTitleAlign: "center",
           headerTintColor: "maroon",
         }}/>
-        <Stack.Screen name = "DrawerScreen" component = {DrawerScreen} options={{ headerShown: true,
+        <Stack.Screen name = "Navigator2" component = {DrawerScreen} options={{ headerShown: true,
           headerTitleAlign: "center",
           headerTintColor: "maroon",
         }}/>
@@ -118,6 +123,7 @@ function App() {
           headerTitleAlign: "center",
           headerTintColor: "maroon",
         }}/>
+        <Stack.Screen name = "Add Students" component = {addStudentsToCourse} options= {{headerShown: false}}/>
         
       </Stack.Navigator>
     </NavigationContainer>

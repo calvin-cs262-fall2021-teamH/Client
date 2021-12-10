@@ -78,6 +78,14 @@ export const globalStyles = StyleSheet.create({
         marginTop: 30,
         backgroundColor: "#8C2131",
     },
+
+    listButton:{
+        width: "75%",
+        height: 30,
+        flexDirection: "row",
+        alignItems: "flex-start",
+        marginTop: 30
+    },
     Question: {
         fontSize: 20,
         paddingVertical: 10,

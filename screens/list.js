@@ -152,25 +152,6 @@ export default function ListScreen({ route, navigation }) {
         };
     };
     
-   function onSubmitEdit (personId, questionId, answer){
-        fetch(`https://hello-campus.herokuapp.com/answers/`,
-        { method: 'POST',
-        headers: new Headers({
-            "Content-Type":"application/json"
-        }),
-        body: JSON.stringify({
- 
-            personID: personId,
-         
-            questionID: questionId,
-         
-            answer: answer
-         
-          }, getCircularReplacer())
-        })
-        // myTextInput.current.clear();
-
-    }
     
 
     return (
