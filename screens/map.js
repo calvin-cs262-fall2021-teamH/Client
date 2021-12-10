@@ -252,8 +252,11 @@ export default function MapScreen({route, navigation}) {
             setHelpModalVisible(!helpModalVisible);
           }}
         >
-			<View style = {styles.helpModal}>
-		  		<Text>This is non-signed in help.</Text>
+			<View style = {globalStyles.helpModal}>
+		  		<Text>
+                    The exclamation mark button is an interaction button that will turn green
+                    when you are near a point of interest.
+                </Text>
 				<TouchableOpacity style= {{backgroundColor: "maroon", margin: 10, borderRadius: 15}} 
 					onPress={() => {
 						setHelpModalVisible(!helpModalVisible)}
