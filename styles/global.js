@@ -142,8 +142,9 @@ export const globalStyles = StyleSheet.create({
 		flex:.315,
 	},
 	helpModal: {
+        padding: 10,
 		alignItems: "center",
-		marginTop: 76,
+		marginTop: 100,
 		backgroundColor: "#fff",
 		borderRadius: 15,
 	},

@@ -265,8 +265,11 @@ React.useLayoutEffect(() => {
 						setHelpModalVisible(!helpModalVisible);
 					}}
 				>
-					<View style = {globalStyles.helpModal}>
-						<Text>This is non-signed in help.</Text>
+					<View style = {globalStyles.helpModal}>						
+						<Text>Press "i" icon to go to the about page.</Text>
+						<Text>Press "EXPLORE" to continue as a guess.</Text>
+						<Text>Press "SIGN IN" to login as a student or professor.</Text>
+						<Text>Press the list icon to gain access to all the locations.</Text>
 						<TouchableOpacity style= {{backgroundColor: "maroon", margin: 10, borderRadius: 15}} 
 							onPress={() => {
 								setHelpModalVisible(!helpModalVisible)
@@ -346,7 +349,7 @@ React.useLayoutEffect(() => {
 					}}
 				>
 					<View style = {globalStyles.helpModal}>
-						<Text>This is signed in help.</Text>
+						<Text>Press "ASSIGNMENT" to access all your questions and answers for each location.</Text>
 						<TouchableOpacity 
 							style= {{backgroundColor: "maroon", margin: 10, borderRadius: 15}} 
 							onPress={() => {
@@ -384,7 +387,7 @@ React.useLayoutEffect(() => {
 							navigation.navigate("Home");
 						}}
 					>
-						<Text style={globalStyles.genericButtonText}> SIGN OUT </Text>{/*include a "your answers will be saved" message*/}
+						<Text style={globalStyles.genericButtonText}>SIGN OUT </Text>{/*include a "your answers will be saved" message*/}
 						<Image source={require('../assets/login_white.png')} resizeMode='contain' style={{flex: .1 }}/>
 					</TouchableOpacity>
 
@@ -395,7 +398,7 @@ React.useLayoutEffect(() => {
 							const myUser = await getUserFromDB(userFromGoogle.email);
 							navigation.navigate("Location", {user: myUser});
 						}}>
-						<Text style={globalStyles.genericButtonText}>Assignment </Text>{/*Location get the user stuff*/}
+						<Text style={globalStyles.genericButtonText}>ASSIGNMENT </Text>{/*Location get the user stuff*/}
 						<Image source={require('../assets/course_icon.png')} resizeMode='contain' style={{flex: .135 }}/>
 					</TouchableOpacity>
         		</View>
@@ -418,7 +421,7 @@ React.useLayoutEffect(() => {
 				  }}
 			  >
 				  <View style = {globalStyles.helpModal}>
-					  <Text>This is signed in help.</Text>
+					  <Text>Press "MANAGE COURSE" to edit locations, questions, and students.</Text>
 					  <TouchableOpacity 
 						  style= {{backgroundColor: "maroon", margin: 10, borderRadius: 15}} 
 						  onPress={() => {
@@ -456,7 +459,7 @@ React.useLayoutEffect(() => {
 						  navigation.navigate("Home");
 					  }}
 				  >
-					  <Text style={globalStyles.genericButtonText}> SIGN OUT </Text>{/*include a "your answers will be saved" message*/}
+					  <Text style={globalStyles.genericButtonText}>SIGN OUT </Text>{/*include a "your answers will be saved" message*/}
 					  <Image source={require('../assets/login_white.png')} resizeMode='contain' style={{flex: .1 }}/>
 				  </TouchableOpacity>
 
@@ -488,7 +491,7 @@ React.useLayoutEffect(() => {
 				  }}
 			  >
 				  <View style = {globalStyles.helpModal}>
-					  <Text>This is signed in help.</Text>
+					  <Text>Press "ASSIGNMENT" to access all your questions and answers for each location.</Text>
 					  <TouchableOpacity 
 						  style= {{backgroundColor: "maroon", margin: 10, borderRadius: 15}} 
 						  onPress={() => {
@@ -526,7 +529,7 @@ React.useLayoutEffect(() => {
 						  navigation.navigate("Home");
 					  }}
 				  >
-					  <Text style={globalStyles.genericButtonText}> SIGN OUT </Text>{/*include a "your answers will be saved" message*/}
+					  <Text style={globalStyles.genericButtonText}>SIGN OUT </Text>{/*include a "your answers will be saved" message*/}
 					  <Image source={require('../assets/login_white.png')} resizeMode='contain' style={{flex: .1 }}/>
 				  </TouchableOpacity>
 
@@ -537,7 +540,7 @@ React.useLayoutEffect(() => {
 						  const myUser = await getUserFromDB(userFromGoogle.email);
 						  navigation.navigate("Location", {user: myUser});
 					  }}>
-					  <Text style={globalStyles.genericButtonText}>Assignment </Text>{/*Location get the user stuff*/}
+					  <Text style={globalStyles.genericButtonText}>ASSIGNMENT </Text>{/*Location get the user stuff*/}
 					  <Image source={require('../assets/course_icon.png')} resizeMode='contain' style={{flex: .135 }}/>
 				  </TouchableOpacity>
 			  </View>
