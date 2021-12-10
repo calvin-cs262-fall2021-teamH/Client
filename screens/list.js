@@ -1,49 +1,241 @@
-/* list.js screen that allows user to check off locations that they have already visited
-Team HUH?!
-11/11/2021
-Brian Langejans, David Reidsma, David Heynen, Paul Dick, Kurt Wietelmann
-*/
+/**
+ * Screen that contains questions about the user's current location.
+ *
+ * @author: Brian Langejans, David Reidsma, David Heynen, Paul Dick, Kurt Wietelmann
+ * 11/16/2021
+ */
 
-import React, { useState } from 'react';
-import { View, Text, CheckBox, ImageBackground, StyleSheet} from 'react-native';
+import React, { useEffect, useReducer, useState } from 'react';
+import { Image, Button, View, Text, TouchableOpacity, FlatList, ImageBackground, TextInput, ActivityIndicator, ScrollView } from 'react-native';
 import { globalStyles } from '../styles/global';
 
-export default function ListScreen({ navigation }) {
-    const [isSelectedOne, setSelectionOne] = useState(false);
-    const [isSelectedTwo, setSelectionTwo] = useState(false);
+
+
+export default function ListScreen({ route, navigation }) {
+    const [isDataDownloading, setIsDataDownloading] = useState(true);
+    const [questions, setQuestion] = useState([]);
+    const [answers, setAnswer] = useState([]);
+    const [locations, setLocation] = useState([]);
+    const[user, setUser] = useState([]);
+    const[buttonColor, setButtonColor] = useState("#8C2032");
+    const[textColor, setTextColor] = useState("#8C2032");
+    //data = []
+    //const [text, onChangeText] = React.useState("Useless Text");
+    const myTextInput = React.createRef();
+    const [text, setText] = useState('');
+
+    useEffect (() => {
+        if (isDataDownloading) {
+            //fetch(`https://hello-campus.herokuapp.com/questions/`)
+            fetch('https://hello-campus.herokuapp.com/questions/')
+            .then((response) => {
+                let data = response.json();
+                console.log(JSON.stringify(data));
+                //console.log("Successfully downloaded question data.");
+                return data;
+            })
+            .then((json) => setQuestion(json))
+            .catch((error) => {
+                //console.log("Error downloading question data: " + error);
+            })
+            .finally(() => {
+                setIsDataDownloading(false);
+            }
+        );
+        }
+    }, )
+
+    useEffect (() => {
+        if (isDataDownloading) {
+            fetch(`https://hello-campus.herokuapp.com/pointsofinterest/`)
+            .then((response) => {
+                let data = response.json();
+                console.log(JSON.stringify(data));
+                //console.log("Successfully downloaded question data.");
+                return data;
+            })
+            .then((json) => setLocation(json))
+            .catch((error) => {
+                //console.log("Error downloading question data: " + error);
+            })
+            .finally(() => {
+                setIsDataDownloading(false);
+            }
+        );
+        }
+    }, [])
+
+///sets the user.
+    useEffect (() => {
+        if (isDataDownloading) {
+            fetch(`https://hello-campus.herokuapp.com/usersByEmail/${route.params.user.email}`)
+
+            .then((response) => {
+                let data = response.json();
+                console.log(JSON.stringify(data));
+                //console.log("Successfully downloaded question data.");
+                return data;
+            })
+            .then((json) => setUser(json))
+            .catch((error) => {
+                //console.log("Error downloading question data: " + error);
+            })
+            .finally(() => {
+                setIsDataDownloading(false);
+            }
+        );
+        }
+    }, [])
+    //gets answers
+    useEffect (() => {
+        if (isDataDownloading) {
+            fetch('https://hello-campus.herokuapp.com/answersForPerson/' + route.params.user.id)
+
+            .then((response) => {
+                let data = response.json();
+                console.log(JSON.stringify(data));
+                console.log("Successfully downloaded question data.");
+                return data;
+            })
+            .then((json) => setAnswer(json))
+            .catch((error) => {
+                //console.log("Error downloading question data: " + error);
+            })
+            .finally(() => {
+                setIsDataDownloading(false);
+            }
+        );
+        }
+    }, [])
+    //console.log(answers, "THis is my answer")
+
+    function submit(questionId){
+        console.log(text);
+        console.log(questionId);
+        console.log(route.params.user.id);
+        
+            fetch(`https://hello-campus.herokuapp.com/updateAnswer/`,
+            { method: 'PUT',
+            headers: new Headers({
+                "Content-Type":"application/json"
+            }),
+            body: JSON.stringify({
+     
+                personID: route.params.user.id,
+             
+                questionID: questionId,
+             
+                answer: text,
+             
+              })
+            })
+    }
+
+        // myTextInput.current.clear();
+
+    function _handleMultiInput(answerText) {
+        return (text) => {
+            setAnswer({ [answerText]:text })
+        }
+    }
+
+    const getCircularReplacer = () => {
+        const seen = new WeakSet();
+        return (key, value) => {
+        if (typeof value === "object" && value !== null) {
+            if (seen.has(value)) {
+                return;
+            }
+            seen.add(value);
+        }
+        return value;
+        };
+    };
+    
+    
 
     return (
-        <ImageBackground source = {require('../assets/woods_scene.jpg')} style={styles.container}>
-          
-            <View style={ globalStyles.list }>
-                <Text style={ globalStyles.listText }>Crown Gap</Text>
-                <View style={{ padding: 15 }}>
+        <ScrollView style={{ flex: 1, backgroundColor: '#8C2032' }}>
+            <Text style={{ fontSize: 22, color: "#fff", padding: 20, padding:10, flex:2 }}>Questions and responses for {route.params.user.email},</Text>
+            
+            {/* { isDataDownloading ? <ActivityIndicator/>:
+                <Text style={{ fontSize: 30, color: "#fff", padding: 20, position: "absolute" }}>{ question[0].question }</Text>
+            } */}
+            { isDataDownloading ? <ActivityIndicator/> :
+            locations.map(location=>{
+                return[
+                    <TouchableOpacity onPress = {()=> navigation.navigate("PointInfo", {locationName:(location.name), info: (location.info)})}>
+                               
+                              <Text key = {location.id} style={globalStyles.list}>
+                                {location.name}
+                              </Text>
+                        </TouchableOpacity>,
+                        
+                    questions.map(question => {
+                    //console.log(location.name, "THIS IS MY NAME!!!!!")
+                    //console.log(location.id, "THJIS IS PIONT ID")
+                        //answers.map(answer => {
+                           // console.log(answer);
+                        if(question.pointid == location.id){
+                            return [
+                                //console.log(answers.get(answer)),            
+                                <Text
+                                    key={question.id}
+                                    style={{ fontSize: 25, color: "#fff", padding: 20, justifyContent:'space-between' }}>{question.question}
+                                </Text>,
+                                
 
-                    
-                    <CheckBox style = {{height: 50, width: 50}}
-                        value={isSelectedOne}
-                        onValueChange={setSelectionOne}
-                    />
-                </View>
-            </View>
-            <View style={ globalStyles.list }>
-                <Text style={ globalStyles.listText }>Whiskey Pond</Text>
-                <View style={{ padding: 15 }}>
-                    <CheckBox style = {{height: 50, width: 50}}
-                        value={isSelectedTwo}
-                        onValueChange={setSelectionTwo}
-                    />
-                </View>
-            </View>
-        </ImageBackground>
+                                answers.map(answer =>{
+                                if(answer.questionid == question.id){
+                                    return[
+                                    <TextInput
+                                        //key={answer.id + 50}
+                                        editable = {true}
+                                        ref={myTextInput}
+                                        style={globalStyles.input}
+                                        multiline={true}
+                                        numberOfLines={3}
+                                        defaultValue={answer.answer}
+                                        onChangeText={text => {setText(text), setButtonColor("yellow"), setTextColor("black")}}//THISSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
+                                    //onSubmitEditing={this.onSubmitEdit(route.params.userId, question.id, answer)}
+                                    />,
+                            //onPress={() => onSubmitEdit(user.id, question.id, answer.id)
+                                    <TouchableOpacity key={question.id + 100} style={{
+                                        width: "20%",
+                                        height: "10%",
+                                        borderRadius: 10,
+                                        height: 60,
+                                        alignItems: "center",
+                                        justifyContent: "center",
+                                        marginTop: 10,
+                                        alignSelf: 'flex-end',
+                                        right: 40,
+                                        backgroundColor: buttonColor,
+                                    }} onPress={() => {submit(question.id), console.log("SUBMITTED!"), setButtonColor("#8C2032"),setTextColor("#8C2032")}}>
+                                        <Text style={{color:textColor, fontWeight: "bold"}}>Submit</Text>
+                                    </TouchableOpacity>,
+                                    ]
+                                }
+
+                                }),
+
+                            ]
+                        }
+                        })
+                    ]
+                    })
+                    }
+        </ScrollView>
+
+        
     );
 }
 
-const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: "#8C2131",
-      alignItems: "stretch",
-      justifyContent: "flex-start",
-    },
-});
+
+
+
+
+
+
+
+

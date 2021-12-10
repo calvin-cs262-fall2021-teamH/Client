@@ -14,6 +14,14 @@ import Prompt from "./prompt";
 import { scaleCoordsToPixelCoords, isCoordWithinBoundaries } from '../models/PointOfInterest';
 import { TEST_POINTS_OF_INTEREST as TEST_POINTS_OF_INTEREST } from '../models/TestData.js';
 import { useRoute } from '@react-navigation/native';
+import { Ionicons } from '@expo/vector-icons';
+import {
+	HeaderButtons,
+	HeaderButton,
+	Item,
+	HiddenItem,
+	OverflowMenu,
+  } from 'react-navigation-header-buttons';
 import {HomeScreen} from './home'
 import MapInfoText from '../components/mapInfoText'
 import InteractionButton from '../components/interactionButton'
@@ -29,6 +37,9 @@ const POINT_WIDTH = 50;
 const POINT_HEIGHT = 50;
 
 const LOCATION_REFRESH_INTERVAL = 2000;
+
+
+
     
 function realToPixelCoords(point) {
     // quick and dirty method to get rid of locations that are off the map to prevent wraparound
@@ -46,11 +57,56 @@ function realToPixelCoords(point) {
 }
 
 export default function MapScreen({route, navigation}) {
+
+
+    React.useLayoutEffect(() => {
+        navigation.setOptions({
+          headerLeft: () => (
+            <TouchableOpacity onPress= {() => {
+                navigation.goBack();
+            }}>
+                <Text style= {{color: "maroon", fontWeight: "bold"}}>HOME</Text>
+            </TouchableOpacity>
+          ),
+        });
+      }, [navigation]);
+
     const [errorMsg, setErrorMsg] = useState(null); // TODO: do something with errorMsg
     const [userLocation, setUserLocation] = useState({ pixelCoords: { x: null, y: null }, realCoords: { latitude: null, longitude: null } });
 
     const [isDataDownloading, setIsDataDownloading] = useState(true);
     const [pointsOfInterest, setPointsOfInterest] = useState([]);
+    const [helpModalVisible, setHelpModalVisible] = useState(false);
+
+    const IoniconsHeaderButton = (props) => (
+        <HeaderButton IconComponent={Ionicons} iconSize={25} {...props} />
+      );
+
+      React.useLayoutEffect(() => {
+        navigation.setOptions({
+          headerRight: () => 
+            (
+                <HeaderButtons  HeaderButtonComponent = {IoniconsHeaderButton}>
+                    <Item
+                        title={"location-list"}
+                        iconName={"md-list-circle"}
+                        color = "maroon"
+                        onPress={() => {
+                            navigation.navigate("Points of Interest")
+                        }}
+                    />
+                    <Item
+                        title={"help"}
+                        iconName = {"help-circle"}
+                        color= "maroon"
+                        onPress={() => {
+                            setHelpModalVisible(!helpModalVisible)}
+                        }
+                    />
+                </HeaderButtons>
+            ),
+        });
+      }, [navigation])
 
     useEffect(() => {
         async function checkForLocationPermissions() {
@@ -184,11 +240,35 @@ export default function MapScreen({route, navigation}) {
     
     let userPixelCoords = userLocation.realCoords.latitude != null ? realToPixelCoords(userLocation.realCoords) : { x: -500, y: -500 };
     let textMessage = route.params == null ? "Walk towards a point on the map." : "Welcome " + route.params.user.given_name + ", walk towards a point to answer questions.";
+
+    
     return (
         <ImageBackground source = {require('../assets/light_background.jpg')} style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#8C2032' }}>
             <Text style={{ fontSize: 20, fontWeight: "bold", color: "#fff", padding: 10, position: 'absolute', top: 30, marginRight: 80 } }>{textMessage}</Text>
             <ImageBackground source = { require('../assets/ecomap.png')} style = {{position: 'absolute', top: 100, width: MAP_WIDTH, height: MAP_HEIGHT}}/>
+            <Modal
+          animationType="fade"
+          transparent={true}
+          visible={helpModalVisible}
+          onRequestClose={() => {
+            Alert.alert("Modal has been closed.");
+            setHelpModalVisible(!helpModalVisible);
+          }}
+        >
+			<View style = {globalStyles.helpModal}>
+		  		<Text>
+                    The exclamation mark button is an interaction button that will turn green
+                    when you are near a point of interest.
+                </Text>
+				<TouchableOpacity style= {{backgroundColor: "maroon", margin: 10, borderRadius: 15}} 
+					onPress={() => {
+						setHelpModalVisible(!helpModalVisible)}
+					}>
+					<Text style= {{color: "#fff", margin: 10}}>EXIT</Text>
+				</TouchableOpacity>
 
+			</View>
+		</Modal>
             { /* dynamically generate the point components from the data */ }
             { isDataDownloading ? <ActivityIndicator/> :
                 pointsOfInterest.map(point => {
