@@ -222,15 +222,8 @@ export default function MapScreen({route, navigation}) {
         let closePoint = sortedByDistance[0];
 
         // TODO: don't get the distance twice, this sucks
-        const distance = getDistance(currentLocation, { latitude: closePoint.latitude, longitude: closePoint.longitude });
-        if (distance <= closePoint.radius) {
-            console.log("Distance to " + closePoint.name + ": " + distance + " meters");
-            // return [ closestPoint, distance ];
-            closestPoint = closePoint;
-            closestDistance = distance;
-        } else {
-            closestPoint = null;
-            closestDistance = -1;
+        if (getDistance(currentLocation, { latitude: closePoint.latitude, longitude: closePoint.longitude }) <= closePoint.radius) {
+            return closePoint;
         }
         // return [ null, distance ];
     }
@@ -277,7 +270,7 @@ export default function MapScreen({route, navigation}) {
                     return <TouchableOpacity
                                 key={point.id}
                                 style={[styles.mapPoint, { position: 'absolute', top: pixelCoords.y, right: pixelCoords.x }]}
-                                onPress={() => navigation.navigate('Questions', point), Vibration.cancel()}
+                                onPress={() => navigation.navigate('Questions', {point: closestPoint, user: route.params.user}), Vibration.cancel()}
                             />
                 })
             }
@@ -303,7 +296,7 @@ export default function MapScreen({route, navigation}) {
                     if (route.params == null){//ie we are not logged in...
                         navigation.navigate('PointInfo', closestPoint);
                     }else{//if the user is logged in (need to update further)
-                        navigation.navigate('Questions', {point: closestPoint, userId: route.params.user.email});//This is a user from google not necc. the user from our DB, should update!
+                        navigation.navigate('Questions', {point: closestPoint, user: route.params.user});//This is a user from google not necc. the user from our DB, should update!
                     }
                 }}>
                 <Image source={closestPoint == null ? require('../assets/PointInteractionButton.png') : require("../assets/PointInteractionButton2.png")} style = {{width: 170, height:170 }}/>
