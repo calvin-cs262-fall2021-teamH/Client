@@ -20,12 +20,22 @@ import {
     Pressable,
     FlatList,
     TextInput,
+    RefreshControl,
 } from "react-native";
+
+import {FontAwesome, 
+  SolidIcons,
+  RegularIcons,
+  BrandIcons,
+  parseIconFromClassName,
+}
+ from 'react-native-fontawesome';
 import filter from 'lodash.filter'
 import { globalStyles } from "../styles/global";
 import * as Google from "expo-google-app-auth";
 import { useRoute } from '@react-navigation/native';
 import { AsyncStorage} from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import {checkIfTokenExpired, refreshAuthAsync,getCachedAuthAsync, authState} from './home';
 //import @react-native-async-storage/async-storage;
 
@@ -35,6 +45,8 @@ export default function myStudents({route, navigation}) {
     const [data, setData] = useState([]);
     const [fullData, setFullData] = useState([]);
     const [thoseWhoAreNotStudents, setThoseWhoAreNotStudents] = useState([]);
+    const [refreshPage, setRefreshPage] = useState([]);
+     
     //const [error, setError] = useState(null);
     const [error, setError] = useState([]);
     //const [isLoading, setIsLoading] = useState(false);
@@ -48,6 +60,9 @@ export default function myStudents({route, navigation}) {
             .catch((error) => console.error(error))
             .finally(() => setLoading(false));
       }, []);*/
+
+
+      
 
       useEffect(() => {
         setIsLoading(true);
@@ -126,18 +141,56 @@ export default function myStudents({route, navigation}) {
         return false;
       };
 
+      function removeStudent(email){
+        console.log(email);
+        console.log(setRefreshPage);
+        
+            fetch(`https://hello-campus.herokuapp.com/updateStudentStatus/`,
+            { method: 'PUT',
+            headers: new Headers({
+                "Content-Type":"application/json"
+            }),
+            body: JSON.stringify({
+     
+                email: email,
+             
+                isstudent: "false",
+             
+              })
+            })
+    }
+
+    function deleteItemByEmail(email){
+      console.log(email, "This is what we are removing!")
+    const filteredData = data.filter(item=> item.email != email);
+    setData(filteredData);
+  }
+
+
 
     return (
         <ImageBackground source = {require('../assets/light_background.jpg')} style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#8C2032' }}>
-          <Text style = {{fontSize: 18, fontWeight: 'bold', color: "#8C2131"}} > Select a student to view their answers.</Text>
+          <Text style = {{fontSize: 18, fontWeight: 'bold', color: "#8C2131", marginTop: 30}} > Select a student to view their answers.</Text>
             <FlatList
                     data={data}
                     keyExtractor={({ id }, index) => id.toString()}
                     ListHeaderComponent={renderHeader()} 
                     renderItem={({ item }) => (
-                    <TouchableOpacity onPress={() => {navigation.navigate("Location", {user: item})}}>
-                    <Text style={{ color: "#8C2131" , fontSize: 18}}> {item.email} {"\n"} </Text>
+                  <View style={{ flexDirection:"row" }}>
+                      <View style= {globalStyles.listButton}>
+                        <TouchableOpacity onPress={() => {navigation.navigate("Location", {user: item})}}>
+                          <Text style={{ color: "#fff" , fontSize: 18}}> {item.email} </Text>
+                        </TouchableOpacity>
+                      </View>
+                      <View>
+                    <TouchableOpacity onPress={()=> {removeStudent(item.email), deleteItemByEmail(item.email)}}>
+                    <Text style={{ color: "#fff" , fontSize: 18, backgroundColor: "maroon", margin: 25}}> X </Text>
                     </TouchableOpacity>
+          
+                      
+                    
+                    </View>
+                  </View>
                  )}
                  
             />
@@ -146,6 +199,7 @@ export default function myStudents({route, navigation}) {
           animationType="slide"
           transparent={true}
           visible={modalVisible}
+          //onHide = {forceUpdate()}
           onRequestClose={() => {
             Alert.alert("Modal has been closed.");
             setModalVisible(!modalVisible);
@@ -159,29 +213,19 @@ export default function myStudents({route, navigation}) {
                     keyExtractor={({ id }, index) => id.toString()}
                     ListHeaderComponent={renderHeader()} 
                     renderItem={({ item }) => (
-                    <TouchableOpacity onPress={() => setAddRemoveModalVisible(!addRemoveModalVisible)}>
-                    <Text style={{ color: "#8C2131" , fontSize: 18}}> {item.email} {"\n"} </Text>
+                    <View>
+                    <TouchableOpacity onPress={() => {setModalVisible(!modalVisible)}}>
+                      
+                    <Text style={{ color: "#8C2131" , fontSize: 18, marginLeft: '20%', marginRight: '20%'}}> {item.email} {"\n"} </Text>
                     </TouchableOpacity>
 
-                 )}
-                 
+                    <TouchableOpacity onPress={() => {setModalVisible(!modalVisible)}}>
+                      
+                    <Text style={{ color: "#8C2131" , fontSize: 18, marginLeft: '20%', marginRight: '20%'}}> {item.email} {"\n"} </Text>
+                    </TouchableOpacity>
+                    </View>
+                 )}  
             />
-            <Modal animationType = "slide"
-                    transparent = {false}
-                    visible = {addRemoveModalVisible}
-                    onRequestClose={()=>{Alert.alert("ADD/Remove was closed");
-                    setAddRemoveModalVisible(!addRemoveModalVisible)
-                    }}
-            >
-            <View style={styles.centeredView}>
-            <View style={styles.modalView}>
-            <Text style={{ color: "#8C2131" , fontSize: 18}}>Do you wish to add or remove?{"\n"} </Text>
-            <TouchableOpacity onPress={() => setAddRemoveModalVisible(!addRemoveModalVisible)}>
-                    <Text style={{ color: "#8C2131" , fontSize: 18}}> ADD </Text>
-            </TouchableOpacity>
-            </View>
-            </View>
-            </Modal>
               <TouchableOpacity
                 style={{backgroundColor:"#8C2131", margin:10, borderRadius:5}}
                 onPress={() => setModalVisible(!modalVisible)}
@@ -194,7 +238,8 @@ export default function myStudents({route, navigation}) {
 
         <TouchableOpacity
           style= {styles.AddButtonStyle}
-          onPress={() => setModalVisible(true)}
+          onPress={()=>
+            navigation.navigate("Add Students", {name: route.params.name})}//{() => setModalVisible(true)}//////
         >
           <Text style={styles.textStyle}> + </Text>
         </TouchableOpacity>
