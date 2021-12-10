@@ -7,215 +7,22 @@
  */
 
 import React, { useEffect, useState } from 'react';
-import { Button, StyleSheet, Text, View, Image, ImageBackground, TouchableHighlight, TouchableOpacity, Platform} from 'react-native';
+import { Text,
+		 Modal,
+		 View,
+		 Image, 
+		 ImageBackground, 
+		 TouchableHighlight,
+		 TouchableOpacity, 
+		 Platform,
+		 AsyncStorage } from 'react-native';
 import { globalStyles } from '../styles/global';
 import * as AppAuth from 'expo-app-auth';
-import { AsyncStorage } from 'react-native';
-//import DrawerNavigator from './App';
-
-/*
- * HomeScreen is the main screen of the Hello Campus app.
- * @param {navigation} navigation makes sure navigation is correct for getting to the screen and navigating other screens.
- */
-export default function HomeScreen({navigation}) {
-  //https://docs.expo.dev/versions/v43.0.0/sdk/app-auth/#usage
-  let [authState, setAuthState, userId] = useState(null);
-  //AsyncStorage.getItem(StorageKey);
-  useEffect(() => {
-    (async () => {
-      let cachedAuth = await getCachedAuthAsync();
-      if (cachedAuth && !authState) {
-        setAuthState(cachedAuth);
-      }
-    })();
-  }, []);
-  /////////////////////////
-  const toCreateQuiz = (authState) => {
-    //navigation.navigate('DrawerNavigator', {screen: 'CreateQuiz', params: {myAuthState: authState}});
-    navigation.navigate('DrawerNavigator', {screen: 'Map', params: {user,_authState}});
-  };
-
-  if (authState == null){
-
-    
-    //let user = null;
-  return (
-
-<ImageBackground
-			source={require("../assets/woods_scene.jpg")}
-			style={styles.container}
-		>
-			<View style={styles.body}>
-
-				<TouchableHighlight
-					onPress={() => navigation.navigate("About")}
-					style={styles.touchableHighlight}
-				>
-					<Image
-						source={require("../assets/HelloCampusLogo_NoBackground.png")}
-						style={styles.imagest}
-					/>
-				</TouchableHighlight>
-
-				<TouchableOpacity
-					style={globalStyles.genericButton}
-          onPress={() => navigation.navigate("Map", null)}
-				>
-					<Text style={{ flex: 0.3, color: "#fff", fontWeight: "bold" }}>
-						EXPLORE
-					</Text>
-					<Image
-						source={require("../assets/map_white.png")}
-						resizeMode="contain"
-						style={{ flex: 0.15 }}
-					/>
-				</TouchableOpacity>
-        {/*<Button
-        title = "TITLE"
-        mode="contained"
-        uppercase={false}
-        onPress={() => toCreateQuiz(user, authState)}
-        >
-        
-        </Button>*/}
-
-        <TouchableOpacity style= {globalStyles.genericButton}
-        
-          onPress={async () => {
-          const _authState = await signInAsync();
-          setAuthState(_authState);
-          const user = await fetchUserInfo(_authState.accessToken);//this should be done in the sign in function.
-          //await postUserInfo(user);
-          //response;
-          navigation.navigate("Map", {user, _authState });
-          //navigation.navigate('Drawer', {screen: 'Map', params: {user, _authState}});
-          console.log(user.given_name, "Made it to the student map, user is logged in!");
-        }}
-      >
-          <Text style={{flex:.3, color: "#fff", fontWeight: "bold"}}>SIGN IN</Text>
-           <Image
-						source={require("../assets/login_white.png")}
-						resizeMode="contain"
-						style={{ flex: 0.1 }}
-					/>
-      </TouchableOpacity>
-			</View>
-
-			<View style={styles.footer}>
-			</View>
-      <Text>{JSON.stringify(authState, null, 2)}</Text>
-		</ImageBackground>
-
-    
-  );
-    }
-    //If we are logged in, the Homescreen changes to include the logout button and the "back to map button, navigation goes directly to the student map on login"
-    else{
-      return(<ImageBackground
-        source={require("../assets/woods_scene.jpg")}
-        style={styles.container}
-      >
-        <View style={styles.body}>
-          
-{/*Navigates to student map screen*/}
-        <TouchableOpacity
-					style={globalStyles.genericButton}
-          onPress= {async () => {
-          const user = await fetchUserInfo(authState.accessToken);
-          var returningUserID = await getID(user.email);
-          navigation.navigate("Map", {user, authState, returningUserID});
-        }}
-				>
-					<Text style={{ flex: 0.3, color: "#fff", fontWeight: "bold" }}>
-						BACK TO MAP
-					</Text>
-					<Image
-						source={require("../assets/map_white.png")}
-						resizeMode="contain"
-						style={{ flex: 0.15 }}
-					/>
-				</TouchableOpacity>
-
-          <TouchableOpacity style={globalStyles.genericButton} onPress={async()=>{ await
-                signOutAsync(authState);
-                setAuthState(null);
-                navigation.navigate("Home");
-                }}>
-                <Text style={{flex:.315, color: "#fff", fontWeight: "bold"}}> SIGN OUT </Text>{/*include a "your answers will be saved" message*/}
-                <Image source={require('../assets/login_white.png')} resizeMode='contain' style={{flex: .1 }}/>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={globalStyles.genericButton} onPress= {async () => {
-          const user = await fetchUserInfo(authState.accessToken);
-          navigation.navigate("Dashboard", {user});
-        }}>
-                <Text style={{flex:.315, color: "#fff", fontWeight: "bold"}}>MANAGE COURSE </Text>{/*include a "your answers will be saved" message*/}
-                <Image source={require('../assets/login_white.png')} resizeMode='contain' style={{flex: .1 }}/>
-      </TouchableOpacity>
-        </View>
-  
-        <View style={styles.footer}>
-         
-        </View>
-      </ImageBackground>)
-    }
-}
-
-const styles = StyleSheet.create({
-	body: {
-		flex: 1,
-		alignItems: "center",
-		justifyContent: "center",
-	},
-	footer: {
-		alignItems: "center",
-		marginBottom: 15,
-	},
-	container: {
-		flex: 1,
-		backgroundColor: "#8C2131",
-	},
-	container1: {
-		flex: 1,
-		...StyleSheet.absoluteFillObject,
-		alignSelf: "flex-end",
-		marginTop: 25,
-		marginRight: 10,
-		left: 300,
-		right: 10,
-
-		// position: 'absolute', // add if dont work with above
-	},
-	loginText: {
-		fontWeight: "bold",
-		color: "#fff",
-	},
-
-	aboutButton: {
-		width: "80%",
-		borderRadius: 75,
-		height: 75,
-		alignItems: "center",
-		justifyContent: "center",
-		marginTop: 40,
-		backgroundColor: "#8C2131",
-	},
-
-	aboutText: {
-		fontWeight: "bold",
-		color: "#d9aa00",
-	},
-
-	touchableHighlight: {
-		borderRadius: 100,
-	},
-
-	imagest: {
-		width: 150,
-		height: 150,
-	},
-});
-
+import { Ionicons } from '@expo/vector-icons';
+import { AntDesign } from '@expo/vector-icons'; 
+import { HeaderButtons,
+		 HeaderButton,
+		 Item } from 'react-navigation-header-buttons';
 
 //getting our clientId into the (Probably should put into the DB to hide from the user)
 let andoidClientId = "2260489795-b82e25fatl0ih72e43ii5q6q858fb6ql.apps.googleusercontent.com";//androidclientID
@@ -229,13 +36,14 @@ let config = {
     clientId: myclientId,  
 };
 
+
+
 StorageKey = '@MyApp:CustomGoogleOAuthKey';
 
 export async function signInAsync() {
-    //{authState, user}
   let authState = await AppAuth.authAsync(config);
   await cacheAuthAsync(authState);
-  console.log('signinInAsync', authState.accessToken);//we get here
+      //console.log('signinInAsync', authState.accessToken);//we get here
   const user = await fetchUserInfo(authState.accessToken);
   if(await isInDB(user.email) == false){//this is for new users
     console.log("User does not exist in our DB, we are creating a user.");
@@ -247,19 +55,25 @@ export async function signInAsync() {
   return authState;
 }
 
-
-
-//should return boolean, true if email is in the db already, false otherwise
+//returns boolean, true if email is in the db already, false otherwise
 async function isInDB(email) {
   try{
     const resp = await fetch( `https://hello-campus.herokuapp.com/usersByEmail/`+ email );
     const data = await resp.json();
-    console.log( data );
+	console.log( data );
     return true; //should be only if the User is in the database!
   }catch (e){
     console.log(`User is not in DB: ${e.message}`);//for testing only
     return false;//returns false signaling that we should add the user to the db
   }
+}
+
+
+async function getUserFromDB(email){
+		const resp = await fetch( `https://hello-campus.herokuapp.com/usersByEmail/`+ email );
+		const data = await resp.json();
+		console.log( data );
+		return data; //should be only if the User is in the database
 }
 
 async function addUser(userFromGoogle){
@@ -285,7 +99,7 @@ async function getID(email){
   var userID = data.id;
   return userID;
 }
-////////////////////////////////////////////////////////////////////
+
 
 async function cacheAuthAsync(authState) {
   return await AsyncStorage.setItem(StorageKey, JSON.stringify(authState));
@@ -302,14 +116,14 @@ async function fetchUserInfo(token) {
       },
     });
    return await response.json();
-  }
+}
 
 
   
 export async function getCachedAuthAsync() {
   let value = await AsyncStorage.getItem(StorageKey);
   let authState = JSON.parse(value);
-  console.log('getCachedAuthAsync', authState);//we get here
+  //console.log('getCachedAuthAsync', authState);//we get here
   if (authState) {
     if (checkIfTokenExpired(authState)) {
       return refreshAuthAsync(authState);
@@ -343,3 +157,402 @@ export async function signOutAsync({accessToken }) {
     alert(`Failed to revoke token: ${e.message}`);
   }
 }
+
+
+
+
+
+
+
+
+/*
+ * HomeScreen is the main screen of the Hello Campus app.
+ * @param {navigation} navigation makes sure navigation is correct for getting to the screen and navigating other screens.
+ */
+export default function HomeScreen({navigation}) {
+  const [helpModalVisible, setHelpModalVisible] = useState(false);
+  const [DBuser, setDBuser]= useState([]);
+  const IoniconsHeaderButton = (props) => (
+	<HeaderButton IconComponent={Ionicons} iconSize={25} {...props} />
+  );
+  
+  //https://docs.expo.dev/versions/v43.0.0/sdk/app-auth/#usage
+  let [authState, setAuthState, userId] = useState(null);
+  useEffect(() => {
+    (async () => {
+      let cachedAuth = await getCachedAuthAsync();
+      if (cachedAuth && !authState) {
+        setAuthState(cachedAuth);
+      }
+    })();
+  }, []);
+
+  
+  //let myclientId = Platform.OS =="android" ? andoidClientId : iosClientId;
+  //location screen is logged in
+  //points of interest is what the general user should see
+
+  let isSignedIn = authState == null ? false : true;
+  let screenToNavigateTo = isSignedIn == true ? "Location" : "Points of Interest";
+  //console.log(isSignedIn, "THIS IS WHERE I AM");//this is updating just fine!
+  //console.log(screenToNavigateTo);
+
+React.useLayoutEffect(() => {
+	  console.log("GOT HERE AND ")
+	/*(async () => {
+		let cachedAuth = await getCachedAuthAsync();
+		if (cachedAuth == null) {
+			screenToNavigateTo = "Points of Interest";
+		}else{
+			screenToNavigateTo = "Location";
+		}
+	  })(screenToNavigateTo);
+*/
+	//let isSignedIn = authState == null ? false : true;
+	//let screenToNavigateTo = isSignedIn == true ? "Location" : "Points of Interest";
+	let myScreen = screenToNavigateTo;
+	console.log(screenToNavigateTo);
+    navigation.setOptions({
+	headerRight: () => (
+        <HeaderButtons  HeaderButtonComponent = {IoniconsHeaderButton}>
+            <Item
+                title={"location-list"}
+				iconName={"md-list-circle"}
+				color="maroon"
+                onPress={() => {
+                	navigation.navigate("Points of Interest")
+                }}
+            />
+			<Item
+				title= {"About"}
+				iconName= {"information-circle"}
+				color = "maroon"
+				onPress={()=>{
+					navigation.navigate("About")
+				}}
+				/>
+			<Item
+				title={"help"}
+				iconName={"help-circle"}
+				color="maroon"
+                onPress={() => {
+				setHelpModalVisible(!helpModalVisible)
+				}}
+            />
+        </HeaderButtons>
+        ),
+    });
+  }, [navigation])
+
+  
+  
+
+  
+
+
+	if (authState == null){
+		return (
+			<ImageBackground
+				source={require("../assets/woods_scene.jpg")}
+				style={globalStyles.imageBackGround}
+			>
+				<Modal
+					animationType="fade"
+					transparent={true}
+					visible={helpModalVisible}
+					onRequestClose={() => {
+						Alert.alert("Modal has been closed.");
+						setHelpModalVisible(!helpModalVisible);
+					}}
+				>
+					<View style = {globalStyles.helpModal}>						
+						<Text>Press "i" icon to go to the about page.</Text>
+						<Text>Press "EXPLORE" to continue as a guess.</Text>
+						<Text>Press "SIGN IN" to login as a student or professor.</Text>
+						<Text>Press the list icon to gain access to all the locations.</Text>
+						<TouchableOpacity style= {{backgroundColor: "maroon", margin: 10, borderRadius: 15}} 
+							onPress={() => {
+								setHelpModalVisible(!helpModalVisible)
+							}}
+						>
+							<Text style= {{color: "#fff", margin: 10}}>EXIT</Text>
+						</TouchableOpacity>
+
+					</View>
+				</Modal>
+				<View style={globalStyles.body}>
+					<TouchableHighlight
+						onPress={() => navigation.navigate("About")}
+						style={globalStyles.touchableHighlight}
+					>
+						<Image
+							source={require("../assets/HelloCampusLogo_NoBackground.png")}
+							style={globalStyles.logo}
+						/>
+					</TouchableHighlight>
+					<TouchableOpacity
+						style={globalStyles.genericButton}
+						onPress={() => navigation.navigate("Map", null)}
+					>
+						<Text style={globalStyles.genericButtonText}>
+							EXPLORE
+						</Text>
+						<Image
+							source={require("../assets/map_white.png")}
+							resizeMode="contain"
+							style={{ flex: 0.15 }}
+						/>
+					</TouchableOpacity>
+
+					<TouchableOpacity style= {globalStyles.genericButton}
+						onPress={async () => {
+							const _authState = await signInAsync();
+							setAuthState(_authState);
+							const user = await fetchUserInfo(_authState.accessToken);
+							//setDBuser(getUserFromDB(user.email))
+							getUserFromDB(user.email).then(res => setDBuser(res));
+							navigation.navigate("Map", {user, _authState });
+							console.log(user.given_name, "Made it to the student map, user is logged in!");
+							console.log("Fascinating",DBuser, "THIS MY DEAR PEOPLE IS ESSENTIAL")
+						}}
+					>
+						<Text style={globalStyles.genericButtonText}>SIGN IN</Text>
+						<Image
+							source={require("../assets/login_white.png")}
+							resizeMode="contain"
+							style={{ flex: 0.1 }}
+						/>
+					</TouchableOpacity>
+				</View>
+			</ImageBackground>
+
+		
+		);
+		
+	}
+//If we are logged in, the Homescreen changes to include
+// the logout button and the "back to map button, navigation goes directly to the student map on login"
+    
+	else if(DBuser.isstudent == true){
+      	return(
+			<ImageBackground
+				source={require("../assets/woods_scene.jpg")}
+				style={globalStyles.imageBackGround}
+			>
+				<Modal
+					animationType="fade"
+					transparent={true}
+					visible={helpModalVisible}
+					onRequestClose={() => {
+						Alert.alert("Modal has been closed.");
+						setHelpModalVisible(!helpModalVisible);
+					}}
+				>
+					<View style = {globalStyles.helpModal}>
+						<Text>Press "ASSIGNMENT" to access all your questions and answers for each location.</Text>
+						<TouchableOpacity 
+							style= {{backgroundColor: "maroon", margin: 10, borderRadius: 15}} 
+							onPress={() => {
+								setHelpModalVisible(!helpModalVisible)
+							}}
+						>
+							<Text style= {{color: "#fff", margin: 10}}>EXIT</Text>
+						</TouchableOpacity>
+					</View>
+				</Modal>
+
+        		<View style={globalStyles.body}>
+					{/*Navigates to student map screen*/}
+					<TouchableOpacity
+						style={globalStyles.genericButton}
+						onPress= {async () => {
+							const user = await fetchUserInfo(authState.accessToken);
+							navigation.navigate("Map", {user, authState});
+							}}
+						>
+						<Text style={globalStyles.genericButtonText}>
+							BACK TO MAP
+						</Text>
+						<Image
+							source={require("../assets/map_white.png")}
+							resizeMode="contain"
+							style={{ flex: 0.15 }}
+						/>
+					</TouchableOpacity>
+
+					<TouchableOpacity style={globalStyles.genericButton} 
+						onPress={async()=>{ await
+							signOutAsync(authState);
+							setAuthState(null);
+							navigation.navigate("Home");
+						}}
+					>
+						<Text style={globalStyles.genericButtonText}>SIGN OUT </Text>{/*include a "your answers will be saved" message*/}
+						<Image source={require('../assets/login_white.png')} resizeMode='contain' style={{flex: .1 }}/>
+					</TouchableOpacity>
+
+					<TouchableOpacity style={globalStyles.genericButton} 
+						onPress= {async () => {
+							const userFromGoogle = await fetchUserInfo(authState.accessToken);
+							console.log(userFromGoogle);
+							const myUser = await getUserFromDB(userFromGoogle.email);
+							navigation.navigate("Location", {user: myUser});
+						}}>
+						<Text style={globalStyles.genericButtonText}>ASSIGNMENT </Text>{/*Location get the user stuff*/}
+						<Image source={require('../assets/course_icon.png')} resizeMode='contain' style={{flex: .135 }}/>
+					</TouchableOpacity>
+        		</View>
+			  </ImageBackground>
+		)
+	}
+	else if (DBuser.isprofessor == true){
+		return(
+		  <ImageBackground
+			  source={require("../assets/woods_scene.jpg")}
+			  style={globalStyles.imageBackGround}
+		  >
+			  <Modal
+				  animationType="fade"
+				  transparent={true}
+				  visible={helpModalVisible}
+				  onRequestClose={() => {
+					  Alert.alert("Modal has been closed.");
+					  setHelpModalVisible(!helpModalVisible);
+				  }}
+			  >
+				  <View style = {globalStyles.helpModal}>
+					  <Text>Press "MANAGE COURSE" to edit locations, questions, and students.</Text>
+					  <TouchableOpacity 
+						  style= {{backgroundColor: "maroon", margin: 10, borderRadius: 15}} 
+						  onPress={() => {
+							  setHelpModalVisible(!helpModalVisible)
+						  }}
+					  >
+						  <Text style= {{color: "#fff", margin: 10}}>EXIT</Text>
+					  </TouchableOpacity>
+				  </View>
+			  </Modal>
+
+			  <View style={globalStyles.body}>
+				  {/*Navigates to student map screen*/}
+				  <TouchableOpacity
+					  style={globalStyles.genericButton}
+					  onPress= {async () => {
+						  const user = await fetchUserInfo(authState.accessToken);
+						  navigation.navigate("Map", {user, authState});
+						  }}
+					  >
+					  <Text style={globalStyles.genericButtonText}>
+						  BACK TO MAP
+					  </Text>
+					  <Image
+						  source={require("../assets/map_white.png")}
+						  resizeMode="contain"
+						  style={{ flex: 0.15 }}
+					  />
+				  </TouchableOpacity>
+
+				  <TouchableOpacity style={globalStyles.genericButton} 
+					  onPress={async()=>{ await
+						  signOutAsync(authState);
+						  setAuthState(null);
+						  navigation.navigate("Home");
+					  }}
+				  >
+					  <Text style={globalStyles.genericButtonText}>SIGN OUT </Text>{/*include a "your answers will be saved" message*/}
+					  <Image source={require('../assets/login_white.png')} resizeMode='contain' style={{flex: .1 }}/>
+				  </TouchableOpacity>
+
+				  <TouchableOpacity style={globalStyles.genericButton} 
+					  onPress= {async () => {
+						  const user = await fetchUserInfo(authState.accessToken);
+						  navigation.navigate("Dashboard", {user});
+					  }}>
+					  <Text style={globalStyles.genericButtonText}>MANAGE COURSE </Text>{/*include a "your answers will be saved" message*/}
+					  <Image source={require('../assets/course_icon.png')} resizeMode='contain' style={{flex: .135 }}/>
+				  </TouchableOpacity>
+			  </View>
+			</ImageBackground>
+	  )
+  }
+	else{
+		return(
+		  <ImageBackground
+			  source={require("../assets/woods_scene.jpg")}
+			  style={globalStyles.imageBackGround}
+		  >
+			  <Modal
+				  animationType="fade"
+				  transparent={true}
+				  visible={helpModalVisible}
+				  onRequestClose={() => {
+					  Alert.alert("Modal has been closed.");
+					  setHelpModalVisible(!helpModalVisible);
+				  }}
+			  >
+				  <View style = {globalStyles.helpModal}>
+					  <Text>Press "ASSIGNMENT" to access all your questions and answers for each location.</Text>
+					  <TouchableOpacity 
+						  style= {{backgroundColor: "maroon", margin: 10, borderRadius: 15}} 
+						  onPress={() => {
+							  setHelpModalVisible(!helpModalVisible)
+						  }}
+					  >
+						  <Text style= {{color: "#fff", margin: 10}}>EXIT</Text>
+					  </TouchableOpacity>
+				  </View>
+			  </Modal>
+
+			  <View style={globalStyles.body}>
+				  {/*Navigates to student map screen*/}
+				  <TouchableOpacity
+					  style={globalStyles.genericButton}
+					  onPress= {async () => {
+						  const user = await fetchUserInfo(authState.accessToken);
+						  navigation.navigate("Map", {user, authState});
+						  }}
+					  >
+					  <Text style={globalStyles.genericButtonText}>
+						  BACK TO MAP
+					  </Text>
+					  <Image
+						  source={require("../assets/map_white.png")}
+						  resizeMode="contain"
+						  style={{ flex: 0.15 }}
+					  />
+				  </TouchableOpacity>
+
+				  <TouchableOpacity style={globalStyles.genericButton} 
+					  onPress={async()=>{ await
+						  signOutAsync(authState);
+						  setAuthState(null);
+						  navigation.navigate("Home");
+					  }}
+				  >
+					  <Text style={globalStyles.genericButtonText}>SIGN OUT </Text>{/*include a "your answers will be saved" message*/}
+					  <Image source={require('../assets/login_white.png')} resizeMode='contain' style={{flex: .1 }}/>
+				  </TouchableOpacity>
+
+				  <TouchableOpacity style={globalStyles.genericButton} 
+					  onPress= {async () => {
+						  const userFromGoogle = await fetchUserInfo(authState.accessToken);
+						  console.log(userFromGoogle);
+						  const myUser = await getUserFromDB(userFromGoogle.email);
+						  navigation.navigate("Location", {user: myUser});
+					  }}>
+					  <Text style={globalStyles.genericButtonText}>ASSIGNMENT </Text>{/*Location get the user stuff*/}
+					  <Image source={require('../assets/course_icon.png')} resizeMode='contain' style={{flex: .135 }}/>
+				  </TouchableOpacity>
+			  </View>
+			</ImageBackground>
+	  )
+  }
+
+
+
+
+}
+
+
+
+
