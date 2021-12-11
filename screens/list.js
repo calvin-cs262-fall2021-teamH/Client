@@ -14,6 +14,12 @@ import {
     ScrollView
 } from 'react-native';
 import { globalStyles } from '../styles/global';
+import { Ionicons } from '@expo/vector-icons';
+import {
+    HeaderButtons,
+    HeaderButton,
+    Item
+} from 'react-navigation-header-buttons';
 
 export default function ListScreen({ route, navigation }) {
     const [isDataDownloading, setIsDataDownloading] = useState(true);
