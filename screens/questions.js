@@ -1,4 +1,4 @@
-/**
+/*
  * Screen that contains questions about the user's current location.
  *
  * @author: Brian Langejans, David Reidsma, David Heynen, Paul Dick, Kurt Wietelmann
@@ -48,7 +48,7 @@ export default function QuestionScreen({ navigation, route }) {
     }
 
     
-    submit = () => {
+    const submit = () => {
         for (i=0; i<questions.length; i++) {
             console.log(questions[i].id)
             console.log(answer["answer_3"])
