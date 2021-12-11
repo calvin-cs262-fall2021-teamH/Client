@@ -1,5 +1,4 @@
-/*
- * Homepage for Hello Campus
+/*Home page for Hello Campus
  *
  * @author: Brian Langejans, David Reidsma, David Heynen, Paul Dick, Kurt Wietelmann
  * 10/6/2021
@@ -244,11 +243,6 @@ React.useLayoutEffect(() => {
     });
   }, [navigation])
 
-  
-  
-
-  
-
 
 	if (authState == null){
 		return (
@@ -267,8 +261,8 @@ React.useLayoutEffect(() => {
 				>
 					<View style = {globalStyles.helpModal}>						
 						<Text>Press "i" icon to go to the about page.</Text>
-						<Text>Press "EXPLORE" to continue as a guess.</Text>
-						<Text>Press "SIGN IN" to login as a student or professor.</Text>
+						<Text>Press "EXPLORE" to continue as a guest.</Text>
+						<Text>Press "SIGN IN" to login.</Text>
 						<Text>Press the list icon to gain access to all the locations.</Text>
 						<TouchableOpacity style= {{backgroundColor: "maroon", margin: 10, borderRadius: 15}} 
 							onPress={() => {
@@ -309,11 +303,8 @@ React.useLayoutEffect(() => {
 							const _authState = await signInAsync();
 							setAuthState(_authState);
 							const user = await fetchUserInfo(_authState.accessToken);
-							//setDBuser(getUserFromDB(user.email))
 							getUserFromDB(user.email).then(res => setDBuser(res));
 							navigation.navigate("Map", {user, _authState });
-							console.log(user.given_name, "Made it to the student map, user is logged in!");
-							console.log("Fascinating",DBuser, "THIS MY DEAR PEOPLE IS ESSENTIAL")
 						}}
 					>
 						<Text style={globalStyles.genericButtonText}>SIGN IN</Text>
@@ -547,10 +538,6 @@ React.useLayoutEffect(() => {
 			</ImageBackground>
 	  )
   }
-
-
-
-
 }
 
 
