@@ -11,20 +11,16 @@ import { globalStyles } from '../styles/global';
 
 
 
-export default function AddQuestionsScreen({ navigation, route }) {
+export default function AddQuestionScreen({ navigation, route }) {
 
     const [isDataDownloading, setIsDataDownloading] = useState(true);
     const [questions, setQuestion] = useState([]);
-    const [questionsNew, setNewQuestions] = useState([])
     const [newQuestion, setNewQuestion] = useState("");
-    const [reload, setReload] = useState()
     const myTextInput = React.createRef();
-    //data = []
     const [text, onChangeText] = React.useState("Useless Text");
 
 
     useEffect(() => {
-        setReload({ reload: true })
         setIsDataDownloading(true)
         console.log("got to useEffect")
         if (isDataDownloading) {
@@ -45,10 +41,6 @@ export default function AddQuestionsScreen({ navigation, route }) {
                 );
         }
     }, [])
-
-    const reloadMap = () => {
-
-    }
 
     const submit = () => {
         fetch(`https://hello-campus.herokuapp.com/questions/`,

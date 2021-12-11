@@ -19,7 +19,7 @@ import {
   FlatList,
   TextInput,
 } from "react-native";
-import filter from 'lodash.filter'
+import filter from 'lodash.filter';
 import { globalStyles } from "../styles/global";
 
 
