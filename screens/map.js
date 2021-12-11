@@ -5,7 +5,6 @@ Brian Langejans, David Reidsma, David Heynen, Paul Dick, Kurt Wietelmann
 adapted from the navigation tutorial found at: https://reactnavigation.org/docs/navigating
 */
 
-<<<<<<< HEAD
 import React, { useState, useEffect } from "react";
 import {
 	Image,
@@ -34,28 +33,6 @@ import { useRoute } from "@react-navigation/native";
 import { HomeScreen } from "./home";
 import MapInfoText from "../components/mapInfoText";
 import InteractionButton from "../components/interactionButton";
-=======
-import React, { useState, useEffect } from 'react';
-import { Image, View, Text, TouchableOpacity, FlatList, ImageBackground, Touchable, StyleSheet, ActivityIndicator, Vibration, Animated, Modal } from 'react-native';
-import { globalStyles } from '../styles/global';
-import * as Location from 'expo-location';
-import { getDistance } from 'geolib';
-import Prompt from "./prompt";
-import { scaleCoordsToPixelCoords, isCoordWithinBoundaries } from '../models/PointOfInterest';
-import { TEST_POINTS_OF_INTEREST as TEST_POINTS_OF_INTEREST } from '../models/TestData.js';
-import { useRoute } from '@react-navigation/native';
-import { Ionicons } from '@expo/vector-icons';
-import {
-	HeaderButtons,
-	HeaderButton,
-	Item,
-	HiddenItem,
-	OverflowMenu,
-  } from 'react-navigation-header-buttons';
-import {HomeScreen} from './home'
-import MapInfoText from '../components/mapInfoText'
-import InteractionButton from '../components/interactionButton'
->>>>>>> origin/main
 
 const USE_TEST_DATA = false;
 
@@ -69,25 +46,17 @@ const POINT_HEIGHT = 50;
 
 const LOCATION_REFRESH_INTERVAL = 2000;
 
-<<<<<<< HEAD
-=======
-
-
-    
->>>>>>> origin/main
 function realToPixelCoords(point) {
 	// quick and dirty method to get rid of locations that are off the map to prevent wraparound
 	if (!isCoordWithinBoundaries(point)) {
 		return { x: -500, y: -500 };
 	}
 
-	let pixelCoords = scaleCoordsToPixelCoords(
-		point,
-		MAP_WIDTH,
-		MAP_HEIGHT + MAP_Y,
-		MAP_X,
-		MAP_Y
-	);
+    let pixelCoords = scaleCoordsToPixelCoords(point, MAP_WIDTH, MAP_HEIGHT + MAP_Y, MAP_X, MAP_Y);
+
+    // account for the size of the dotu
+    pixelCoords.x -= POINT_WIDTH / 2;
+    pixelCoords.y -= POINT_HEIGHT / 2;
 
 	// account for the size of the dot
 	pixelCoords.x -= POINT_WIDTH / 2;
@@ -96,31 +65,23 @@ function realToPixelCoords(point) {
 	return pixelCoords;
 }
 
-<<<<<<< HEAD
 export default function MapScreen({ route, navigation }) {
-	const [errorMsg, setErrorMsg] = useState(null); // TODO: do something with errorMsg
-	const [userLocation, setUserLocation] = useState({
-		pixelCoords: { x: null, y: null },
-		realCoords: { latitude: null, longitude: null },
-	});
-
-	const [isDataDownloading, setIsDataDownloading] = useState(true);
-	const [pointsOfInterest, setPointsOfInterest] = useState([]);
-=======
-export default function MapScreen({route, navigation}) {
-
-
     React.useLayoutEffect(() => {
         navigation.setOptions({
-          headerLeft: () => (
-            <TouchableOpacity onPress= {() => {
-                navigation.goBack();
-            }}>
-                <Text style= {{color: "maroon", fontWeight: "bold"}}>HOME</Text>
-            </TouchableOpacity>
-          ),
+            headerLeft: () => (
+                <HeaderButtons HeaderButtonComponent={IoniconsHeaderButton}>
+                    <Item
+                        title="location-list"
+                        iconName="md-home"
+                        color="maroon"
+                        onPress={() => {
+                            navigation.navigate("Home")
+                        }}
+                    />
+                </HeaderButtons>
+            ),
         });
-      }, [navigation]);
+    }, [navigation]);
 
     const [errorMsg, setErrorMsg] = useState(null); // TODO: do something with errorMsg
     const [userLocation, setUserLocation] = useState({ pixelCoords: { x: null, y: null }, realCoords: { latitude: null, longitude: null } });
@@ -130,35 +91,35 @@ export default function MapScreen({route, navigation}) {
     const [helpModalVisible, setHelpModalVisible] = useState(false);
 
     const IoniconsHeaderButton = (props) => (
-        <HeaderButton IconComponent={Ionicons} iconSize={25} {...props} />
-      );
+        <HeaderButton IconComponent={Ionicons} iconSize={45} {...props} />
+    );
 
-      React.useLayoutEffect(() => {
+    React.useLayoutEffect(() => {
         navigation.setOptions({
-          headerRight: () => 
+            headerRight: () =>
             (
-                <HeaderButtons  HeaderButtonComponent = {IoniconsHeaderButton}>
+                <HeaderButtons HeaderButtonComponent={IoniconsHeaderButton}>
                     <Item
                         title={"location-list"}
                         iconName={"md-list-circle"}
-                        color = "maroon"
+                        color="maroon"
                         onPress={() => {
                             navigation.navigate("Points of Interest")
                         }}
                     />
                     <Item
                         title={"help"}
-                        iconName = {"help-circle"}
-                        color= "maroon"
+                        iconName={"help-circle"}
+                        color="maroon"
                         onPress={() => {
-                            setHelpModalVisible(!helpModalVisible)}
+                            setHelpModalVisible(!helpModalVisible)
+                        }
                         }
                     />
                 </HeaderButtons>
             ),
         });
-      }, [navigation])
->>>>>>> origin/main
+    }, [navigation])
 
 	useEffect(() => {
 		async function checkForLocationPermissions() {
@@ -260,7 +221,6 @@ export default function MapScreen({route, navigation}) {
         ? realToPixelCoords(userLocation.realCoords)
         : { x: -500, y: -500 };
 
-<<<<<<< HEAD
 	function getClosestPoint() {
         const currentLocation = userLocation.realCoords;
 		const sortedByDistance = pointsOfInterest.sort((a, b) => {
@@ -282,10 +242,17 @@ export default function MapScreen({route, navigation}) {
         const point = sortedByDistance[0];
 		return [point, getDistance(currentLocation, point)];
 	}
+	
+    //add the user to the map screen
+    //props.route.params
+    //const { user } = route.params;
+    //const {userId} = route.params;
+    //console.log("user from google", user);
+    // const [ closestPoint, closestDistance ] = getClosePoint();
+    getClosePoint();
 
-	const [closestPoint, distanceToPoint] = userHasLocation 
-        ? getClosestPoint()
-        : [null, null];
+    let userPixelCoords = userLocation.realCoords.latitude != null ? realToPixelCoords(userLocation.realCoords) : { x: -500, y: -500 };
+    let textMessage = route.params == null ? "Walk towards a point on the map." : "Welcome " + route.params.user.given_name + ", walk towards a point to answer questions.";
 
     const pointIsInRange = closestPoint != null && distanceToPoint <= closestPoint.radius;
 
@@ -305,28 +272,32 @@ export default function MapScreen({route, navigation}) {
 			<Text style={{ fontSize: 20, fontWeight: "bold", color: "#fff", padding: 10, position: 'absolute', top: 30, marginRight: 80 }}>{textMessage}</Text>
 			<ImageBackground source={require('../assets/ecomap.png')} style={{ position: 'absolute', top: 100, width: MAP_WIDTH, height: MAP_HEIGHT }} />
 			<Modal
-				animationType="fade"
-				transparent={true}
-				visible={helpModalVisible}
-				onRequestClose={() => {
-					Alert.alert("Modal has been closed.");
-					setHelpModalVisible(!helpModalVisible);
-				}}
-			>
-				<View style={globalStyles.helpModal}>
-					<Text>
-						The exclamation mark button is an interaction button that will turn green
-						when you are near a point of interest.
-					</Text>
-					<TouchableOpacity style={{ backgroundColor: "maroon", margin: 10, borderRadius: 15 }}
-						onPress={() => {
-							setHelpModalVisible(!helpModalVisible)
-						}}>
-						<Text style={{ color: "#fff", margin: 10 }}>EXIT</Text>
-					</TouchableOpacity>
+                animationType="fade"
+                transparent={true}
+                visible={helpModalVisible}
+                onRequestClose={() => {
+                    Alert.alert("Modal has been closed.");
+                    setHelpModalVisible(!helpModalVisible);
+                }}
+            >
+                <View style={globalStyles.helpModal}>
+                    <Text style={globalStyles.helpText}>Press "HOME" to go back to home screen.</Text>
+                    <Text style={globalStyles.helpText}>Press the list icon to gain access to all the locations.</Text>
+                    <Text style={globalStyles.helpText}>
+                        The exclamation mark button is an interaction button that will turn green
+                        when you are near a point of interest.
+                    </Text>
+                    <Text style={globalStyles.helpText}>Press points on the map to open the location's description</Text>
+                    <TouchableOpacity style={{ backgroundColor: "maroon", margin: 10, borderRadius: 15 }}
+                        onPress={() => {
+                            setHelpModalVisible(!helpModalVisible)
+                        }
+                        }>
+                        <Text style={{ color: "#fff", fontSize: 25, margin: 10 }}>EXIT</Text>
+                    </TouchableOpacity>
 
-				</View>
-			</Modal>
+                </View>
+            </Modal>
 
 			{/* dynamically generate the point components from the data */}
 			{isDataDownloading

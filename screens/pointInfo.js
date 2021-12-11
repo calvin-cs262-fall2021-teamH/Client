@@ -12,13 +12,15 @@ import globalStyles from "../styles/global";
 export default function PointInfoScreen({ route, navigation }) {
     return (
         <ImageBackground
-				source={require("../assets/woods_scene.jpg")}
-				style={{flex: 1,
-                    backgroundColor: "#8C2131",
-                    alignItems: "stretch",
-                    justifyContent: "flex-start",}}
-			>
-            <Text style={{ 
+            source={require("../assets/woods_scene.jpg")}
+            style={{
+                flex: 1,
+                backgroundColor: "#8C2131",
+                alignItems: "stretch",
+                justifyContent: "flex-start",
+            }}
+        >
+            <Text style={{
                 color: '#9C1D37',
                 fontWeight: 'bold',
                 fontSize: 24,
@@ -26,9 +28,9 @@ export default function PointInfoScreen({ route, navigation }) {
                 margin: 30,
                 backgroundColor: "#fff",
                 borderRadius: 10
-                 }}>{ route.params.locationName }</Text>
-            
-            <Text style={{ 
+            }}>{route.params.locationName}</Text>
+
+            <Text style={{
                 color: '#9C1D37',
                 fontWeight: 'bold',
                 fontSize: 24,
@@ -36,8 +38,8 @@ export default function PointInfoScreen({ route, navigation }) {
                 margin: 30,
                 backgroundColor: "#fff",
                 borderRadius: 10
-                 }}
-          >{ route.params.info}</Text>
+            }}
+            >{route.params.info}</Text>
         </ImageBackground>
     );
 }
