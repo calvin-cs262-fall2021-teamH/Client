@@ -5,14 +5,14 @@
  * 12/10/2021
  */
 
- import React, { useEffect, useReducer, useState } from 'react';
- import { Image, Button, View, Text, TouchableOpacity, FlatList, ImageBackground, TextInput, ActivityIndicator, ScrollView } from 'react-native';
- import { globalStyles } from '../styles/global';
- 
- 
- 
+import React, { useEffect, useReducer, useState } from 'react';
+import { Image, Button, View, Text, TouchableOpacity, FlatList, ImageBackground, TextInput, ActivityIndicator, ScrollView } from 'react-native';
+import { globalStyles } from '../styles/global';
+
+
+
 export default function AddQuestionsScreen({ navigation, route }) {
-    
+
     const [isDataDownloading, setIsDataDownloading] = useState(true);
     const [location, setLocation] = useState([]);
     // const [latitude, setLatitude] = useState("");
@@ -22,8 +22,8 @@ export default function AddQuestionsScreen({ navigation, route }) {
     // const [info, setInfo] = useState("");
     const [text, onChangeText] = React.useState("Useless Text");
 
- 
-    useEffect (() => {
+
+    useEffect(() => {
         // setIsDataDownloading(true)
         // console.log("got to useEffect")
         // if (isDataDownloading) {
@@ -44,42 +44,43 @@ export default function AddQuestionsScreen({ navigation, route }) {
         // );
         // }
     }, [])
-     
+
     const submit = () => {
         fetch(`https://hello-campus.herokuapp.com/pointsOfInterest/`,
-        { method: 'POST',
-        headers: new Headers({
-            "Content-Type":"application/json"
-        }),
-        body: JSON.stringify({
-      
-            latitude: location.latitude,
+            {
+                method: 'POST',
+                headers: new Headers({
+                    "Content-Type": "application/json"
+                }),
+                body: JSON.stringify({
 
-            longitude: location.longitude,
+                    latitude: location.latitude,
 
-            radius: location.radius,
-              
-            name: location.name,
+                    longitude: location.longitude,
 
-            info: location.info,
+                    radius: location.radius,
 
-            imageURL: null
+                    name: location.name,
+
+                    info: location.info,
+
+                    imageURL: null
+                })
             })
-        })
     }
-    
+
     function _handleMultiInput(Text) {
         return (text) => {
             setLocation(prevState => ({
                 ...prevState,
-                [Text]:text
-              }));
+                [Text]: text
+            }));
         }
     }
- 
+
     return (
         <ScrollView style={{ flex: 1, backgroundColor: '#8C2032' }}>
-            <Text style={{ fontSize: 40, color: "#fff", padding: 10, marginBottom:30, fontWeight: 'bold', flex:2 }}>Add a Location</Text>
+            <Text style={{ fontSize: 40, color: "#fff", padding: 10, marginBottom: 30, fontWeight: 'bold', flex: 2 }}>Add a Location</Text>
             <TextInput
                 style={globalStyles.inputPointInfo}
                 onChangeText={_handleMultiInput("name")}
@@ -117,9 +118,9 @@ export default function AddQuestionsScreen({ navigation, route }) {
                 numberOfLines={3}
 
             />
-            <TouchableOpacity style={globalStyles.submitQuestion} onPress={() => {submit(), navigation.replace("Location List", navigation.navigate("Location List"))}}>
+            <TouchableOpacity style={globalStyles.submitQuestion} onPress={() => { submit(), navigation.replace("Location List", navigation.navigate("Location List")) }}>
                 <Text style={globalStyles.submitText}>Add</Text>
             </TouchableOpacity>
-        </ScrollView>  
+        </ScrollView>
     );
 }
