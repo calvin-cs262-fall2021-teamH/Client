@@ -360,7 +360,7 @@ export default function MapScreen({ route, navigation }) {
 					source={
 						pointIsInRange
 							? require("../assets/PointInteractionButton2.png")
-							: require("../assets/PointInteractionButton.png")
+							: require("../assets/1x1.png")
 					}
 					style={{ width: 170, height: 170 }}/>
 			</TouchableOpacity>
