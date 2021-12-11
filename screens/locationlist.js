@@ -167,10 +167,26 @@ export default function locationQuestion({route, navigation}) {
         return false;
       };
 
+      
+      const createFlatlist = () => {
+        return (
+            <FlatList
+          contentContainerStyle={{ paddingBottom: 300, flexGrow: 1, justifyContent: 'flex-end', flexDirection: 'column' }}
+          data={data}
+          keyExtractor={({ id }, index) => id.toString()} 
+          renderItem={({ item }) => (
+          <TouchableOpacity style={styles.locationButton} onPress={() => {setQuestionModalVisible(true), setLocation({location: item})}}>
+          <Text style={{fontSize: 20, color: "#fff", fontWeight: "bold"}}> {item.name} </Text>
+          </TouchableOpacity>
+       )}
+          />
+        )
+    }
+
 
     return (
-        <ImageBackground source = {require('../assets/light_background.jpg')} style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#8C2032' }}>
-          <Modal
+        <ImageBackground source = {require('../assets/light_background.jpg')} style={{ flex: 1, justifyContent: 'center', backgroundColor: '#8C2032', alignItems: 'center' }}>
+        <Modal
             animationType="fade"
             transparent={true}
             visible={helpModalVisible}
@@ -198,20 +214,18 @@ export default function locationQuestion({route, navigation}) {
             </View>
           </Modal>
           <Text style = {{fontSize: 18, fontWeight: 'bold', color: "#8C2131"}} > Select a location to edit.</Text>
-            <FlatList
-                    data={data}
-                    keyExtractor={({ id }, index) => id.toString()}
-                    ListHeaderComponent={renderHeader()} 
-                    renderItem={({ item }) => (
-                    <TouchableOpacity onPress={() => {setQuestionModalVisible(true)}}>
-                    <Text style={{ color: "#8C2131" , fontSize: 18}}> {item.name} {"\n"} </Text>
-                    </TouchableOpacity>
-                 )}
-                 
-            />
+          <Text style = {{fontSize: 25, fontWeight: 'bold', color: "#FFF", top: 10, marginBottom: 20}} > Select a location to edit.</Text>
+          {createFlatlist()}
+          <TouchableOpacity
+          style= {styles.AddButtonStyle}
+          onPress={() => navigation.navigate("Add Location")}
+        >
+          <Text style={styles.textStyle}> Add Location </Text>
+        </TouchableOpacity>
+
         <Modal
             animationType = "slide"
-            tranparent = {true}
+            transparent = {true}
             visible = {questionModalVisible}
             onRequestClose={() =>{
                 Alert.alert("Modal has been closed.");
@@ -220,15 +234,20 @@ export default function locationQuestion({route, navigation}) {
         >
             <View style={styles.centeredView}>
             <View style={styles.modalView}>
-            <TouchableOpacity onPress={() => {setQuestionModalVisible(!questionModalVisible)}} 
-                              style={{backgroundColor:"#8C2131", margin:10, borderRadius:5}}>
-                    <Text style={{ color: "#8C2131" , fontSize: 18, color: "#fff", margin: 15}}>Delete Location?</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => {navigation.navigate("Questions")}}
+            <TouchableOpacity onPress={() => {navigation.navigate("Add Question", location), setQuestionModalVisible(!questionModalVisible)}}
              style={{backgroundColor:"#8C2131", margin:15, borderRadius:5}}>
-                    <Text style={{ color: "#8C2131" , fontSize: 18, color: "#fff", margin: 15}}>Edit Location Questions</Text>
+                    <Text style={{ color: "#8C2131" , fontSize: 18, color: "#fff", margin: 15}}>Edit Questions</Text>
             </TouchableOpacity>
-
+            <TouchableOpacity onPress={() => {remove(location.location.id), setQuestionModalVisible(!questionModalVisible)}} 
+                              style={{backgroundColor:"red", margin:10, borderRadius:5}}>
+                    <Text style={{fontSize: 18, color: "#fff", margin: 15}}>Delete</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{backgroundColor:"#8C2131", marginTop:50, borderRadius:5}}
+              onPress={() => {setQuestionModalVisible(!questionModalVisible)}}
+            >
+              <Text style={{fontSize: 18, color: "#fff", margin: 15}}>Return</Text>
+            </TouchableOpacity>
             </View>
             </View>
         </Modal>
@@ -245,51 +264,56 @@ export default function locationQuestion({route, navigation}) {
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
             <Text style = {{fontWeight: "bold", color: "#8C2131"}}>Add A New Location</Text>
-            
-
             <TextInput style = {styles.input}
                underlineColorAndroid = "transparent"
-               placeholder = "Location Name Here:"
-               placeholderTextColor = "#8C2131"
+               placeholder = "Location Name"
+               placeholderTextColor = "grey"
                autoCapitalize = "none"
                />{/*on change text*/}
                <TextInput style = {styles.input}
                underlineColorAndroid = "transparent"
-               placeholder = "Longitude:"
-               placeholderTextColor = "#8C2131"
+               placeholder = "Longitude"
+               placeholderTextColor = "grey"
                autoCapitalize = "none"
                />
                <TextInput style = {styles.input}
                underlineColorAndroid = "transparent"
-               placeholder = "Latitude:"
-               placeholderTextColor = "#8C2131"
+               placeholder = "Latitude"
+               placeholderTextColor = "grey"
                autoCapitalize = "none"
                />
+              <TextInput style = {styles.input}
+               underlineColorAndroid = "transparent"
+               placeholder = "Description"
+               placeholderTextColor = "grey"
+               autoCapitalize = "none"
+               multiline={true}
+               numberOfLines={3}
+               />
             
+
+            {/* <TouchableOpacity
+                style={{backgroundColor:"#8C2131", margin:10, borderRadius:5}}
+                onPress={() => setModalVisible(!modalVisible)}
+              >
+                <Text style={{fontSize: 18, fontWeight:'bold', color: '#fff', margin:10}}>Use Current Location?</Text>
+            </TouchableOpacity> */}
 
             <TouchableOpacity
                 style={{backgroundColor:"#8C2131", margin:10, borderRadius:5}}
                 onPress={() => setModalVisible(!modalVisible)}
               >
-                <Text style={{fontSize: 18, fontWeight:'bold', color: '#fff', margin:10}}>Use Current Location?</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={{backgroundColor:"#8C2131", margin:10, borderRadius:5}}
-                onPress={() => setModalVisible(!modalVisible)}
-              >
-                <Text style={{fontSize: 18, fontWeight:'bold', color: '#fff', margin:10}}>SET</Text>
-              </TouchableOpacity>
+                  <Text style={{fontSize: 18, fontWeight:'bold', color: '#fff', margin:10}}>Set</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{backgroundColor:"#8C2131", marginTop:50, borderRadius:5}}
+              onPress={() => {setModalVisible(!modalVisible)}}
+            >
+              <Text style={{fontSize: 18, color: "#fff", margin: 15}}>Return</Text>
+            </TouchableOpacity>
             </View>
           </View>
         </Modal>
-
-        <TouchableOpacity
-          style= {styles.AddButtonStyle}
-          onPress={() => setModalVisible(true)}
-        >
-          <Text style={styles.textStyle}> + </Text>
-        </TouchableOpacity>
       </ImageBackground>
     );
   };
@@ -314,7 +338,7 @@ export default function locationQuestion({route, navigation}) {
       margin: 0,
       backgroundColor: "#fff",
       borderRadius: 20,
-      padding: 40,
+      padding: 30,
       alignItems: "center",
       shadowColor: "#000",
       shadowOffset: {
@@ -338,22 +362,34 @@ export default function locationQuestion({route, navigation}) {
     },
     textStyle: {
       color: "white",
-      fontWeight: "bold",
       textAlign: "center",
-      fontSize: 50
+      fontWeight: 'bold',
+      fontSize: 35
     },
     modalText: {
       marginBottom: 15,
       textAlign: "center"
     },
     AddButtonStyle: {
-        borderRadius: 10,
-        backgroundColor: "#8C2131",
-        borderWidth:1,
+        borderRadius: 20,
+        backgroundColor: "#32CD30",
+        borderWidth:2,
         borderColor: "#fff",
-        bottom: 5,
-        left: 5,
-        position: 'absolute'
-}
+        padding: 25,
+        marginBottom: 10,
+        marginTop: 12
+    },
+    locationButton: {
+      width: "100%",
+      borderRadius: 20,
+      borderColor: "#fff",
+      borderWidth: 1,
+      height: 60,
+      flexDirection:"row",
+      alignItems: "center",
+      justifyContent: "center",
+      marginTop: 30,
+      backgroundColor: "#8C2131",
+    }
     },
   );
