@@ -312,7 +312,7 @@ export default function MapScreen({ route, navigation }) {
                         navigation.navigate('Questions', { point: closestPoint, user: route.params.user });//This is a user from google not necc. the user from our DB, should update!
                     }
                 }}>
-                <Image source={closestPoint == null ? require('../assets/PointInteractionButton.png') : require("../assets/PointInteractionButton2.png")} style={{ width: 170, height: 170 }} />
+                <Image source={closestPoint == null ? require('../assets/1x1.png') : require("../assets/PointInteractionButton2.png")} style={{ width: 170, height: 170 }} />
             </TouchableOpacity>
             <TouchableOpacity onPress={() => navigation.navigate("Questions", { point: { id: 1, name: "Whiskey Pond" } })}>
                 <Text>THIS IS A BUTTON</Text>
