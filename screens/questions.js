@@ -1,4 +1,4 @@
-/**
+/*
  * Screen that contains questions about the user's current location.
  *
  * @author: Brian Langejans, David Reidsma, David Heynen, Paul Dick, Kurt Wietelmann
@@ -100,7 +100,7 @@ export default function QuestionScreen({ navigation, route }) {
 
                         })
                     }
-                    <TouchableOpacity style={globalStyles.submitButton} onPress={() => {submit(), navigation.goBack()}}>
+                    <TouchableOpacity style={globalStyles.submitButton} onPress={() => {this.submit(), navigation.goBack()}}>
                         <Text style={globalStyles.submitText}>Submit</Text>
                     </TouchableOpacity>
         </ScrollView>
