@@ -142,16 +142,18 @@ export const globalStyles = StyleSheet.create({
 		flex:.315,
 	},
 	helpModal: {
-        padding: 10,
 		alignItems: "center",
 		marginTop: 100,
 		backgroundColor: "#fff",
 		borderRadius: 15,
 	},
+    helpText: {
+        fontSize: 20,
+        padding: 5,
+    },
 	touchableHighlight: {
 		borderRadius: 100,
 	},
-
 	logo: {
 		width: 150,
 		height: 150,
