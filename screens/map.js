@@ -248,12 +248,8 @@ export default function MapScreen({ route, navigation }) {
     //const { user } = route.params;
     //const {userId} = route.params;
     //console.log("user from google", user);
-    // const [ closestPoint, closestDistance ] = getClosePoint();
-    getClosePoint();
 
-    let userPixelCoords = userLocation.realCoords.latitude != null ? realToPixelCoords(userLocation.realCoords) : { x: -500, y: -500 };
-    let textMessage = route.params == null ? "Walk towards a point on the map." : "Welcome " + route.params.user.given_name + ", walk towards a point to answer questions.";
-
+    const [ closestPoint, distanceToPoint ] = getClosestPoint();
     const pointIsInRange = closestPoint != null && distanceToPoint <= closestPoint.radius;
 
 	if (closestPoint != null) {
