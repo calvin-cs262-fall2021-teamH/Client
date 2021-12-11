@@ -25,6 +25,7 @@ import locationQuestion from './screens/locationlist';
 import SignedOutLocationList from './screens/signedOutLocations';
 import addStudentsToCourse from './screens/addStudent';
 import AddQuestionsScreen from './screens/addQuestions';
+import AddLocationScreen from './screens/addLocation';
 //import Icon from 'react-native-ionicons';
 
 
@@ -125,7 +126,8 @@ function App() {
           headerTintColor: "maroon",
         }}/>
         <Stack.Screen name = "Add Students" component = {addStudentsToCourse} options= {{headerShown: false}}/>
-        <Stack.Screen name = "Add Question" component = {AddQuestionsScreen} options = {{headerShown: false}}/>
+        <Stack.Screen name = "Add Question" component = {AddQuestionsScreen}/>
+        <Stack.Screen name = "Add Location" component = {AddLocationScreen}/>
         
       </Stack.Navigator>
     </NavigationContainer>
