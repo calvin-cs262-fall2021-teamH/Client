@@ -6,7 +6,7 @@ adapted from the navigation tutorial found at: https://reactnavigation.org/docs/
 */
 
 import React, { useState, useEffect } from 'react';
-import { Image, View, Text, TouchableOpacity, FlatList, Button, Modal, ImageBackground, Touchable, StyleSheet, ActivityIndicator, Vibration } from 'react-native';
+import { Image, View, Text, TouchableOpacity, FlatList, ImageBackground, Touchable, StyleSheet, ActivityIndicator, Vibration, Animated, Modal } from 'react-native';
 import { globalStyles } from '../styles/global';
 import * as Location from 'expo-location';
 import { getDistance } from 'geolib';
@@ -16,12 +16,15 @@ import { TEST_POINTS_OF_INTEREST as TEST_POINTS_OF_INTEREST } from '../models/Te
 import { useRoute } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import {
-	HeaderButtons,
-	HeaderButton,
-	Item,
-	HiddenItem,
-	OverflowMenu,
-  } from 'react-navigation-header-buttons';
+    HeaderButtons,
+    HeaderButton,
+    Item,
+    HiddenItem,
+    OverflowMenu,
+} from 'react-navigation-header-buttons';
+import { HomeScreen } from './home'
+import MapInfoText from '../components/mapInfoText'
+import InteractionButton from '../components/interactionButton'
 
 const USE_TEST_DATA = false;
 
@@ -37,7 +40,7 @@ const LOCATION_REFRESH_INTERVAL = 2000;
 
 
 
-    
+
 function realToPixelCoords(point) {
     // quick and dirty method to get rid of locations that are off the map to prevent wraparound
     if (!isCoordWithinBoundaries(point)) {
@@ -45,7 +48,7 @@ function realToPixelCoords(point) {
     }
 
     let pixelCoords = scaleCoordsToPixelCoords(point, MAP_WIDTH, MAP_HEIGHT + MAP_Y, MAP_X, MAP_Y);
-    
+
     // account for the size of the dot
     pixelCoords.x -= POINT_WIDTH / 2;
     pixelCoords.y -= POINT_HEIGHT / 2;
@@ -53,20 +56,25 @@ function realToPixelCoords(point) {
     return pixelCoords;
 }
 
-export default function MapScreen({route, navigation}) {
+export default function MapScreen({ route, navigation }) {
 
 
     React.useLayoutEffect(() => {
         navigation.setOptions({
-          headerLeft: () => (
-            <TouchableOpacity onPress= {() => {
-                navigation.goBack();
-            }}>
-                <Text style= {{color: "maroon", fontWeight: "bold"}}>HOME</Text>
-            </TouchableOpacity>
-          ),
+            headerLeft: () => (
+                <HeaderButtons HeaderButtonComponent={IoniconsHeaderButton}>
+                    <Item
+                        title="location-list"
+                        iconName="md-home"
+                        color="maroon"
+                        onPress={() => {
+                            navigation.navigate("Home")
+                        }}
+                    />
+                </HeaderButtons>
+            ),
         });
-      }, [navigation]);
+    }, [navigation]);
 
     const [errorMsg, setErrorMsg] = useState(null); // TODO: do something with errorMsg
     const [userLocation, setUserLocation] = useState({ pixelCoords: { x: null, y: null }, realCoords: { latitude: null, longitude: null } });
@@ -77,33 +85,34 @@ export default function MapScreen({route, navigation}) {
 
     const IoniconsHeaderButton = (props) => (
         <HeaderButton IconComponent={Ionicons} iconSize={45} {...props} />
-      );
+    );
 
-      React.useLayoutEffect(() => {
+    React.useLayoutEffect(() => {
         navigation.setOptions({
-          headerRight: () => 
+            headerRight: () =>
             (
-                <HeaderButtons  HeaderButtonComponent = {IoniconsHeaderButton}>
+                <HeaderButtons HeaderButtonComponent={IoniconsHeaderButton}>
                     <Item
                         title={"location-list"}
                         iconName={"md-list-circle"}
-                        color = "maroon"
+                        color="maroon"
                         onPress={() => {
                             navigation.navigate("Points of Interest")
                         }}
                     />
                     <Item
                         title={"help"}
-                        iconName = {"help-circle"}
-                        color= "maroon"
+                        iconName={"help-circle"}
+                        color="maroon"
                         onPress={() => {
-                            setHelpModalVisible(!helpModalVisible)}
+                            setHelpModalVisible(!helpModalVisible)
+                        }
                         }
                     />
                 </HeaderButtons>
             ),
         });
-      }, [navigation])
+    }, [navigation])
 
     useEffect(() => {
         async function checkForLocationPermissions() {
@@ -131,17 +140,17 @@ export default function MapScreen({route, navigation}) {
                 console.log("null coords");
                 return;
             }
-    
+
             // convert to on-screen coordinates
             const pixelCoords = realToPixelCoords({
                 name: "user's location",
                 latitude: realCoords.latitude,
                 longitude: realCoords.longitude
             });
-    
+
             console.log("Latitude, longitude: " + realCoords.latitude + ", " + realCoords.longitude);
             console.log("Screen coords: " + pixelCoords.x + ", " + pixelCoords.y);
-    
+
             // update the location
             setUserLocation({
                 realCoords: realCoords,
@@ -214,8 +223,8 @@ export default function MapScreen({route, navigation}) {
             let distanceB = getDistance(currentLocation, { latitude: b.latitude, longitude: b.longitude });
 
             // TODO: have some setting for debug output, it's spamming my console
-            // console.log("Distance to " + a.name + ": " + distanceA + " meters");
-            // console.log("Distance to " + b.name + ": " + distanceB + " meters");
+            console.log("Distance to " + a.name + ": " + distanceA + " meters");
+            console.log("Distance to " + b.name + ": " + distanceB + " meters");
             return distanceA > distanceB ? 1 : -1;
         });
 
@@ -227,31 +236,31 @@ export default function MapScreen({route, navigation}) {
         }
         // return [ null, distance ];
     }
-//add the user to the map screen
-//props.route.params
+    //add the user to the map screen
+    //props.route.params
     //const { user } = route.params;
     //const {userId} = route.params;
     //console.log("user from google", user);
     // const [ closestPoint, closestDistance ] = getClosePoint();
     getClosePoint();
-    
+
     let userPixelCoords = userLocation.realCoords.latitude != null ? realToPixelCoords(userLocation.realCoords) : { x: -500, y: -500 };
     let textMessage = route.params == null ? "Walk towards a point on the map." : "Welcome " + route.params.user.given_name + ", walk towards a point to answer questions.";
 
-    
+
     return (
-        <ImageBackground source = {require('../assets/light_background.jpg')} style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#8C2032' }}>
-            <Text style={{ fontSize: 20, fontWeight: "bold", color: "#fff", padding: 10, position: 'absolute', top: 30, marginRight: 80 } }>{textMessage}</Text>
-            <ImageBackground source = { require('../assets/ecomap.png')} style = {{position: 'absolute', top: 100, width: MAP_WIDTH, height: MAP_HEIGHT}}/>
+        <ImageBackground source={require('../assets/light_background.jpg')} style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#8C2032' }}>
+            <Text style={{ fontSize: 20, fontWeight: "bold", color: "#fff", padding: 10, position: 'absolute', top: 30, marginRight: 80 }}>{textMessage}</Text>
+            <ImageBackground source={require('../assets/ecomap.png')} style={{ position: 'absolute', top: 100, width: MAP_WIDTH, height: MAP_HEIGHT }} />
             <Modal
-          animationType="fade"
-          transparent={true}
-          visible={helpModalVisible}
-          onRequestClose={() => {
-            Alert.alert("Modal has been closed.");
-            setHelpModalVisible(!helpModalVisible);
-          }}
-        >
+                animationType="fade"
+                transparent={true}
+                visible={helpModalVisible}
+                onRequestClose={() => {
+                    Alert.alert("Modal has been closed.");
+                    setHelpModalVisible(!helpModalVisible);
+                }}
+            >
 			<View style = {globalStyles.helpModal}>
                 <Text style={globalStyles.helpText}>Press "HOME" to go back to home screen.</Text>
                 <Text style={globalStyles.helpText}>Press the list icon to gain access to all the locations.</Text>
@@ -274,10 +283,10 @@ export default function MapScreen({route, navigation}) {
                 pointsOfInterest.map(point => {
                     let pixelCoords = realToPixelCoords(point);
                     return <TouchableOpacity
-                                key={point.id}
-                                style={[styles.mapPoint, { position: 'absolute', top: pixelCoords.y, right: pixelCoords.x }]}
-                                onPress={() => navigation.navigate('Questions', {point: closestPoint, user: route.params.user}), Vibration.cancel()}
-                            />
+                        key={point.id}
+                        style={[styles.mapPoint, { position: 'absolute', top: pixelCoords.y, right: pixelCoords.x }]}
+                        onPress={() => navigation.navigate('Questions', { point: closestPoint, user: route.params.user }), Vibration.cancel()}
+                    />
                 })
             }
 
@@ -293,21 +302,23 @@ export default function MapScreen({route, navigation}) {
             ]} />
 
             <TouchableOpacity
-                style={[{ bottom: 0, position: 'absolute', alignItems: 'center' }, globalStyles.noInteractionButton ]}
+                style={[{ bottom: 0, position: 'absolute', alignItems: 'center' }, globalStyles.noInteractionButton]}
                 onPress={() => {
                     if (closestPoint == null) {
                         console.log("No close point!");
                         return;
                     }
-                    if (route.params == null){//ie we are not logged in...
+                    if (route.params == null) {//ie we are not logged in...
                         navigation.navigate('PointInfo', closestPoint);
-                    }else{//if the user is logged in (need to update further)
-                        navigation.navigate('Questions', {point: closestPoint, user: route.params.user});//This is a user from google not necc. the user from our DB, should update!
+                    } else {//if the user is logged in (need to update further)
+                        navigation.navigate('Questions', { point: closestPoint, user: route.params.user });//This is a user from google not necc. the user from our DB, should update!
                     }
                 }}>
-                <Image source={closestPoint == null ? require('../assets/PointInteractionButton.png') : require("../assets/PointInteractionButton2.png")} style = {{width: 170, height:170 }}/>
+                <Image source={closestPoint == null ? require('../assets/PointInteractionButton.png') : require("../assets/PointInteractionButton2.png")} style={{ width: 170, height: 170 }} />
             </TouchableOpacity>
-
+            <TouchableOpacity onPress={() => navigation.navigate("Questions", { point: { id: 1, name: "Whiskey Pond" } })}>
+                <Text>THIS IS A BUTTON</Text>
+            </TouchableOpacity>
         </ImageBackground>
     );
 }
@@ -336,15 +347,15 @@ const styles = StyleSheet.create({
         borderColor: 'grey'
     },
     container1: {
-        flex:1,
+        flex: 1,
         ...StyleSheet.absoluteFillObject,
         alignSelf: 'flex-end',
         marginTop: 25,
         marginRight: 10,
         left: 300,
         right: 10,
-       
-        
-       // position: 'absolute', // add if dont work with above
-      },
+
+
+        // position: 'absolute', // add if dont work with above
+    },
 });

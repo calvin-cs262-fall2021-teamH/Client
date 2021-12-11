@@ -48,7 +48,7 @@ export default function QuestionScreen({ navigation, route }) {
     }
 
     
-    submit = () => {
+    const submit = () => {
         for (i=0; i<questions.length; i++) {
             console.log(questions[i].id)
             console.log(answer["answer_3"])
@@ -100,7 +100,7 @@ export default function QuestionScreen({ navigation, route }) {
 
                         })
                     }
-                    <TouchableOpacity style={globalStyles.submitButton} onPress={() => {this.submit(), navigation.goBack()}}>
+                    <TouchableOpacity style={globalStyles.submitButton} onPress={() => {submit(), navigation.goBack()}}>
                         <Text style={globalStyles.submitText}>Submit</Text>
                     </TouchableOpacity>
         </ScrollView>
