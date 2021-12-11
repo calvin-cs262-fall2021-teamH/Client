@@ -10,7 +10,7 @@
             "type": "reactnative",
             "cwd": "${workspaceFolder}",
             "platform": "exponent",
-            "expoHostType": "local"
+            "expoHostType": "lan"
         },
     ]
 }
