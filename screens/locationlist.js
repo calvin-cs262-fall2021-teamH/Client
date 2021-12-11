@@ -21,12 +21,13 @@ import {
     FlatList,
     TextInput,
 } from "react-native";
-import filter from 'lodash.filter'
+import filter from 'lodash.filter';
 import { globalStyles } from "../styles/global";
 import * as Google from "expo-google-app-auth";
 import { useRoute } from '@react-navigation/native';
 import { AsyncStorage} from 'react-native';
 import {checkIfTokenExpired, refreshAuthAsync,getCachedAuthAsync, authState} from './home';
+import AddLocationScreen from "./addQuestions";
 //import @react-native-async-storage/async-storage;
 
 
@@ -35,20 +36,6 @@ export default function locationQuestion({route, navigation}) {
     const [data, setData] = useState([]);
     const [fullData, setFullData] = useState([]);
     const [error, setError] = useState(null);
-    const [latitude, setLatitude] = useState("");
-    const [longitude, setLongitude] = useState("");
-    const [locName, setLocName] = useState("");
-    //const [isLoading, setIsLoading] = useState(false);
-    /*useEffect(() => {
-        fetch('https://hello-campus.herokuapp.com/users/')
-            .then((response) => response.json())
-            .then((json) => {setData(json)
-                setFullData(response.results);
-
-                 setIsLoading(false)})
-            .catch((error) => console.error(error))
-            .finally(() => setLoading(false));
-      }, []);*/
 
       useEffect(() => {
         setIsLoading(true);
@@ -104,38 +91,60 @@ export default function locationQuestion({route, navigation}) {
         return false;
       };
 
-      submit = () => {
-          fetch(`https://hello-campus.herokuapp.com/locations/`,
-              { method: 'POST',
-              headers: new Headers({
-                  "Content-Type":"application/json"
-              }),
-              body: JSON.stringify({
-     
-                  email: route.params.user.email,
-             
-                  questionID: questions[i].id,
-             
-                  answer: answer["answer_" + questions[i].id]
-             
-              })
-            })
-        }
+      const remove = (locationID) => {
+        fetch(`https://hello-campus.herokuapp.com/pointOfInterest/${locationID}/`, { method: 'DELETE' })
+        .then(() => {
+            console.log("Successfully deleted location data.");
+            reloadLocations()
+        })
+    }
+  
+    const reloadLocations = () => {
+      setIsLoading(true);
+      
+      fetch('https://hello-campus.herokuapp.com/pointsofinterest/')
+        .then(response => response.json())
+        .then((json) => {
+          setData(json);
+    
+          // ADD THIS
+          setFullData(json);
+    
+          setIsLoading(false);
+        })
+        .catch(err => {
+          setIsLoading(false);
+          setError(err);
+        });
+    }
+
+    const createFlatlist = () => {
+        return (
+            <FlatList
+          contentContainerStyle={{ paddingBottom: 300, flexGrow: 1, justifyContent: 'flex-end', flexDirection: 'column' }}
+          data={data}
+          keyExtractor={({ id }, index) => id.toString()} 
+          renderItem={({ item }) => (
+          <TouchableOpacity style={styles.locationButton} onPress={() => {setQuestionModalVisible(true), setLocation({location: item})}}>
+          <Text style={{fontSize: 20, color: "#fff", fontWeight: "bold"}}> {item.name} </Text>
+          </TouchableOpacity>
+       )}
+          />
+        )
+    }
 
 
     return (
         <ImageBackground source = {require('../assets/light_background.jpg')} style={{ flex: 1, justifyContent: 'center', backgroundColor: '#8C2032', alignItems: 'center' }}>
-          <Text style = {{fontSize: 25, fontWeight: 'bold', color: "#FFF", top: 10}} > Select a location to edit.</Text>
-            <FlatList
-                    data={data}
-                    keyExtractor={({ id }, index) => id.toString()} 
-                    renderItem={({ item }) => (
-                    <TouchableOpacity style={styles.locationButton} onPress={() => {setQuestionModalVisible(true), setLocation({location: item})}}>
-                    <Text style={{fontSize: 20, color: "#fff", fontWeight: "bold"}}> {item.name} </Text>
-                    </TouchableOpacity>
-                 )}
-                 
-            />
+          <Text style = {{fontSize: 25, fontWeight: 'bold', color: "#FFF", top: 10, marginBottom: 20}} > Select a location to edit.</Text>
+          {createFlatlist()}
+          <TouchableOpacity
+          style= {styles.AddButtonStyle}
+          onPress={() => navigation.navigate("Add Location")}
+        >
+          <Text style={styles.textStyle}> Add Location </Text>
+        </TouchableOpacity>
+
         <Modal
             animationType = "slide"
             transparent = {true}
@@ -151,14 +160,13 @@ export default function locationQuestion({route, navigation}) {
              style={{backgroundColor:"#8C2131", margin:15, borderRadius:5}}>
                     <Text style={{ color: "#8C2131" , fontSize: 18, color: "#fff", margin: 15}}>Edit Questions</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => {setQuestionModalVisible(!questionModalVisible)}} 
+            <TouchableOpacity onPress={() => {remove(location.location.id), setQuestionModalVisible(!questionModalVisible)}} 
                               style={{backgroundColor:"red", margin:10, borderRadius:5}}>
                     <Text style={{fontSize: 18, color: "#fff", margin: 15}}>Delete</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={{backgroundColor:"#8C2131", marginTop:50, borderRadius:5}}
-              onPress={() => {
-                setQuestionModalVisible(!questionModalVisible)}}
+              onPress={() => {setQuestionModalVisible(!questionModalVisible)}}
             >
               <Text style={{fontSize: 18, color: "#fff", margin: 15}}>Return</Text>
             </TouchableOpacity>
@@ -196,31 +204,38 @@ export default function locationQuestion({route, navigation}) {
                placeholderTextColor = "grey"
                autoCapitalize = "none"
                />
+              <TextInput style = {styles.input}
+               underlineColorAndroid = "transparent"
+               placeholder = "Description"
+               placeholderTextColor = "grey"
+               autoCapitalize = "none"
+               multiline={true}
+               numberOfLines={3}
+               />
             
+
+            {/* <TouchableOpacity
+                style={{backgroundColor:"#8C2131", margin:10, borderRadius:5}}
+                onPress={() => setModalVisible(!modalVisible)}
+              >
+                <Text style={{fontSize: 18, fontWeight:'bold', color: '#fff', margin:10}}>Use Current Location?</Text>
+            </TouchableOpacity> */}
 
             <TouchableOpacity
                 style={{backgroundColor:"#8C2131", margin:10, borderRadius:5}}
                 onPress={() => setModalVisible(!modalVisible)}
               >
-                <Text style={{fontSize: 18, fontWeight:'bold', color: '#fff', margin:10}}>Use Current Location?</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={{backgroundColor:"#8C2131", margin:10, borderRadius:5}}
-                onPress={() => setModalVisible(!modalVisible)}
-              >
-                <Text style={{fontSize: 18, fontWeight:'bold', color: '#fff', margin:10}}>Set</Text>
-              </TouchableOpacity>
+                  <Text style={{fontSize: 18, fontWeight:'bold', color: '#fff', margin:10}}>Set</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{backgroundColor:"#8C2131", marginTop:50, borderRadius:5}}
+              onPress={() => {setModalVisible(!modalVisible)}}
+            >
+              <Text style={{fontSize: 18, color: "#fff", margin: 15}}>Return</Text>
+            </TouchableOpacity>
             </View>
           </View>
         </Modal>
-
-        <TouchableOpacity
-          style= {styles.AddButtonStyle}
-          onPress={() => setModalVisible(true)}
-        >
-          <Text style={styles.textStyle}> + </Text>
-        </TouchableOpacity>
       </ImageBackground>
     );
   };
@@ -245,7 +260,7 @@ export default function locationQuestion({route, navigation}) {
       margin: 0,
       backgroundColor: "#fff",
       borderRadius: 20,
-      padding: 40,
+      padding: 30,
       alignItems: "center",
       shadowColor: "#000",
       shadowOffset: {
@@ -269,9 +284,9 @@ export default function locationQuestion({route, navigation}) {
     },
     textStyle: {
       color: "white",
-      fontWeight: "bold",
       textAlign: "center",
-      fontSize: 70
+      fontWeight: 'bold',
+      fontSize: 35
     },
     modalText: {
       marginBottom: 15,
@@ -282,10 +297,9 @@ export default function locationQuestion({route, navigation}) {
         backgroundColor: "#32CD30",
         borderWidth:2,
         borderColor: "#fff",
-        alignItems: 'center',
-        justifyContent: 'center',
-        bottom: 30,
-        position: 'absolute'
+        padding: 25,
+        marginBottom: 10,
+        marginTop: 12
     },
     locationButton: {
       width: "100%",
