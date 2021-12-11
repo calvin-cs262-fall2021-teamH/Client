@@ -11,20 +11,16 @@
  
  
  
-export default function AddQuestionsScreen({ navigation, route }) {
+export default function AddLocationScreen({ navigation, route }) {
     
     const [isDataDownloading, setIsDataDownloading] = useState(true);
     const [questions, setQuestion] = useState([]);
-    const [questionsNew, setNewQuestions] = useState([])
     const [newQuestion, setNewQuestion] = useState("");
-    const [reload, setReload] = useState()
     const myTextInput = React.createRef();
-    //data = []
     const [text, onChangeText] = React.useState("Useless Text");
 
  
     useEffect (() => {
-        setReload({reload:true})
         setIsDataDownloading(true)
         console.log("got to useEffect")
         if (isDataDownloading) {
@@ -45,10 +41,6 @@ export default function AddQuestionsScreen({ navigation, route }) {
         );
         }
     }, [])
-
-    const reloadMap = () => {
-
-    }
      
     const submit = () => {
         fetch(`https://hello-campus.herokuapp.com/questions/`,
@@ -130,9 +122,6 @@ export default function AddQuestionsScreen({ navigation, route }) {
     return (
         <ScrollView style={{ flex: 1, backgroundColor: '#8C2032' }}>
             <Text style={{ fontSize: 40, color: "#fff", padding: 10, marginBottom:30, fontWeight: 'bold', flex:2 }}>{ route.params.location.name }</Text>
-             {/* { isDataDownloading ? <ActivityIndicator/>:
-                <Text style={{ fontSize: 30, color: "#fff", padding: 20, position: "absolute" }}>{ question[0].question }</Text>
-             } */}
                 <TextInput
                     style={globalStyles.inputQuestion}
                     onChangeText={handleInput()}

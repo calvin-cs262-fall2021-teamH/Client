@@ -179,6 +179,18 @@ export const globalStyles = StyleSheet.create({
         bottom: 10,
         textAlignVertical: 'top'
     },
+    inputPointInfo: {
+        width: "90%",
+        fontSize: 16,
+        color: "#000",
+        padding: 20,
+        backgroundColor: "#fff",
+        borderRadius: 15,
+        left: 5,
+        bottom: 10,
+        margin: 20,
+        textAlignVertical: 'top'
+    },
     submitQuestion: {
         width: "20%",
         height: "10%",
