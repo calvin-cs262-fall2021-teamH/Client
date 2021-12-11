@@ -9,7 +9,7 @@ import { StyleSheet } from 'react-native';
 export const globalStyles = StyleSheet.create({
     QAlist: {
         padding: 15,
-        borderRadius: 10,        
+        borderRadius: 10,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
@@ -17,17 +17,17 @@ export const globalStyles = StyleSheet.create({
     },
     listIcon: {
         width: 30,
-        height: 30,        
+        height: 30,
         borderRadius: 20,
     },
     list: {
         backgroundColor: 'grey',
         padding: 15,
-        borderRadius: 10,        
+        borderRadius: 10,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        marginTop:20,
+        marginTop: 20,
         fontWeight: "bold",
         fontSize: 20,
         color: "white"
@@ -46,24 +46,24 @@ export const globalStyles = StyleSheet.create({
     settingOption: {
         backgroundColor: '#FFF',
         padding: 15,
-        borderRadius: 10,        
+        borderRadius: 10,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
         marginBottom: 20,
     },
     pointImage: {
-        width: 400, 
-        height : 400,
+        width: 400,
+        height: 400,
     },
     interactionButton: {
-        width: 170, 
-        height:170,
+        width: 170,
+        height: 170,
         alignItems: 'center',
     },
     noInteractionButton: {
-        width: 170, 
-        height:170,
+        width: 170,
+        height: 170,
         alignItems: 'center',
     },
     genericButton: {
@@ -72,14 +72,14 @@ export const globalStyles = StyleSheet.create({
         borderColor: "#fff",
         borderWidth: 1,
         height: 60,
-        flexDirection:"row",
+        flexDirection: "row",
         alignItems: "center",
         justifyContent: "center",
         marginTop: 30,
         backgroundColor: "#8C2131",
     },
 
-    listButton:{
+    listButton: {
         width: "75%",
         height: 30,
         flexDirection: "row",
@@ -104,12 +104,12 @@ export const globalStyles = StyleSheet.create({
     genericText: {
         fontWeight: 'bold',
         color: "#000000",
-      },
+    },
     submitText: {
         fontWeight: 'bold',
         fontSize: 15,
         color: "#000000",
-      },
+    },
     submitButton: {
         width: "20%",
         height: "10%",
@@ -123,39 +123,41 @@ export const globalStyles = StyleSheet.create({
         backgroundColor: "#81FF8E",
     },
     body: {
-		flex: 1,
-		alignItems: "center",
-		justifyContent: "center",
-	},
-	footer: {
-		alignItems: "center",
-		marginBottom: 15,
-	},
-	imageBackGround: {
-		flex: 1,
-		backgroundColor: "#8C2131",
-	},
-	
-	genericButtonText: {
-		fontWeight: "bold",
-		color: "#fff",
-		flex:.315,
-	},
-	helpModal: {
-        padding: 10,
-		alignItems: "center",
-		marginTop: 100,
-		backgroundColor: "#fff",
-		borderRadius: 15,
-	},
-	touchableHighlight: {
-		borderRadius: 100,
-	},
+        flex: 1,
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    footer: {
+        alignItems: "center",
+        marginBottom: 15,
+    },
+    imageBackGround: {
+        flex: 1,
+        backgroundColor: "#8C2131",
+    },
 
-	logo: {
-		width: 150,
-		height: 150,
-	},
+    genericButtonText: {
+        fontWeight: "bold",
+        color: "#fff",
+        flex: .315,
+    },
+    helpModal: {
+        alignItems: "center",
+        marginTop: 100,
+        backgroundColor: "#fff",
+        borderRadius: 15,
+    },
+    helpText: {
+        fontSize: 20,
+        padding: 5,
+    },
+    touchableHighlight: {
+        borderRadius: 100,
+    },
+    logo: {
+        width: 150,
+        height: 150,
+    },
     deleteQuestion: {
         width: "20%",
         height: "10%",
@@ -201,7 +203,7 @@ export const globalStyles = StyleSheet.create({
         marginTop: 10,
         alignSelf: 'flex-end',
         right: 40,
-        bottom:0,
+        bottom: 0,
         backgroundColor: "#81FF8E",
     }
 });
