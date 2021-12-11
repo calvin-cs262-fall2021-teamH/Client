@@ -210,7 +210,7 @@ export default function HomeScreen({ navigation }) {
 			}else{
 				screenToNavigateTo = "Location";
 			}
-		  })(screenToNavigateTo);
+		})(screenToNavigateTo);
 	*/
 		//let isSignedIn = authState == null ? false : true;
 		//let screenToNavigateTo = isSignedIn == true ? "Location" : "Points of Interest";
@@ -367,6 +367,15 @@ export default function HomeScreen({ navigation }) {
 
 				<View style={globalStyles.body}>
 					{/*Navigates to student map screen*/}
+					<TouchableHighlight
+						onPress={() => navigation.navigate("About")}
+						style={globalStyles.touchableHighlight}
+					>
+						<Image
+							source={require("../assets/HelloCampusLogo_NoBackground.png")}
+							style={globalStyles.logo}
+						/>
+					</TouchableHighlight>
 					<TouchableOpacity
 						style={globalStyles.genericButton}
 						onPress={async () => {
@@ -440,6 +449,15 @@ export default function HomeScreen({ navigation }) {
 
 				<View style={globalStyles.body}>
 					{/*Navigates to student map screen*/}
+					<TouchableHighlight
+						onPress={() => navigation.navigate("About")}
+						style={globalStyles.touchableHighlight}
+					>
+						<Image
+							source={require("../assets/HelloCampusLogo_NoBackground.png")}
+							style={globalStyles.logo}
+						/>
+					</TouchableHighlight>
 					<TouchableOpacity
 						style={globalStyles.genericButton}
 						onPress={async () => {
@@ -511,6 +529,15 @@ export default function HomeScreen({ navigation }) {
 
 				<View style={globalStyles.body}>
 					{/*Navigates to student map screen*/}
+					<TouchableHighlight
+						onPress={() => navigation.navigate("About")}
+						style={globalStyles.touchableHighlight}
+					>
+						<Image
+							source={require("../assets/HelloCampusLogo_NoBackground.png")}
+							style={globalStyles.logo}
+						/>
+					</TouchableHighlight>
 					<TouchableOpacity
 						style={globalStyles.genericButton}
 						onPress={async () => {
