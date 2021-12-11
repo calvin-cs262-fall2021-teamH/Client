@@ -11,32 +11,34 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import myDashBoard from './dashboard'
 import addStudentsToCourse from './addStudent'
 
-const DrawerScreen = ({route, navigation}) => {
-    const Stack1= createNativeStackNavigator();
-  console.log('my params', route.params);
-    return (
+const DrawerScreen = ({ route, navigation }) => {
+	const Stack1 = createNativeStackNavigator();
+	console.log('my params', route.params);
+	return (
 
-<Stack1.Navigator initialRouteName="addStudentsToCourse">
-  <Stack1.Screen 
-    name="Add Students" 
-    component={addStudentsToCourse}
-    options={{ headerShown: true,
-      headerStyle: {
-        backgroundColor: '#fff',
-      },
-      headerTintColor: '#8C2131',
-      headerTitleStyle: {
-        fontWeight: 'bold',
-      },
-    }}
-    />
-     <Stack.Screen name = "Dashboard" component = {myDashBoard} options={{ footerShown: true,
-          headerTitleAlign: "center",
-          headerTintColor: "maroon",
-        }}/>
-</Stack1.Navigator>
+		<Stack1.Navigator initialRouteName="addStudentsToCourse">
+			<Stack1.Screen
+				name="Add Students"
+				component={addStudentsToCourse}
+				options={{
+					headerShown: true,
+					headerStyle: {
+						backgroundColor: '#fff',
+					},
+					headerTintColor: '#8C2131',
+					headerTitleStyle: {
+						fontWeight: 'bold',
+					},
+				}}
+			/>
+			<Stack.Screen name="Dashboard" component={myDashBoard} options={{
+				footerShown: true,
+				headerTitleAlign: "center",
+				headerTintColor: "maroon",
+			}} />
+		</Stack1.Navigator>
 
-    )
+	)
 }
 
 export default DrawerScreen;
