@@ -7,19 +7,30 @@ Brian Langejans, David Reidsma, David Heynen, Paul Dick, Kurt Wietelmann
 import { StyleSheet } from 'react-native';
 
 export const globalStyles = StyleSheet.create({
+    QAlist: {
+        padding: 15,
+        borderRadius: 10,        
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        color: "#fff",
+    },
     listIcon: {
         width: 30,
         height: 30,        
         borderRadius: 20,
     },
     list: {
-        backgroundColor: '#ffffff',
+        backgroundColor: 'grey',
         padding: 15,
         borderRadius: 10,        
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
         marginTop:20,
+        fontWeight: "bold",
+        fontSize: 20,
+        color: "white"
     },
     listText: {
         fontSize: 20,
@@ -67,6 +78,14 @@ export const globalStyles = StyleSheet.create({
         marginTop: 30,
         backgroundColor: "#8C2131",
     },
+
+    listButton:{
+        width: "75%",
+        height: 30,
+        flexDirection: "row",
+        alignItems: "flex-start",
+        marginTop: 30
+    },
     Question: {
         fontSize: 20,
         paddingVertical: 10,
@@ -103,6 +122,40 @@ export const globalStyles = StyleSheet.create({
         right: 40,
         backgroundColor: "#81FF8E",
     },
+    body: {
+		flex: 1,
+		alignItems: "center",
+		justifyContent: "center",
+	},
+	footer: {
+		alignItems: "center",
+		marginBottom: 15,
+	},
+	imageBackGround: {
+		flex: 1,
+		backgroundColor: "#8C2131",
+	},
+	
+	genericButtonText: {
+		fontWeight: "bold",
+		color: "#fff",
+		flex:.315,
+	},
+	helpModal: {
+        padding: 10,
+		alignItems: "center",
+		marginTop: 100,
+		backgroundColor: "#fff",
+		borderRadius: 15,
+	},
+	touchableHighlight: {
+		borderRadius: 100,
+	},
+
+	logo: {
+		width: 150,
+		height: 150,
+	},
     deleteQuestion: {
         width: "20%",
         height: "10%",
@@ -124,6 +177,18 @@ export const globalStyles = StyleSheet.create({
         borderRadius: 15,
         left: 5,
         bottom: 10,
+        textAlignVertical: 'top'
+    },
+    inputPointInfo: {
+        width: "90%",
+        fontSize: 16,
+        color: "#000",
+        padding: 20,
+        backgroundColor: "#fff",
+        borderRadius: 15,
+        left: 5,
+        bottom: 10,
+        margin: 20,
         textAlignVertical: 'top'
     },
     submitQuestion: {
