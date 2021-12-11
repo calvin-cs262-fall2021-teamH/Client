@@ -11,7 +11,6 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import HomeScreen from "./screens/home";
 import MapScreen from "./screens/map";
-import GeoPrototype from './screens/GeolocationPrototype';
 import PointInfoScreen from './screens/pointInfo';
 
 import Header from './shared/header';
@@ -24,7 +23,6 @@ import myDashBoard from './screens/dashboard';
 import locationQuestion from './screens/locationlist';
 import AddQuestionsScreen from './screens/addQuestions';
 //import Icon from 'react-native-ionicons';
-
 
 import ListScreen from './screens/list';
 

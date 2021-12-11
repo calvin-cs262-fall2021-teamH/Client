@@ -21,6 +21,7 @@ import {
 } from "react-native";
 import { globalStyles } from "../styles/global";
 import * as Location from "expo-location";
+import * as TaskManager from "expo-task-manager";
 import { getDistance } from "geolib";
 import Prompt from "./prompt";
 import {
@@ -78,51 +79,48 @@ export default function MapScreen({ route, navigation }) {
 
 	useEffect(() => {
 		async function checkForLocationPermissions() {
-			let { status } = await Location.requestForegroundPermissionsAsync();
-			const hasPermissions = status === "granted";
-			if (!hasPermissions) {
-				console.log("Permission problem: status is " + status);
-				setErrorMsg("Permission to access location was denied");
-			}
-			return hasPermissions;
+			// let { status } = await Location.requestForegroundPermissionsAsync();
+			// const hasPermissions = status === "granted";
+			// if (!hasPermissions) {
+			// 	console.log("Permission problem: status is " + status);
+			// 	setErrorMsg("Permission to access location was denied");
+			// }
+			// return hasPermissions;
 		}
 
 		async function getCurrentLatLong() {
-			const locationPromise = await Location.getCurrentPositionAsync({
-				accuracy: Location.Accuracy.BestForNavigation,
-				distanceInterval: 1,
-			});
-			return locationPromise.coords;
+			// const locationPromise = await Location.getCurrentPositionAsync({
+			// 	accuracy: Location.Accuracy.Highest,
+			// });
+			// return locationPromise.coords;
 		}
 
 		async function refreshLocation() {
-			// get geographical coordinates
-			const realCoords = await getCurrentLatLong();
-			if (realCoords == null) {
-				console.log("null coords");
-				return;
-			}
+			// const locations = global.locations;
+			// console.log(locations);
 
-			// convert to on-screen coordinates
-			const pixelCoords = realToPixelCoords({
-				name: "user's location",
-				latitude: realCoords.latitude,
-				longitude: realCoords.longitude,
-			});
+			// // get geographical coordinates
+			// const realCoords = null;//await getCurrentLatLong();
+			// if (realCoords == null) {
+			// 	console.log("null coords");
+			// 	return;
+			// }
 
-			console.log(
-				"Latitude, longitude: " +
-					realCoords.latitude +
-					", " +
-					realCoords.longitude
-			);
-			console.log("Screen coords: " + pixelCoords.x + ", " + pixelCoords.y);
+			// // convert to on-screen coordinates
+			// const pixelCoords = realToPixelCoords({
+			// 	name: "user's location",
+			// 	latitude: realCoords.latitude,
+			// 	longitude: realCoords.longitude,
+			// });
 
-			// update the location
-			setUserLocation({
-				realCoords: realCoords,
-				pixelCoords: pixelCoords,
-			});
+			// // console.log("Latitude, longitude: " + realCoords.latitude + ", " + realCoords.longitude);
+			// // console.log("Screen coords: " + pixelCoords.x + ", " + pixelCoords.y);
+
+			// // update the location
+			// setUserLocation({
+			// 	realCoords: realCoords,
+			// 	pixelCoords: pixelCoords,
+			// });
 		}
 
 		async function downloadPointsFromService() {
@@ -159,80 +157,64 @@ export default function MapScreen({ route, navigation }) {
 
 		initPointsOfInterest();
 
-		const hasLocationPermissions = checkForLocationPermissions();
-		if (!hasLocationPermissions) {
-			// if we still don't have location permissions, there's just no point in continuing
-			return;
-		}
+		// const hasLocationPermissions = checkForLocationPermissions();
+		// if (!hasLocationPermissions) {
+		// 	// if we still don't have location permissions, there's just no point in continuing
+		// 	return;
+		// }
 
 		// refresh the location on an interval
-		const locationRefreshIntervalHandle = setInterval(
-			refreshLocation,
-			LOCATION_REFRESH_INTERVAL
-		);
+		// const locationRefreshIntervalHandle = setInterval(
+		// 	refreshLocation,
+		// 	LOCATION_REFRESH_INTERVAL
+		// );
+
 		return () => clearInterval(locationRefreshIntervalHandle); // end the interval'd calls when the screen is unmounted
 	}, []);
 
-	let closestPoint = null;
-	let closestDistance = -1;
+    const userHasLocation = userLocation.realCoords?.latitude != null;
+	const userPixelCoords = userHasLocation
+        ? realToPixelCoords(userLocation.realCoords)
+        : { x: -500, y: -500 };
 
-	function getClosePoint() {
-		let currentLocation = userLocation.realCoords;
-		if (currentLocation.latitude == null) {
-			// return [ null, -1 ];
-			closestPoint = null;
-			closestDistance = -1;
-			return;
-		}
-
-		if (pointsOfInterest.length == 0) return;
-
-		let sortedByDistance = pointsOfInterest.sort((a, b) => {
-			let distanceA = getDistance(currentLocation, {
+	function getClosestPoint() {
+        const currentLocation = userLocation.realCoords;
+		const sortedByDistance = pointsOfInterest.sort((a, b) => {
+			const distanceA = getDistance(currentLocation, {
 				latitude: a.latitude,
 				longitude: a.longitude,
 			});
-			let distanceB = getDistance(currentLocation, {
+			const distanceB = getDistance(currentLocation, {
 				latitude: b.latitude,
 				longitude: b.longitude,
 			});
 
 			// TODO: have some setting for debug output, it's spamming my console
-			console.log("Distance to " + a.name + ": " + distanceA + " meters");
-			console.log("Distance to " + b.name + ": " + distanceB + " meters");
+			// console.log("Distance to " + a.name + ": " + distanceA + " meters");
+			// console.log("Distance to " + b.name + ": " + distanceB + " meters");
 			return distanceA > distanceB ? 1 : -1;
 		});
 
-		let closePoint = sortedByDistance[0];
-
-		// TODO: don't get the distance twice, this sucks
-		if (getDistance(currentLocation, {
-				latitude: closePoint.latitude,
-				longitude: closePoint.longitude,
-			}) <= closePoint.radius
-		) {
-			return closePoint;
-		}
-		// return [ null, distance ];
+        const point = sortedByDistance[0];
+		return [point, getDistance(currentLocation, point)];
 	}
-	//add the user to the map screen
-	//props.route.params
-	//const { user } = route.params;
-	//const {userId} = route.params;
-	//console.log("user from google", user);
-	// const [ closestPoint, closestDistance ] = getClosePoint();
-	getClosePoint();
 
-	let userPixelCoords =
-		userLocation.realCoords.latitude != null
-			? realToPixelCoords(userLocation.realCoords)
-			: { x: -500, y: -500 };
-	let textMessage =
-		route.params == null
-			? "Walk towards a point on the map."
-			: "Welcome " +
-			  route.params.user.given_name +
-			  ", walk towards a point to answer questions.";
+	const [closestPoint, distanceToPoint] = userHasLocation 
+        ? getClosestPoint()
+        : [null, null];
+
+    const pointIsInRange = closestPoint != null && distanceToPoint <= closestPoint.radius;
+
+	if (closestPoint != null) {
+		console.log("You are " + distanceToPoint + " meters away from " + closestPoint.name + ", which has a radius of " + closestPoint.radius + ".");
+	}
+
+	let textMessage = distanceToPoint + " meters away from " + closestPoint.name + ", which has a radius of " + closestPoint.radius
+		// route.params == null
+		// 	? "Walk towards a point on the map."
+		// 	: "Welcome " +
+		// 	  route.params.user.given_name +
+		// 	  ", walk towards a point to answer questions.";
 	return (
 		<ImageBackground
 			source={require("../assets/light_background.jpg")}
@@ -308,10 +290,11 @@ export default function MapScreen({ route, navigation }) {
 					globalStyles.noInteractionButton,
 				]}
 				onPress={() => {
-					if (closestPoint == null) {
+					if (!pointIsInRange) {
 						console.log("No close point!");
 						return;
 					}
+
 					if (route.params == null) {
 						//ie we are not logged in...
 						navigation.navigate("PointInfo", closestPoint);
@@ -325,9 +308,9 @@ export default function MapScreen({ route, navigation }) {
 				}}>
 				<Image
 					source={
-						closestPoint == null
-							? require("../assets/PointInteractionButton.png")
-							: require("../assets/PointInteractionButton2.png")
+						pointIsInRange
+							? require("../assets/PointInteractionButton2.png")
+							: require("../assets/PointInteractionButton.png")
 					}
 					style={{ width: 170, height: 170 }}/>
 			</TouchableOpacity>
@@ -370,3 +353,39 @@ const styles = StyleSheet.create({
 		// position: 'absolute', // add if dont work with above
 	},
 });
+
+const LOCATION_TASK_NAME = "hellocampus";
+
+// let { status } = await Location.requestBackgroundPermissionsAsync();
+const hasPermissions = true;//status === "granted";
+if (!hasPermissions) {
+	console.log("Permission problem: status is " + status);
+	setErrorMsg("Permission to access location was denied");
+} else {
+	// https://docs.expo.dev/versions/latest/sdk/task-manager/
+	// https://docs.expo.dev/versions/latest/sdk/location/#background-location-methods
+	TaskManager.defineTask(LOCATION_TASK_NAME, ({ data, error }) => {
+		if (error) {
+			// Error occurred - check `error.message` for more details.
+			return;
+		}
+
+		if (data) {
+			const { locations } = data;
+			// do something with the locations captured in the background
+	
+			// bad bad bad bad ew ew ew ew
+			global.userLocations = locations;
+
+			for (let i = 0; i < locations.length; i++) {
+				console.log(i + ": " + locations[i].timestamp + " - " + locations[i].coords.latitude + ", " + locations[i].coords.longitude);
+			}
+
+			console.log(locations);
+		}
+	});
+	Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
+		activityType: Location.LocationActivityType.Fitness,
+		showsBackgroundLocationIndicator: true
+	});
+}

@@ -26,12 +26,14 @@
         "backgroundColor": "#FFFFFF"
       },
       "permissions": [
-        "ACCESS_FINE_LOCATION"
+        "ACCESS_FINE_LOCATION",
+        "LOCATION"
       ]
     },
     "web": {
       "favicon": "./assets/HelloCampusLogo_NoBackground.png"
     },
-    "description": ""
+    "description": "",
+    "sdkVersion": "42.0.0"
   }
 }
