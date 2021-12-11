@@ -21,12 +21,13 @@ import {
     FlatList,
     TextInput,
 } from "react-native";
-import filter from 'lodash.filter'
+import filter from 'lodash.filter';
 import { globalStyles } from "../styles/global";
 import * as Google from "expo-google-app-auth";
 import { useRoute } from '@react-navigation/native';
 import { AsyncStorage} from 'react-native';
 import {checkIfTokenExpired, refreshAuthAsync,getCachedAuthAsync, authState} from './home';
+import AddLocationScreen from "./addQuestions";
 import { Ionicons } from '@expo/vector-icons';
 import { HeaderButtons,
   HeaderButton,
@@ -39,17 +40,6 @@ export default function locationQuestion({route, navigation}) {
     const [data, setData] = useState([]);
     const [fullData, setFullData] = useState([]);
     const [error, setError] = useState(null);
-    //const [isLoading, setIsLoading] = useState(false);
-    /*useEffect(() => {
-        fetch('https://hello-campus.herokuapp.com/users/')
-            .then((response) => response.json())
-            .then((json) => {setData(json)
-                setFullData(response.results);
-
-                 setIsLoading(false)})
-            .catch((error) => console.error(error))
-            .finally(() => setLoading(false));
-      }, []);*/
 
     const [helpModalVisible, setHelpModalVisible] = useState(false);
     const IoniconsHeaderButton = (props) => (
@@ -127,6 +117,7 @@ export default function locationQuestion({route, navigation}) {
     const [modalVisible, setModalVisible] = useState(false);
     const [questionModalVisible, setQuestionModalVisible] = useState(false);
     const [query, setQuery] = useState('');
+    const [location, setLocation] = useState();
 
     function renderHeader() {
         return (
@@ -138,15 +129,6 @@ export default function locationQuestion({route, navigation}) {
               borderRadius: 20
             }}
           >
-            <TextInput
-              autoCapitalize="none"
-              autoCorrect={false}
-              clearButtonMode="always"
-              value={query}
-              onChangeText={queryText => handleSearch(queryText)}
-              placeholder="Search"
-              style={{ backgroundColor: '#fff', paddingHorizontal: 20 }}
-            />
           </View>
         );
       }
@@ -167,8 +149,34 @@ export default function locationQuestion({route, navigation}) {
         return false;
       };
 
+      const remove = (locationID) => {
+        fetch(`https://hello-campus.herokuapp.com/pointOfInterest/${locationID}/`, { method: 'DELETE' })
+        .then(() => {
+            console.log("Successfully deleted location data.");
+            reloadLocations()
+        })
+    }
+  
+    const reloadLocations = () => {
+      setIsLoading(true);
       
-      const createFlatlist = () => {
+      fetch('https://hello-campus.herokuapp.com/pointsofinterest/')
+        .then(response => response.json())
+        .then((json) => {
+          setData(json);
+    
+          // ADD THIS
+          setFullData(json);
+    
+          setIsLoading(false);
+        })
+        .catch(err => {
+          setIsLoading(false);
+          setError(err);
+        });
+    }
+
+    const createFlatlist = () => {
         return (
             <FlatList
           contentContainerStyle={{ paddingBottom: 300, flexGrow: 1, justifyContent: 'flex-end', flexDirection: 'column' }}
@@ -186,7 +194,7 @@ export default function locationQuestion({route, navigation}) {
 
     return (
         <ImageBackground source = {require('../assets/light_background.jpg')} style={{ flex: 1, justifyContent: 'center', backgroundColor: '#8C2032', alignItems: 'center' }}>
-        <Modal
+          <Modal
             animationType="fade"
             transparent={true}
             visible={helpModalVisible}
@@ -213,7 +221,6 @@ export default function locationQuestion({route, navigation}) {
               </TouchableOpacity>
             </View>
           </Modal>
-          <Text style = {{fontSize: 18, fontWeight: 'bold', color: "#8C2131"}} > Select a location to edit.</Text>
           <Text style = {{fontSize: 25, fontWeight: 'bold', color: "#FFF", top: 10, marginBottom: 20}} > Select a location to edit.</Text>
           {createFlatlist()}
           <TouchableOpacity
