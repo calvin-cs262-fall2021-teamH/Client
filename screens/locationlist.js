@@ -27,6 +27,10 @@ import * as Google from "expo-google-app-auth";
 import { useRoute } from '@react-navigation/native';
 import { AsyncStorage} from 'react-native';
 import {checkIfTokenExpired, refreshAuthAsync,getCachedAuthAsync, authState} from './home';
+import { Ionicons } from '@expo/vector-icons';
+import { HeaderButtons,
+  HeaderButton,
+  Item } from 'react-navigation-header-buttons';
 //import @react-native-async-storage/async-storage;
 
 
@@ -46,6 +50,60 @@ export default function locationQuestion({route, navigation}) {
             .catch((error) => console.error(error))
             .finally(() => setLoading(false));
       }, []);*/
+
+    const [helpModalVisible, setHelpModalVisible] = useState(false);
+    const IoniconsHeaderButton = (props) => (
+    <HeaderButton IconComponent={Ionicons} iconSize={45} {...props} />
+    );
+    //https://docs.expo.dev/versions/v43.0.0/sdk/app-auth/#usage
+    let [authState, setAuthState, userId] = useState(null);
+    useEffect(() => {
+      (async () => {
+        let cachedAuth = await getCachedAuthAsync();
+        if (cachedAuth && !authState) {
+          setAuthState(cachedAuth);
+        }
+      })();
+    }, []);
+  
+  
+    //let myclientId = Platform.OS =="android" ? andoidClientId : iosClientId;
+    //location screen is logged in
+    //points of interest is what the general user should see
+  
+    let isSignedIn = authState == null ? false : true;
+    let screenToNavigateTo = isSignedIn == true ? "Location" : "Points of Interest";
+  
+    React.useLayoutEffect(() => {
+      console.log("GOT HERE AND ")
+      /*(async () => {
+        let cachedAuth = await getCachedAuthAsync();
+        if (cachedAuth == null) {
+          screenToNavigateTo = "Points of Interest";
+        }else{
+          screenToNavigateTo = "Location";
+        }
+        })(screenToNavigateTo);
+      */
+    //let isSignedIn = authState == null ? false : true;
+    //let screenToNavigateTo = isSignedIn == true ? "Location" : "Points of Interest";
+    let myScreen = screenToNavigateTo;
+    console.log(screenToNavigateTo);
+    navigation.setOptions({
+      headerRight: () => (
+        <HeaderButtons  HeaderButtonComponent = {IoniconsHeaderButton}>
+          <Item
+            title={"help"}
+            iconName={"help-circle"}
+            color="maroon"
+                    onPress={() => {
+            setHelpModalVisible(!helpModalVisible)
+            }}
+                />
+        </HeaderButtons>
+      ),
+    });
+    }, [navigation])
 
       useEffect(() => {
         setIsLoading(true);
@@ -112,6 +170,33 @@ export default function locationQuestion({route, navigation}) {
 
     return (
         <ImageBackground source = {require('../assets/light_background.jpg')} style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#8C2032' }}>
+          <Modal
+            animationType="fade"
+            transparent={true}
+            visible={helpModalVisible}
+            onRequestClose={() => {
+              Alert.alert("Modal has been closed.");
+              setHelpModalVisible(!helpModalVisible);
+            }}
+          >
+            <View style = {globalStyles.helpModal}>
+              <Text style={globalStyles.helpText}>
+                Press Search bar to find location in your list.
+              </Text>
+              <Text style={globalStyles.helpText}>
+                Press on a location's name to remove it or edit its questions.
+              </Text>
+              <Text style={globalStyles.helpText}>
+                Press "+" to add a location's data to the your list.
+              </Text>
+              <TouchableOpacity style= {{backgroundColor: "maroon", margin: 10, borderRadius: 15}} 
+                onPress={() => {
+                  setHelpModalVisible(!helpModalVisible)}
+                }>
+                <Text style= {{color: "#fff", fontSize: 25, margin: 10}}>EXIT</Text>
+              </TouchableOpacity>
+            </View>
+          </Modal>
           <Text style = {{fontSize: 18, fontWeight: 'bold', color: "#8C2131"}} > Select a location to edit.</Text>
             <FlatList
                     data={data}
