@@ -261,25 +261,26 @@ export default function MapScreen({ route, navigation }) {
                     setHelpModalVisible(!helpModalVisible);
                 }}
             >
-			<View style = {globalStyles.helpModal}>
-                <Text style={globalStyles.helpText}>Press "HOME" to go back to home screen.</Text>
-                <Text style={globalStyles.helpText}>Press the list icon to gain access to all the locations.</Text>
-		  		<Text style={globalStyles.helpText}>
-                    The exclamation mark button is an interaction button that will turn green
-                    when you are near a point of interest.
-                </Text>
-                <Text style={globalStyles.helpText}>Press points on the map to open the location's description</Text>
-				<TouchableOpacity style= {{backgroundColor: "maroon", margin: 10, borderRadius: 15}} 
-					onPress={() => {
-						setHelpModalVisible(!helpModalVisible)}
-					}>
-					<Text style= {{color: "#fff", fontSize: 25, margin: 10}}>EXIT</Text>
-				</TouchableOpacity>
+                <View style={globalStyles.helpModal}>
+                    <Text style={globalStyles.helpText}>Press "HOME" to go back to home screen.</Text>
+                    <Text style={globalStyles.helpText}>Press the list icon to gain access to all the locations.</Text>
+                    <Text style={globalStyles.helpText}>
+                        The exclamation mark button is an interaction button that will turn green
+                        when you are near a point of interest.
+                    </Text>
+                    <Text style={globalStyles.helpText}>Press points on the map to open the location's description</Text>
+                    <TouchableOpacity style={{ backgroundColor: "maroon", margin: 10, borderRadius: 15 }}
+                        onPress={() => {
+                            setHelpModalVisible(!helpModalVisible)
+                        }
+                        }>
+                        <Text style={{ color: "#fff", fontSize: 25, margin: 10 }}>EXIT</Text>
+                    </TouchableOpacity>
 
-			</View>
-		</Modal>
-            { /* dynamically generate the point components from the data */ }
-            { isDataDownloading ? <ActivityIndicator/> :
+                </View>
+            </Modal>
+            { /* dynamically generate the point components from the data */}
+            {isDataDownloading ? <ActivityIndicator /> :
                 pointsOfInterest.map(point => {
                     let pixelCoords = realToPixelCoords(point);
                     return <TouchableOpacity
