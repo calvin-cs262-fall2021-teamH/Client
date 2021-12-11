@@ -21,7 +21,7 @@ export const globalStyles = StyleSheet.create({
         borderRadius: 20,
     },
     list: {
-        backgroundColor: 'grey',
+        backgroundColor: 'maroon',
         padding: 15,
         borderRadius: 10,        
         flexDirection: 'row',
@@ -70,7 +70,7 @@ export const globalStyles = StyleSheet.create({
         width: "75%",
         borderRadius: 20,
         borderColor: "#fff",
-        borderWidth: 1,
+        borderWidth: 2,
         height: 60,
         flexDirection:"row",
         alignItems: "center",
@@ -81,9 +81,10 @@ export const globalStyles = StyleSheet.create({
 
     listButton:{
         width: "75%",
-        height: 30,
+        height: 50,
         flexDirection: "row",
         alignItems: "flex-start",
+        justifyContent:"flex-start",
         marginTop: 30
     },
     Question: {
@@ -108,7 +109,7 @@ export const globalStyles = StyleSheet.create({
     submitText: {
         fontWeight: 'bold',
         fontSize: 15,
-        color: "#000000",
+        color: "#fff",
       },
     submitButton: {
         width: "20%",
