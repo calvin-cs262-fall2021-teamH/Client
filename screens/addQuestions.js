@@ -102,7 +102,6 @@ export default function AddLocationScreen({ navigation, route }) {
     }
 
     const mapQuestion = (question) => {
-
         return(
         questions.map(question => {
             return [
@@ -113,10 +112,8 @@ export default function AddLocationScreen({ navigation, route }) {
                     <Text style={globalStyles.submitText}>Delete</Text>
                 </TouchableOpacity>
             ]
-
             })
         )
-
     }
  
     return (

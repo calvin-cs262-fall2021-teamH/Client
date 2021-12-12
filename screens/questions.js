@@ -1,22 +1,18 @@
 /*
  * Screen that contains questions about the user's current location.
  *
- * @author: Brian Langejans, David Reidsma, David Heynen, Paul Dick, Kurt Wietelmann
+ * @author: Brian Langejans
  * 11/16/2021
  */
 
-import React, { useEffect, useReducer, useState } from 'react';
-import { Image, Button, View, Text, TouchableOpacity, FlatList, ImageBackground, TextInput, ActivityIndicator, ScrollView } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Text, TouchableOpacity, TextInput, ActivityIndicator, ScrollView } from 'react-native';
 import { globalStyles } from '../styles/global';
-
-
 
 export default function QuestionScreen({ navigation, route }) {
     const [isDataDownloading, setIsDataDownloading] = useState(true);
     const [questions, setQuestion] = useState([]);
     const [answer, setAnswer] = useState("");
-    //data = []
-    const [text, onChangeText] = React.useState("Useless Text");
     const myTextInput = React.createRef();
 
     useEffect (() => {
@@ -24,12 +20,11 @@ export default function QuestionScreen({ navigation, route }) {
             fetch(`https://hello-campus.herokuapp.com/questionsAtPoint/${route.params.point.id}/`)
             .then((response) => {
                 let data = response.json();
-                //console.log("Successfully downloaded question data.");
                 return data;
             })
             .then((json) => setQuestion(json))
             .catch((error) => {
-                //console.log("Error downloading question data: " + error);
+                console.log("Error downloading question data: " + error);
             })
             .finally(() => {
                 setIsDataDownloading(false);
@@ -47,13 +42,8 @@ export default function QuestionScreen({ navigation, route }) {
         }
     }
 
-    
     const submit = () => {
         for (i=0; i<questions.length; i++) {
-            console.log(questions[i].id)
-            console.log(answer["answer_3"])
-            console.log(answer["answer_4"])
-            console.log(answer["answer_5"])
             fetch(`https://hello-campus.herokuapp.com/answers/`,
             { method: 'POST',
             headers: new Headers({
@@ -70,8 +60,6 @@ export default function QuestionScreen({ navigation, route }) {
               })
             })
         }
-
-        // myTextInput.current.clear();
     }
 
     return (
@@ -96,8 +84,6 @@ export default function QuestionScreen({ navigation, route }) {
                                 numberOfLines={3}
                             />
                         ]
-
-
                         })
                     }
                     <TouchableOpacity style={globalStyles.submitButton} onPress={() => {submit(), navigation.goBack()}}>
