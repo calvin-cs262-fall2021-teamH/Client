@@ -7,6 +7,7 @@ adapted from the navigation tutorial found at: https://reactnavigation.org/docs/
 
 import React, { useState, useEffect } from "react";
 import {
+	Modal,
 	Image,
 	View,
 	Text,
@@ -33,6 +34,14 @@ import { useRoute } from "@react-navigation/native";
 import { HomeScreen } from "./home";
 import MapInfoText from "../components/mapInfoText";
 import InteractionButton from "../components/interactionButton";
+import {
+    HeaderButtons,
+    HeaderButton,
+    Item,
+    HiddenItem,
+    OverflowMenu,
+} from 'react-navigation-header-buttons';
+import { Ionicons } from '@expo/vector-icons';
 
 const USE_TEST_DATA = false;
 
@@ -65,6 +74,11 @@ function realToPixelCoords(point) {
 	return pixelCoords;
 }
 
+let userLocationFromTask = {
+	latitude: -50,
+	longitude: -50
+};
+
 export default function MapScreen({ route, navigation }) {
     React.useLayoutEffect(() => {
         navigation.setOptions({
@@ -84,7 +98,7 @@ export default function MapScreen({ route, navigation }) {
     }, [navigation]);
 
     const [errorMsg, setErrorMsg] = useState(null); // TODO: do something with errorMsg
-    const [userLocation, setUserLocation] = useState({ pixelCoords: { x: null, y: null }, realCoords: { latitude: null, longitude: null } });
+    const [userLocation, setUserLocation] = useState({ pixelCoords: { x: -500, y: -500 }, realCoords: { latitude: 0, longitude: 0 } });
 
     const [isDataDownloading, setIsDataDownloading] = useState(true);
     const [pointsOfInterest, setPointsOfInterest] = useState([]);
@@ -123,13 +137,13 @@ export default function MapScreen({ route, navigation }) {
 
 	useEffect(() => {
 		async function checkForLocationPermissions() {
-			// let { status } = await Location.requestForegroundPermissionsAsync();
-			// const hasPermissions = status === "granted";
-			// if (!hasPermissions) {
-			// 	console.log("Permission problem: status is " + status);
-			// 	setErrorMsg("Permission to access location was denied");
-			// }
-			// return hasPermissions;
+			let { status } = await Location.requestBackgroundPermissionsAsync();
+			const hasPermissions = status === "granted";
+			if (!hasPermissions) {
+				console.log("Permission problem: status is " + status);
+				setErrorMsg("Permission to access location was denied");
+			}
+			return hasPermissions;
 		}
 
 		async function getCurrentLatLong() {
@@ -140,31 +154,20 @@ export default function MapScreen({ route, navigation }) {
 		}
 
 		async function refreshLocation() {
-			// const locations = global.locations;
-			// console.log(locations);
+			const realCoords = userLocationFromTask;
+			const pixelCoords = realToPixelCoords({
+				name: "user's location",
+				latitude: realCoords.latitude,
+				longitude: realCoords.longitude
+			});
 
-			// // get geographical coordinates
-			// const realCoords = null;//await getCurrentLatLong();
-			// if (realCoords == null) {
-			// 	console.log("null coords");
-			// 	return;
-			// }
+			console.log(`Geographical coords: ${realCoords.latitude}, ${realCoords.longitude}\t\t\tScreen coords: ${pixelCoords.x}, ${pixelCoords.y}`);
 
-			// // convert to on-screen coordinates
-			// const pixelCoords = realToPixelCoords({
-			// 	name: "user's location",
-			// 	latitude: realCoords.latitude,
-			// 	longitude: realCoords.longitude,
-			// });
-
-			// // console.log("Latitude, longitude: " + realCoords.latitude + ", " + realCoords.longitude);
-			// // console.log("Screen coords: " + pixelCoords.x + ", " + pixelCoords.y);
-
-			// // update the location
-			// setUserLocation({
-			// 	realCoords: realCoords,
-			// 	pixelCoords: pixelCoords,
-			// });
+			// update the location
+			setUserLocation({
+				realCoords: realCoords,
+				pixelCoords: pixelCoords,
+			});
 		}
 
 		async function downloadPointsFromService() {
@@ -199,19 +202,31 @@ export default function MapScreen({ route, navigation }) {
 			}
 		}
 
+		async function startLocationUpdates() {
+			const hasPermissions = await checkForLocationPermissions();
+			if (!hasPermissions) {
+				console.log("Permission problem: status is " + status);
+				setErrorMsg("Permission to access location was denied");
+				return;
+			}
+	
+			Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
+				activityType: Location.LocationActivityType.Fitness,
+				showsBackgroundLocationIndicator: true,
+				timeInterval: 1000,
+				distanceInterval: 1
+			});
+		}
+
+		startLocationUpdates();
+
 		initPointsOfInterest();
 
-		// const hasLocationPermissions = checkForLocationPermissions();
-		// if (!hasLocationPermissions) {
-		// 	// if we still don't have location permissions, there's just no point in continuing
-		// 	return;
-		// }
-
 		// refresh the location on an interval
-		// const locationRefreshIntervalHandle = setInterval(
-		// 	refreshLocation,
-		// 	LOCATION_REFRESH_INTERVAL
-		// );
+		const locationRefreshIntervalHandle = setInterval(
+			refreshLocation,
+			LOCATION_REFRESH_INTERVAL
+		);
 
 		return () => clearInterval(locationRefreshIntervalHandle); // end the interval'd calls when the screen is unmounted
 	}, []);
@@ -223,24 +238,32 @@ export default function MapScreen({ route, navigation }) {
 
 	function getClosestPoint() {
         const currentLocation = userLocation.realCoords;
+		let distance = 1;
 		const sortedByDistance = pointsOfInterest.sort((a, b) => {
 			const distanceA = getDistance(currentLocation, {
 				latitude: a.latitude,
-				longitude: a.longitude,
+				longitude: a.longitude
 			});
 			const distanceB = getDistance(currentLocation, {
 				latitude: b.latitude,
-				longitude: b.longitude,
+				longitude: b.longitude
 			});
 
+			if (distanceA > distanceB) {
+				distance = distanceB;
+				return 1;
+			} else {
+				distance = distanceB;
+				return -1;
+			}
+
 			// TODO: have some setting for debug output, it's spamming my console
-			// console.log("Distance to " + a.name + ": " + distanceA + " meters");
-			// console.log("Distance to " + b.name + ": " + distanceB + " meters");
-			return distanceA > distanceB ? 1 : -1;
+			console.log("Distance to " + a.name + ": " + distanceA + " meters");
+			console.log("Distance to " + b.name + ": " + distanceB + " meters");
 		});
 
         const point = sortedByDistance[0];
-		return [point, getDistance(currentLocation, point)];
+		return [point, getDistance(userLocationFromTask, { latitude: pointsOfInterest[0].latitude, longitude: pointsOfInterest[0].longitude })];
 	}
 	
     //add the user to the map screen
@@ -249,19 +272,23 @@ export default function MapScreen({ route, navigation }) {
     //const {userId} = route.params;
     //console.log("user from google", user);
 
-    const [ closestPoint, distanceToPoint ] = getClosestPoint();
+    const [ closestPoint, distanceToPoint ] = (pointsOfInterest == null || pointsOfInterest.length == 0) ? [null, null] : getClosestPoint();
     const pointIsInRange = closestPoint != null && distanceToPoint <= closestPoint.radius;
 
 	if (closestPoint != null) {
-		console.log("You are " + distanceToPoint + " meters away from " + closestPoint.name + ", which has a radius of " + closestPoint.radius + ".");
+		// console.log("You are " + distanceToPoint + " meters away from " + closestPoint.name + ", which has a radius of " + closestPoint.radius + ".");
 	}
 
-	let textMessage = distanceToPoint + " meters away from " + closestPoint.name + ", which has a radius of " + closestPoint.radius
-		// route.params == null
-		// 	? "Walk towards a point on the map."
-		// 	: "Welcome " +
-		// 	  route.params.user.given_name +
-		// 	  ", walk towards a point to answer questions.";
+	let textMessage = 
+		route.params == null
+			? "Walk towards a point on the map."
+			: "Welcome " +
+			  route.params.user.given_name +
+			  ", walk towards a point to answer questions.";
+
+	if (closestPoint != null) {
+		textMessage = distanceToPoint + " meters away from " + closestPoint.name + ", which has a radius of " + closestPoint.radius;
+	}
 		
 	return (
 		<ImageBackground source={require('../assets/light_background.jpg')} style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#8C2032' }}>
@@ -406,36 +433,21 @@ const styles = StyleSheet.create({
 
 const LOCATION_TASK_NAME = "hellocampus";
 
-// let { status } = await Location.requestBackgroundPermissionsAsync();
-const hasPermissions = true;//status === "granted";
-if (!hasPermissions) {
-	console.log("Permission problem: status is " + status);
-	setErrorMsg("Permission to access location was denied");
-} else {
-	// https://docs.expo.dev/versions/latest/sdk/task-manager/
-	// https://docs.expo.dev/versions/latest/sdk/location/#background-location-methods
-	TaskManager.defineTask(LOCATION_TASK_NAME, ({ data, error }) => {
-		if (error) {
-			// Error occurred - check `error.message` for more details.
-			return;
-		}
+// https://docs.expo.dev/versions/latest/sdk/task-manager/
+// https://docs.expo.dev/versions/latest/sdk/location/#background-location-methods
+TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data, error }) => {
+	if (error) {
+		// Error occurred - check `error.message` for more details.
+		console.log("error occurred while getting the location");
+		return;
+	}
 
-		if (data) {
-			const { locations } = data;
-			// do something with the locations captured in the background
-	
-			// bad bad bad bad ew ew ew ew
-			global.userLocations = locations;
+	if (data) {
+		const { locations } = data;
 
-			for (let i = 0; i < locations.length; i++) {
-				console.log(i + ": " + locations[i].timestamp + " - " + locations[i].coords.latitude + ", " + locations[i].coords.longitude);
-			}
-
-			console.log(locations);
-		}
-	});
-	Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
-		activityType: Location.LocationActivityType.Fitness,
-		showsBackgroundLocationIndicator: true
-	});
-}
+		userLocationFromTask = {
+			latitude: locations[0].coords.latitude,
+			longitude: locations[0].coords.longitude,
+		};
+	}
+});

@@ -27,7 +27,8 @@
       },
       "permissions": [
         "ACCESS_FINE_LOCATION",
-        "LOCATION"
+        "LOCATION",
+        "ACCESS_BACKGROUND_LOCATION"
       ]
     },
     "web": {
