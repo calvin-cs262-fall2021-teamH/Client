@@ -177,7 +177,7 @@ export default function HomeScreen({ navigation }) {
 	const [helpModalVisible, setHelpModalVisible] = useState(false);
 	const [DBuser, setDBuser] = useState([]);
 	const IoniconsHeaderButton = (props) => (
-		<HeaderButton IconComponent={Ionicons} iconSize={25} {...props} />
+		<HeaderButton IconComponent={Ionicons} iconSize={45} {...props} />
 	);
 
 	//https://docs.expo.dev/versions/v43.0.0/sdk/app-auth/#usage
@@ -270,16 +270,16 @@ export default function HomeScreen({ navigation }) {
 					}}
 				>
 					<View style={globalStyles.helpModal}>
-						<Text>Press "i" icon to go to the about page.</Text>
-						<Text>Press "EXPLORE" to continue as a guess.</Text>
-						<Text>Press "SIGN IN" to login as a student or professor.</Text>
-						<Text>Press the list icon to gain access to all the locations.</Text>
+						<Text style={globalStyles.helpText}>Press "i" or logo icon to go to the about screen.</Text>
+						<Text style={globalStyles.helpText}>Press "EXPLORE" to continue as a guess.</Text>
+						<Text style={globalStyles.helpText}>Press "SIGN IN" to login into an account, preferred a student or professor account.</Text>
+						<Text style={globalStyles.helpText}>Press the list icon to gain access to all the locations.</Text>
 						<TouchableOpacity style={{ backgroundColor: "maroon", margin: 10, borderRadius: 15 }}
 							onPress={() => {
 								setHelpModalVisible(!helpModalVisible)
 							}}
 						>
-							<Text style={{ color: "#fff", margin: 10 }}>EXIT</Text>
+							<Text style={{ color: "#fff", fontSize: 25, margin: 10 }}>EXIT</Text>
 						</TouchableOpacity>
 
 					</View>
@@ -353,14 +353,18 @@ export default function HomeScreen({ navigation }) {
 					}}
 				>
 					<View style={globalStyles.helpModal}>
-						<Text>Press "ASSIGNMENT" to access all your questions and answers for each location.</Text>
+						<Text style={globalStyles.helpText}>Press "i" or logo icon to go to the about screen.</Text>
+						<Text style={globalStyles.helpText}>Press "BACK TO MAP" to open map again.</Text>
+						<Text style={globalStyles.helpText}>Press "SIGN OUT" to logout from account.</Text>
+						<Text style={globalStyles.helpText}>Press the list icon to gain access to all the locations.</Text>
+						<Text style={globalStyles.helpText}>Press "ASSIGNMENT" to access all your questions and answers for each location.</Text>
 						<TouchableOpacity
 							style={{ backgroundColor: "maroon", margin: 10, borderRadius: 15 }}
 							onPress={() => {
 								setHelpModalVisible(!helpModalVisible)
 							}}
 						>
-							<Text style={{ color: "#fff", margin: 10 }}>EXIT</Text>
+							<Text style={{ color: "#fff", fontSize: 25, margin: 10 }}>EXIT</Text>
 						</TouchableOpacity>
 					</View>
 				</Modal>
@@ -435,29 +439,24 @@ export default function HomeScreen({ navigation }) {
 					}}
 				>
 					<View style={globalStyles.helpModal}>
-						<Text>Press "MANAGE COURSE" to edit locations, questions, and students.</Text>
+						<Text style={globalStyles.helpText}>Press "i" or logo icon to go to the about screen.</Text>
+						<Text style={globalStyles.helpText}>Press "BACK TO MAP" to open map again.</Text>
+						<Text style={globalStyles.helpText}>Press "SIGN OUT" to logout from account.</Text>
+						<Text style={globalStyles.helpText}>Press the list icon to gain access to all the locations.</Text>
+						<Text style={globalStyles.helpText}>Press "MANAGE COURSE" to edit locations, questions, and students.</Text>
 						<TouchableOpacity
 							style={{ backgroundColor: "maroon", margin: 10, borderRadius: 15 }}
 							onPress={() => {
 								setHelpModalVisible(!helpModalVisible)
 							}}
 						>
-							<Text style={{ color: "#fff", margin: 10 }}>EXIT</Text>
+							<Text style={{ color: "#fff", fontSize: 25, margin: 10 }}>EXIT</Text>
 						</TouchableOpacity>
 					</View>
 				</Modal>
 
 				<View style={globalStyles.body}>
 					{/*Navigates to student map screen*/}
-					<TouchableHighlight
-						onPress={() => navigation.navigate("About")}
-						style={globalStyles.touchableHighlight}
-					>
-						<Image
-							source={require("../assets/HelloCampusLogo_NoBackground.png")}
-							style={globalStyles.logo}
-						/>
-					</TouchableHighlight>
 					<TouchableOpacity
 						style={globalStyles.genericButton}
 						onPress={async () => {
@@ -484,7 +483,7 @@ export default function HomeScreen({ navigation }) {
 						}}
 					>
 						<Text style={globalStyles.genericButtonText}>SIGN OUT </Text>{/*include a "your answers will be saved" message*/}
-						<Image source={require('../assets/logout_white.png')} resizeMode='contain' style={{ flex: .1 }} />
+						<Image source={require('../assets/login_white.png')} resizeMode='contain' style={{ flex: .1 }} />
 					</TouchableOpacity>
 
 					<TouchableOpacity style={globalStyles.genericButton}
@@ -515,29 +514,23 @@ export default function HomeScreen({ navigation }) {
 					}}
 				>
 					<View style={globalStyles.helpModal}>
-						<Text>Press "ASSIGNMENT" to access all your questions and answers for each location.</Text>
+						<Text style={globalStyles.helpText}>Press "i" or logo icon to go to the about screen.</Text>
+						<Text style={globalStyles.helpText}>Press "BACK TO MAP" to open map again.</Text>
+						<Text style={globalStyles.helpText}>Press "SIGN OUT" to logout from account.</Text>
+						<Text style={globalStyles.helpText}>Press the list icon to gain access to all the locations.</Text>
 						<TouchableOpacity
 							style={{ backgroundColor: "maroon", margin: 10, borderRadius: 15 }}
 							onPress={() => {
 								setHelpModalVisible(!helpModalVisible)
 							}}
 						>
-							<Text style={{ color: "#fff", margin: 10 }}>EXIT</Text>
+							<Text style={{ color: "#fff", fontSize: 25, margin: 10 }}>EXIT</Text>
 						</TouchableOpacity>
 					</View>
 				</Modal>
 
 				<View style={globalStyles.body}>
 					{/*Navigates to student map screen*/}
-					<TouchableHighlight
-						onPress={() => navigation.navigate("About")}
-						style={globalStyles.touchableHighlight}
-					>
-						<Image
-							source={require("../assets/HelloCampusLogo_NoBackground.png")}
-							style={globalStyles.logo}
-						/>
-					</TouchableHighlight>
 					<TouchableOpacity
 						style={globalStyles.genericButton}
 						onPress={async () => {
@@ -564,18 +557,7 @@ export default function HomeScreen({ navigation }) {
 						}}
 					>
 						<Text style={globalStyles.genericButtonText}>SIGN OUT </Text>{/*include a "your answers will be saved" message*/}
-						<Image source={require('../assets/logout_white.png')} resizeMode='contain' style={{ flex: .1 }} />
-					</TouchableOpacity>
-
-					<TouchableOpacity style={globalStyles.genericButton}
-						onPress={async () => {
-							const userFromGoogle = await fetchUserInfo(authState.accessToken);
-							console.log(userFromGoogle);
-							const myUser = await getUserFromDB(userFromGoogle.email);
-							navigation.navigate("Location", { user: myUser });
-						}}>
-						<Text style={globalStyles.genericButtonText}>ASSIGNMENT </Text>{/*Location get the user stuff*/}
-						<Image source={require('../assets/course_icon.png')} resizeMode='contain' style={{ flex: .135 }} />
+						<Image source={require('../assets/login_white.png')} resizeMode='contain' style={{ flex: .1 }} />
 					</TouchableOpacity>
 				</View>
 			</ImageBackground>

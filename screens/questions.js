@@ -15,7 +15,7 @@ export default function QuestionScreen({ navigation, route }) {
     const [answer, setAnswer] = useState("");
     const myTextInput = React.createRef();
 
-    useEffect (() => {
+    useEffect(() => {
         if (isDataDownloading) {
             fetch(`https://hello-campus.herokuapp.com/questionsAtPoint/${route.params.point.id}/`)
             .then((response) => {
@@ -37,38 +37,39 @@ export default function QuestionScreen({ navigation, route }) {
         return (text) => {
             setAnswer(prevState => ({
                 ...prevState,
-                [answerText]:text
-              }));
+                [answerText]: text
+            }));
         }
     }
 
     const submit = () => {
         for (i=0; i<questions.length; i++) {
             fetch(`https://hello-campus.herokuapp.com/answers/`,
-            { method: 'POST',
-            headers: new Headers({
-                "Content-Type":"application/json"
-            }),
-            body: JSON.stringify({
-     
-                email: route.params.user.email,
-             
-                questionID: questions[i].id,
-             
-                answer: answer["answer_" + questions[i].id]
-             
-              })
-            })
+                {
+                    method: 'POST',
+                    headers: new Headers({
+                        "Content-Type": "application/json"
+                    }),
+                    body: JSON.stringify({
+
+                        email: route.params.user.email,
+
+                        questionID: questions[i].id,
+
+                        answer: answer["answer_" + questions[i].id]
+
+                    })
+                })
         }
     }
 
     return (
         <ScrollView style={{ flex: 1, backgroundColor: '#8C2032' }}>
-            <Text style={{ fontSize: 40, color: "#fff", padding: 20, padding:10, flex:2 }}>{ route.params.point.name }</Text>
+            <Text style={{ fontSize: 40, color: "#fff", padding: 20, padding: 10, flex: 2 }}>{route.params.point.name}</Text>
             {/* { isDataDownloading ? <ActivityIndicator/>:
                 <Text style={{ fontSize: 30, color: "#fff", padding: 20, position: "absolute" }}>{ question[0].question }</Text>
             } */}
-            { isDataDownloading ? <ActivityIndicator/> :
+            {isDataDownloading ? <ActivityIndicator /> :
                 questions.map(question => {
                         return [
                             <Text
@@ -91,6 +92,6 @@ export default function QuestionScreen({ navigation, route }) {
                     </TouchableOpacity>
         </ScrollView>
 
-        
+
     );
 }
