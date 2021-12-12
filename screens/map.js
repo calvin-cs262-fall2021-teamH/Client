@@ -84,7 +84,7 @@ export default function MapScreen({ route, navigation }) {
     const [helpModalVisible, setHelpModalVisible] = useState(false);
 
     const IoniconsHeaderButton = (props) => (
-        <HeaderButton IconComponent={Ionicons} iconSize={25} {...props} />
+        <HeaderButton IconComponent={Ionicons} iconSize={45} {...props} />
     );
 
     React.useLayoutEffect(() => {
@@ -262,16 +262,19 @@ export default function MapScreen({ route, navigation }) {
                 }}
             >
                 <View style={globalStyles.helpModal}>
-                    <Text>
+                    <Text style={globalStyles.helpText}>Press "HOME" to go back to home screen.</Text>
+                    <Text style={globalStyles.helpText}>Press the list icon to gain access to all the locations.</Text>
+                    <Text style={globalStyles.helpText}>
                         The exclamation mark button is an interaction button that will turn green
                         when you are near a point of interest.
                     </Text>
+                    <Text style={globalStyles.helpText}>Press points on the map to open the location's description</Text>
                     <TouchableOpacity style={{ backgroundColor: "maroon", margin: 10, borderRadius: 15 }}
                         onPress={() => {
                             setHelpModalVisible(!helpModalVisible)
                         }
                         }>
-                        <Text style={{ color: "#fff", margin: 10 }}>EXIT</Text>
+                        <Text style={{ color: "#fff", fontSize: 25, margin: 10 }}>EXIT</Text>
                     </TouchableOpacity>
 
                 </View>
@@ -312,7 +315,7 @@ export default function MapScreen({ route, navigation }) {
                         navigation.navigate('Questions', { point: closestPoint, user: route.params.user });//This is a user from google not necc. the user from our DB, should update!
                     }
                 }}>
-                <Image source={closestPoint == null ? require('../assets/PointInteractionButton.png') : require("../assets/PointInteractionButton2.png")} style={{ width: 170, height: 170 }} />
+                <Image source={closestPoint == null ? require('../assets/1x1.png') : require("../assets/PointInteractionButton2.png")} style={{ width: 170, height: 170 }} />
             </TouchableOpacity>
             <TouchableOpacity onPress={() => navigation.navigate("Questions", { point: { id: 1, name: "Whiskey Pond" } })}>
                 <Text>THIS IS A BUTTON</Text>
