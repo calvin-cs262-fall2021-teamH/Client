@@ -1,5 +1,4 @@
-/*
- * Homepage for Hello Campus
+/*Home page for Hello Campus
  *
  * @author: Brian Langejans, David Reidsma, David Heynen, Paul Dick, Kurt Wietelmann
  * 10/6/2021
@@ -173,88 +172,83 @@ export async function signOutAsync({ accessToken }) {
  * HomeScreen is the main screen of the Hello Campus app.
  * @param {navigation} navigation makes sure navigation is correct for getting to the screen and navigating other screens.
  */
-export default function HomeScreen({ navigation }) {
-	const [helpModalVisible, setHelpModalVisible] = useState(false);
-	const [DBuser, setDBuser] = useState([]);
-	const IoniconsHeaderButton = (props) => (
-		<HeaderButton IconComponent={Ionicons} iconSize={45} {...props} />
-	);
+export default function HomeScreen({navigation}) {
+  const [helpModalVisible, setHelpModalVisible] = useState(false);
+  const [DBuser, setDBuser]= useState([]);
+  const IoniconsHeaderButton = (props) => (
+	<HeaderButton IconComponent={Ionicons} iconSize={25} {...props} />
+  );
+  
+  //https://docs.expo.dev/versions/v43.0.0/sdk/app-auth/#usage
+  let [authState, setAuthState, userId] = useState(null);
+  useEffect(() => {
+    (async () => {
+      let cachedAuth = await getCachedAuthAsync();
+      if (cachedAuth && !authState) {
+        setAuthState(cachedAuth);
+      }
+    })();
+  }, []);
 
-	//https://docs.expo.dev/versions/v43.0.0/sdk/app-auth/#usage
-	let [authState, setAuthState, userId] = useState(null);
-	useEffect(() => {
-		(async () => {
-			let cachedAuth = await getCachedAuthAsync();
-			if (cachedAuth && !authState) {
-				setAuthState(cachedAuth);
-			}
-		})();
-	}, []);
+  
+  //let myclientId = Platform.OS =="android" ? andoidClientId : iosClientId;
+  //location screen is logged in
+  //points of interest is what the general user should see
 
+  let isSignedIn = authState == null ? false : true;
+  let screenToNavigateTo = isSignedIn == true ? "Location" : "Points of Interest";
+  //console.log(isSignedIn, "THIS IS WHERE I AM");//this is updating just fine!
+  //console.log(screenToNavigateTo);
 
-	//let myclientId = Platform.OS =="android" ? andoidClientId : iosClientId;
-	//location screen is logged in
-	//points of interest is what the general user should see
-
-	let isSignedIn = authState == null ? false : true;
-	let screenToNavigateTo = isSignedIn == true ? "Location" : "Points of Interest";
-	//console.log(isSignedIn, "THIS IS WHERE I AM");//this is updating just fine!
-	//console.log(screenToNavigateTo);
-
-	React.useLayoutEffect(() => {
-		console.log("GOT HERE AND ")
-		/*(async () => {
-			let cachedAuth = await getCachedAuthAsync();
-			if (cachedAuth == null) {
-				screenToNavigateTo = "Points of Interest";
-			}else{
-				screenToNavigateTo = "Location";
-			}
-		})(screenToNavigateTo);
-	*/
-		//let isSignedIn = authState == null ? false : true;
-		//let screenToNavigateTo = isSignedIn == true ? "Location" : "Points of Interest";
-		let myScreen = screenToNavigateTo;
-		console.log(screenToNavigateTo);
-		navigation.setOptions({
-			headerRight: () => (
-				<HeaderButtons HeaderButtonComponent={IoniconsHeaderButton}>
-					<Item
-						title={"location-list"}
-						iconName={"md-list-circle"}
-						color="maroon"
-						onPress={() => {
-							navigation.navigate("Points of Interest")
-						}}
-					/>
-					<Item
-						title={"About"}
-						iconName={"information-circle"}
-						color="maroon"
-						onPress={() => {
-							navigation.navigate("About")
-						}}
-					/>
-					<Item
-						title={"help"}
-						iconName={"help-circle"}
-						color="maroon"
-						onPress={() => {
-							setHelpModalVisible(!helpModalVisible)
-						}}
-					/>
-				</HeaderButtons>
-			),
-		});
-	}, [navigation])
-
-
+React.useLayoutEffect(() => {
+	  console.log("GOT HERE AND ")
+	/*(async () => {
+		let cachedAuth = await getCachedAuthAsync();
+		if (cachedAuth == null) {
+			screenToNavigateTo = "Points of Interest";
+		}else{
+			screenToNavigateTo = "Location";
+		}
+	  })(screenToNavigateTo);
+*/
+	//let isSignedIn = authState == null ? false : true;
+	//let screenToNavigateTo = isSignedIn == true ? "Location" : "Points of Interest";
+	let myScreen = screenToNavigateTo;
+	console.log(screenToNavigateTo);
+    navigation.setOptions({
+	headerRight: () => (
+        <HeaderButtons  HeaderButtonComponent = {IoniconsHeaderButton}>
+            <Item
+                title={"location-list"}
+				iconName={"md-list-circle"}
+				color="maroon"
+                onPress={() => {
+                	navigation.navigate("Points of Interest")
+                }}
+            />
+			<Item
+				title= {"About"}
+				iconName= {"information-circle"}
+				color = "maroon"
+				onPress={()=>{
+					navigation.navigate("About")
+				}}
+				/>
+			<Item
+				title={"help"}
+				iconName={"help-circle"}
+				color="maroon"
+                onPress={() => {
+				setHelpModalVisible(!helpModalVisible)
+				}}
+            />
+        </HeaderButtons>
+        ),
+    });
+  }, [navigation])
 
 
-
-
-
-	if (authState == null) {
+	if (authState == null){
 		return (
 			<ImageBackground
 				source={require("../assets/woods_scene.jpg")}
@@ -269,12 +263,12 @@ export default function HomeScreen({ navigation }) {
 						setHelpModalVisible(!helpModalVisible);
 					}}
 				>
-					<View style={globalStyles.helpModal}>
-						<Text style={globalStyles.helpText}>Press "i" or logo icon to go to the about screen.</Text>
-						<Text style={globalStyles.helpText}>Press "EXPLORE" to continue as a guess.</Text>
-						<Text style={globalStyles.helpText}>Press "SIGN IN" to login into an account, preferred a student or professor account.</Text>
-						<Text style={globalStyles.helpText}>Press the list icon to gain access to all the locations.</Text>
-						<TouchableOpacity style={{ backgroundColor: "maroon", margin: 10, borderRadius: 15 }}
+					<View style = {globalStyles.helpModal}>						
+						<Text>Press "i" icon to go to the about page.</Text>
+						<Text>Press "EXPLORE" to continue as a guest.</Text>
+						<Text>Press "SIGN IN" to login.</Text>
+						<Text>Press the list icon to gain access to all the locations.</Text>
+						<TouchableOpacity style= {{backgroundColor: "maroon", margin: 10, borderRadius: 15}} 
 							onPress={() => {
 								setHelpModalVisible(!helpModalVisible)
 							}}
@@ -313,11 +307,8 @@ export default function HomeScreen({ navigation }) {
 							const _authState = await signInAsync();
 							setAuthState(_authState);
 							const user = await fetchUserInfo(_authState.accessToken);
-							//setDBuser(getUserFromDB(user.email))
 							getUserFromDB(user.email).then(res => setDBuser(res));
-							navigation.navigate("Map", { user, _authState });
-							console.log(user.given_name, "Made it to the student map, user is logged in!");
-							console.log("Fascinating", DBuser, "THIS MY DEAR PEOPLE IS ESSENTIAL")
+							navigation.navigate("Map", {user, _authState });
 						}}
 					>
 						<Text style={globalStyles.genericButtonText}>SIGN IN</Text>
@@ -561,12 +552,8 @@ export default function HomeScreen({ navigation }) {
 					</TouchableOpacity>
 				</View>
 			</ImageBackground>
-		)
-	}
-
-
-
-
+	  )
+  }
 }
 
 

@@ -28,9 +28,9 @@ export default function PointInfoScreen({ route, navigation }) {
                 margin: 30,
                 backgroundColor: "#fff",
                 borderRadius: 10
-            }}>{route.params.locationName}</Text>
-
-            <Text style={{
+                 }}>{ route.params.name }</Text>
+            
+            <Text style={{ 
                 color: '#9C1D37',
                 fontWeight: 'bold',
                 fontSize: 24,
