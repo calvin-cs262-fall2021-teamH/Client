@@ -229,10 +229,12 @@ export default function MapScreen({ route, navigation }) {
         });
 
         let closePoint = sortedByDistance[0];
+        closestDistance = getDistance(currentLocation, { latitude: closePoint.latitude, longitude: closePoint.longitude });
 
         // TODO: don't get the distance twice, this sucks
-        if (getDistance(currentLocation, { latitude: closePoint.latitude, longitude: closePoint.longitude }) <= closePoint.radius) {
-            return closePoint;
+        if (closestDistance <= closePoint.radius) {
+            closestPoint = closePoint;
+
         }
         // return [ null, distance ];
     }
@@ -249,8 +251,8 @@ export default function MapScreen({ route, navigation }) {
 
 
     return (
-        <ImageBackground source={require('../assets/light_background.jpg')} style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#8C2032' }}>
-            <Text style={{ fontSize: 20, fontWeight: "bold", color: "#fff", padding: 10, position: 'absolute', top: 30, marginRight: 80 }}>{textMessage}</Text>
+        <ImageBackground source={require('../assets/good.jpg')} style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#8C2032' }}>
+            <Text style={{ fontSize: 20, fontWeight: "bold", color: "#fff", padding: 10, position: 'absolute', top: 10, marginRight: 80 }}>{textMessage}</Text>
             <ImageBackground source={require('../assets/ecomap.png')} style={{ position: 'absolute', top: 100, width: MAP_WIDTH, height: MAP_HEIGHT }} />
             <Modal
                 animationType="fade"
@@ -280,7 +282,7 @@ export default function MapScreen({ route, navigation }) {
                 </View>
             </Modal>
             { /* dynamically generate the point components from the data */}
-            {isDataDownloading ? <ActivityIndicator /> :
+            { isDataDownloading ? <ActivityIndicator /> :
                 pointsOfInterest.map(point => {
                     let pixelCoords = realToPixelCoords(point);
                     return <TouchableOpacity
@@ -301,7 +303,7 @@ export default function MapScreen({ route, navigation }) {
                     right: userPixelCoords.x
                 }
             ]} />
-
+{/*
             <TouchableOpacity
                 style={[{ bottom: 0, position: 'absolute', alignItems: 'center' }, globalStyles.noInteractionButton]}
                 onPress={() => {
@@ -315,11 +317,25 @@ export default function MapScreen({ route, navigation }) {
                         navigation.navigate('Questions', { point: closestPoint, user: route.params.user });//This is a user from google not necc. the user from our DB, should update!
                     }
                 }}>
-                <Image source={closestPoint == null ? require('../assets/1x1.png') : require("../assets/PointInteractionButton2.png")} style={{ width: 170, height: 170 }} />
+                <Image source={closestPoint == null ? require('../assets/PointInteractionButton.png') : require("../assets/PointInteractionButton2.png")} style={{ width: 170, height: 170 }} />
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => navigation.navigate("Questions", { point: { id: 1, name: "Whiskey Pond" } })}>
-                <Text>THIS IS A BUTTON</Text>
-            </TouchableOpacity>
+            */}
+            <TouchableOpacity
+                style={[{ bottom: 0, position: 'absolute', alignItems: 'center' }, globalStyles.noInteractionButton]}
+                onPress={() => {
+                    if (closestPoint == null) {
+                        console.log("No close point!");
+                        return;
+                    }
+                    if (route.params == null) {//ie we are not logged in...
+                        navigation.navigate('PointInfo', closestPoint);
+                    } else {//if the user is logged in (need to update further)
+                        navigation.navigate('Questions', { point: closestPoint, user: route.params.user });//This is a user from google not necc. the user from our DB, should update!
+                    }
+                }}>
+            <Image source={closestPoint == null ? require('../assets/PointInteractionButton.png') : require("../assets/PointInteractionButton2.png")} style = {{width: 170, height:170 }}/>
+        </TouchableOpacity>
+
         </ImageBackground>
     );
 }
