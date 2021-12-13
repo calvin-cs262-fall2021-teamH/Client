@@ -11,7 +11,7 @@ import { globalStyles } from '../styles/global';
 
 
 
-export default function AddLocationScreen({ navigation, route }) {
+export default function AddQuestionScreen({ navigation, route }) {
 
     const [isDataDownloading, setIsDataDownloading] = useState(true);
     const [questions, setQuestion] = useState([]);
@@ -111,7 +111,7 @@ export default function AddLocationScreen({ navigation, route }) {
                         key={Math.random() + Date.now()}
                         style={{ fontSize: 25, color: "#fff", padding: 20, justifyContent: 'space-between' }}>{question.question}</Text>,
                     <TouchableOpacity key={Math.random() + Date.now()} style={globalStyles.deleteQuestion} onPress={() => { remove(question.id) }}>
-                        <Text style={globalStyles.submitText}>Delete</Text>
+                        <Text style={globalStyles.submitText}>DELETE</Text>
                     </TouchableOpacity>
                 ]
 
@@ -121,23 +121,30 @@ export default function AddLocationScreen({ navigation, route }) {
     }
 
     return (
+
         <ScrollView style={{ flex: 1, backgroundColor: '#8C2032' }}>
-            <Text style={{ fontSize: 40, color: "#fff", padding: 10, marginBottom: 30, fontWeight: 'bold', flex: 2 }}>{route.params.location.name}</Text>
-            <TextInput
-                style={globalStyles.inputQuestion}
-                onChangeText={handleInput()}
-                multiline={true}
-                placeholder="Enter a question"
-                numberOfLines={3}
-                ref={myTextInput}
-            />
-            <TouchableOpacity style={globalStyles.submitQuestion} onPress={() => { submit() }}>
-                <Text style={globalStyles.submitText}>Add</Text>
-            </TouchableOpacity>
-            <Text style={{ fontSize: 40, color: "#fff", padding: 20, padding: 10, fontWeight: 'bold', flex: 2 }}>Questions</Text>
-            {isDataDownloading ? <ActivityIndicator /> :
-                mapQuestion()
-            }
+            <ImageBackground source={require('../assets/good.jpg')} style={{ alignItems: 'flex-start', backgroundColor: '#8C2032' }}>
+                <Text style={{ fontSize: 40, color: "white", padding: 15, marginBottom: 30, fontWeight: 'bold', flex: 2, backgroundColor:"maroon", width: 1000}}>{route.params.location.name}</Text>
+                {/* { isDataDownloading ? <ActivityIndicator/>:
+                <Text style={{ fontSize: 30, color: "#fff", padding: 20, position: "absolute" }}>{ question[0].question }</Text>
+             } */}
+                <TextInput
+                    style={globalStyles.inputQuestion}
+                    onChangeText={handleInput()}
+                    multiline={true}
+                    placeholder="Add a new question"
+                    numberOfLines={3}
+                    ref={myTextInput}
+                />
+                <TouchableOpacity style={globalStyles.submitQuestion} onPress={() => { submit() }}>
+                    <Text style={globalStyles.submitText}>ADD</Text>
+                </TouchableOpacity>
+                <Text style={{ fontSize: 40, color: "white", padding: 20, padding: 10, fontWeight: 'bold', flex: 2, backgroundColor:"maroon", width: 1000 }}>Questions:</Text>
+                {isDataDownloading ? <ActivityIndicator /> :
+                    mapQuestion()
+                }
+            </ImageBackground>
         </ScrollView>
+
     );
 }
