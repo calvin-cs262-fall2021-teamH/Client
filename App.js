@@ -11,7 +11,6 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import HomeScreen from "./screens/home";
 import MapScreen from "./screens/map";
-import GeoPrototype from './screens/GeolocationPrototype';
 import PointInfoScreen from './screens/pointInfo';
 
 //import Header from './shared/header';
