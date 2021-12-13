@@ -128,7 +128,7 @@ export default function addStudentsToCourse({ route, navigation }) {
       />
       <TouchableOpacity
         style={styles.AddButtonStyle}
-        onPress={() => navigation.replace("Your Students", { name: route.params.name }, navigation.navigate("Your Students", { name: route.params.name }))}
+        onPress={() => navigation.replace("My Students", { name: route.params.name }, navigation.navigate("My Students", {name: route.params.name}))}
       >
         <Text style={styles.textStyle}> DONE </Text>
       </TouchableOpacity>
