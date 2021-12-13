@@ -19,16 +19,14 @@ import {
 	ActivityIndicator,
 	Vibration,
 	Animated,
+	Dimensions,
 } from "react-native";
 import { globalStyles } from "../styles/global";
 import * as Location from "expo-location";
 import * as TaskManager from "expo-task-manager";
 import { getDistance } from "geolib";
 import Prompt from "./prompt";
-import {
-	scaleCoordsToPixelCoords,
-	isCoordWithinBoundaries,
-} from "../models/PointOfInterest";
+import * as PointOfInterest from "../models/PointOfInterest";
 import { TEST_POINTS_OF_INTEREST as TEST_POINTS_OF_INTEREST } from "../models/TestData.js";
 import { useRoute } from "@react-navigation/native";
 import { HomeScreen } from "./home";
@@ -42,12 +40,19 @@ import {
     OverflowMenu,
 } from 'react-navigation-header-buttons';
 import { Ionicons } from '@expo/vector-icons';
+import ImageZoom from 'react-native-image-pan-zoom';
 
 const USE_TEST_DATA = false;
 
-const MAP_WIDTH = 400;
-const MAP_HEIGHT = 461.487;
-const MAP_Y = 90;
+const MAP_IMAGE_WIDTH = 800;//2000;
+const MAP_IMAGE_HEIGHT = 1035;//2588;
+
+const OLD_MAP_WIDTH = 400;
+const OLD_MAP_HEIGHT = 461.487;
+
+const MAP_WIDTH = MAP_IMAGE_WIDTH;// 400;
+const MAP_HEIGHT = MAP_IMAGE_HEIGHT;// 461.487;
+const MAP_Y = 0;//90;
 const MAP_X = 0;
 
 const POINT_WIDTH = 50;
@@ -55,24 +60,20 @@ const POINT_HEIGHT = 50;
 
 const LOCATION_REFRESH_INTERVAL = 2000;
 
-function realToPixelCoords(point) {
-	// quick and dirty method to get rid of locations that are off the map to prevent wraparound
-	if (!isCoordWithinBoundaries(point)) {
-		return { x: -500, y: -500 };
-	}
 
-    let pixelCoords = scaleCoordsToPixelCoords(point, MAP_WIDTH, MAP_HEIGHT + MAP_Y, MAP_X, MAP_Y);
+// top left: 42.93668603235268, -85.58509326405748
+// top right: 
+// bottom left: 
+// bottom right: 42.930338787000515, -85.57838795335962
+// 42.9303261319036, -85.58060031512204
+// 42.93029877803694, -85.58498049641739
 
-    // account for the size of the dotu
-    pixelCoords.x -= POINT_WIDTH / 2;
-    pixelCoords.y -= POINT_HEIGHT / 2;
 
-	// account for the size of the dot
-	pixelCoords.x -= POINT_WIDTH / 2;
-	pixelCoords.y -= POINT_HEIGHT / 2;
+// lower bound: 42.930338787000515
+// upper bound: 42.93668603235268
 
-	return pixelCoords;
-}
+// left bound: -85.58509326405748
+// right bound: -85.57838795335962
 
 let userLocationFromTask = {
 	latitude: -50,
@@ -103,6 +104,11 @@ export default function MapScreen({ route, navigation }) {
     const [isDataDownloading, setIsDataDownloading] = useState(true);
     const [pointsOfInterest, setPointsOfInterest] = useState([]);
     const [helpModalVisible, setHelpModalVisible] = useState(false);
+
+	const [mapPosition, setMapPosition] = useState({ x: MAP_IMAGE_WIDTH / 2, y: MAP_IMAGE_HEIGHT / 2, zoom: 1 });
+	const [panTo, setPanTo] = useState(null);
+
+	const [hasPermission, setHasPermission] = useState(false);
 
     const IoniconsHeaderButton = (props) => (
         <HeaderButton IconComponent={Ionicons} iconSize={45} {...props} />
@@ -137,13 +143,18 @@ export default function MapScreen({ route, navigation }) {
 
 	useEffect(() => {
 		async function checkForLocationPermissions() {
+			let { granted } = await Location.getBackgroundPermissionsAsync();
+			if (granted) {
+				return true;
+			}
+
 			let { status } = await Location.requestBackgroundPermissionsAsync();
-			const hasPermissions = status === "granted";
-			if (!hasPermissions) {
+			const permissionGranted = status === "granted";
+			if (!permissionGranted) {
 				console.log("Permission problem: status is " + status);
 				setErrorMsg("Permission to access location was denied");
 			}
-			return hasPermissions;
+			return permissionGranted;
 		}
 
 		async function getCurrentLatLong() {
@@ -203,14 +214,12 @@ export default function MapScreen({ route, navigation }) {
 		}
 
 		async function startLocationUpdates() {
-			const hasPermissions = await checkForLocationPermissions();
-			if (!hasPermissions) {
-				console.log("Permission problem: status is " + status);
-				setErrorMsg("Permission to access location was denied");
-				return;
-			}
+			// const hasPermissions = await checkForLocationPermissions();
+			// setHasPermission(hasPermission);
+
+			await initPointsOfInterest();
 	
-			Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
+			await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
 				activityType: Location.LocationActivityType.Fitness,
 				showsBackgroundLocationIndicator: true,
 				timeInterval: 1000,
@@ -220,8 +229,6 @@ export default function MapScreen({ route, navigation }) {
 
 		startLocationUpdates();
 
-		initPointsOfInterest();
-
 		// refresh the location on an interval
 		const locationRefreshIntervalHandle = setInterval(
 			refreshLocation,
@@ -230,6 +237,58 @@ export default function MapScreen({ route, navigation }) {
 
 		return () => clearInterval(locationRefreshIntervalHandle); // end the interval'd calls when the screen is unmounted
 	}, []);
+
+	// console.log(`hasPermission = ${hasPermission}`);
+	// if (!hasPermission) {
+	// 	return (
+	// 		<ImageBackground source={require('../assets/light_background.jpg')} style={{ flex: 1, alignItems: 'center', backgroundColor: '#8C2032' }}>
+	// 			<Text
+	// 				style={{
+	// 					fontSize: 20,
+	// 					fontWeight: "bold",
+	// 					color: "#fff",
+	// 					padding: 10,
+	// 					position: "absolute",
+	// 					top: 30,
+	// 					marginRight: 80,
+	// 				}}
+	// 			>
+	// 				Location permissions not granted! Please provide HelloCampus background location permissions.
+	// 			</Text>
+	// 		</ImageBackground>
+	// 	);
+	// }
+
+	function realToPixelCoords(point) {
+		// quick and dirty method to get rid of locations that are off the map to prevent wraparound
+		if (!PointOfInterest.isCoordWithinBoundaries(point)) {
+			return { x: -500, y: -500 };
+		}
+
+
+		// const pinPosition = {
+		// 	x: (mapLongToCenterX(parseFloat(pin.longitude)) - mapPosition.x) * mapPosition.zoom,
+		// 	y: (mapLatToCenterY(parseFloat(pin.latitude)) - mapPosition.y) * mapPosition.zoom + Dimensions.get('window').height / 2 - PINHEIGHT + 5,
+		// }
+
+		let pixelCoords = PointOfInterest.scaleCoordsToPixelCoords(
+			point,
+			0,
+			0,
+			MAP_IMAGE_WIDTH,
+			MAP_IMAGE_HEIGHT
+		);
+
+		// account for the size of the dotu
+		// pixelCoords.x -= POINT_WIDTH / 2;
+		// pixelCoords.y -= POINT_HEIGHT / 2;
+
+		// // account for the size of the dot
+		// pixelCoords.x -= POINT_WIDTH / 2;
+		// pixelCoords.y -= POINT_HEIGHT / 2;
+
+		return pixelCoords;
+	}
 
     const userHasLocation = userLocation.realCoords?.latitude != null;
 	const userPixelCoords = userHasLocation
@@ -256,10 +315,6 @@ export default function MapScreen({ route, navigation }) {
 				distance = distanceB;
 				return -1;
 			}
-
-			// TODO: have some setting for debug output, it's spamming my console
-			console.log("Distance to " + a.name + ": " + distanceA + " meters");
-			console.log("Distance to " + b.name + ": " + distanceB + " meters");
 		});
 
         const point = sortedByDistance[0];
@@ -275,10 +330,6 @@ export default function MapScreen({ route, navigation }) {
     const [ closestPoint, distanceToPoint ] = (pointsOfInterest == null || pointsOfInterest.length == 0) ? [null, null] : getClosestPoint();
     const pointIsInRange = closestPoint != null && distanceToPoint <= closestPoint.radius;
 
-	if (closestPoint != null) {
-		// console.log("You are " + distanceToPoint + " meters away from " + closestPoint.name + ", which has a radius of " + closestPoint.radius + ".");
-	}
-
 	let textMessage = 
 		route.params == null
 			? "Walk towards a point on the map."
@@ -287,83 +338,166 @@ export default function MapScreen({ route, navigation }) {
 			  ", walk towards a point to answer questions.";
 
 	if (closestPoint != null) {
-		textMessage = distanceToPoint + " meters away from " + closestPoint.name + ", which has a radius of " + closestPoint.radius;
+		textMessage = distanceToPoint + " meters away from " + closestPoint.name + ", which has a radius of " + closestPoint.radius + " meters";
 	}
-		
+
+	// Some code related to the ImageZoom component was adapted from the Gemma project.
+	// https://github.com/Gemma-app/Gemma-client/blob/master/screens/map.jsx
+	const horizontal = Dimensions.get('window').width * (1 / mapPosition.zoom);
+	const vertical = Dimensions.get('window').height * (1 / mapPosition.zoom);
+
 	return (
-		<ImageBackground source={require('../assets/light_background.jpg')} style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#8C2032' }}>
-			<Text style={{ fontSize: 20, fontWeight: "bold", color: "#fff", padding: 10, position: 'absolute', top: 30, marginRight: 80 }}>{textMessage}</Text>
-			<ImageBackground source={require('../assets/ecomap.png')} style={{ position: 'absolute', top: 100, width: MAP_WIDTH, height: MAP_HEIGHT }} />
-			<Modal
-                animationType="fade"
-                transparent={true}
-                visible={helpModalVisible}
-                onRequestClose={() => {
-                    Alert.alert("Modal has been closed.");
-                    setHelpModalVisible(!helpModalVisible);
-                }}
-            >
-                <View style={globalStyles.helpModal}>
-                    <Text style={globalStyles.helpText}>Press "HOME" to go back to home screen.</Text>
-                    <Text style={globalStyles.helpText}>Press the list icon to gain access to all the locations.</Text>
-                    <Text style={globalStyles.helpText}>
-                        The exclamation mark button is an interaction button that will turn green
-                        when you are near a point of interest.
-                    </Text>
-                    <Text style={globalStyles.helpText}>Press points on the map to open the location's description</Text>
-                    <TouchableOpacity style={{ backgroundColor: "maroon", margin: 10, borderRadius: 15 }}
-                        onPress={() => {
-                            setHelpModalVisible(!helpModalVisible)
-                        }
-                        }>
-                        <Text style={{ color: "#fff", fontSize: 25, margin: 10 }}>EXIT</Text>
-                    </TouchableOpacity>
+		<ImageBackground
+			source={require("../assets/light_background.jpg")}
+			style={{
+				flex: 1,
+				alignItems: "center",
+				backgroundColor: "#8C2032",
+			}}
+		>
+			<Text
+				style={{
+					fontSize: 20,
+					fontWeight: "bold",
+					color: "#fff",
+					padding: 10,
+					position: "relative",
+					textAlign: "center",
+				}}
+			>
+				{textMessage}
+			</Text>
 
-                </View>
-            </Modal>
-
-			{/* dynamically generate the point components from the data */}
-			{isDataDownloading
-                ? (<ActivityIndicator/>)
-                : (pointsOfInterest.map((point) => {
-					let pixelCoords = realToPixelCoords(point);
-					return (
+			<View style={{ position: "relative" }}>
+				<ImageZoom
+					cropWidth={Dimensions.get("window").width}
+					cropHeight={Dimensions.get("window").height}
+					imageWidth={MAP_IMAGE_WIDTH + horizontal}
+					imageHeight={MAP_IMAGE_HEIGHT + vertical}
+					pinchToZoom={true}
+					panToMove={true}
+					centerOn={panTo}
+					minScale={0.5}
+					maxScale={5.0}
+					enableCenterFocus={false}
+					onMove={(event) => {
+						setMapPosition({
+							x: event.positionX,
+							y: event.positionY,
+							zoom: event.scale,
+						});
+					}}
+				>
+					<ImageBackground
+						source={require("../assets/map_lowerres.png")}
+						style={{
+							position: "absolute",
+							height: MAP_IMAGE_HEIGHT,
+							width: MAP_IMAGE_WIDTH,
+							left: horizontal / 2,
+							bottom: vertical / 2,
+						}}
+					>
+						{/* the point of the user on the map using the current latitude and longitude */}
 						<TouchableOpacity
-							key={point.id}
 							style={[
-								styles.mapPoint,
+								styles.userPoint,
 								{
 									position: "absolute",
-									top: pixelCoords.y,
-									right: pixelCoords.x,
+									/* if there's no position to pull from, make the point go bye-bye */
+									top: userPixelCoords.y,
+									left: userPixelCoords.x,
 								},
 							]}
-							onPress={
-								(() => navigation.navigate("Questions", {
-                                    point: closestPoint,
-                                    user: route.params.user,
-                                }), Vibration.cancel())
-							}
 						/>
-					);
-				})
-			)}
 
-			{/* the point of the user on the map using the current latitude and longitude */}
+						{/* dynamically generate the point components from the data */}
+						{isDataDownloading ? (
+							<ActivityIndicator />
+						) : (
+							pointsOfInterest.map((point) => {
+								let pixelCoords = realToPixelCoords(point);
+								return (
+									<TouchableOpacity
+										key={point.id}
+										style={[
+											styles.mapPoint,
+											{
+												position: "absolute",
+												top: pixelCoords.y,
+												left: pixelCoords.x,
+											},
+										]}
+										onPress={
+											(() =>
+												navigation.navigate(
+													"Questions",
+													{
+														point: closestPoint,
+														user: route.params.user,
+													}
+												),
+											Vibration.cancel())
+										}
+									/>
+								);
+							})
+						)}
+					</ImageBackground>
+				</ImageZoom>
+			</View>
+
+			<Modal
+				animationType="fade"
+				transparent={true}
+				visible={helpModalVisible}
+				onRequestClose={() => {
+					Alert.alert("Modal has been closed.");
+					setHelpModalVisible(!helpModalVisible);
+				}}
+			>
+				<View style={globalStyles.helpModal}>
+					<Text style={globalStyles.helpText}>
+						Press "HOME" to go back to home screen.
+					</Text>
+					<Text style={globalStyles.helpText}>
+						Press the list icon to gain access to all the locations.
+					</Text>
+					<Text style={globalStyles.helpText}>
+						The exclamation mark button is an interaction button
+						that will turn green when you are near a point of
+						interest.
+					</Text>
+					<Text style={globalStyles.helpText}>
+						Press points on the map to open the location's
+						description
+					</Text>
+					<TouchableOpacity
+						style={{
+							backgroundColor: "maroon",
+							margin: 10,
+							borderRadius: 15,
+						}}
+						onPress={() => {
+							setHelpModalVisible(!helpModalVisible);
+						}}
+					>
+						<Text
+							style={{ color: "#fff", fontSize: 25, margin: 10 }}
+						>
+							EXIT
+						</Text>
+					</TouchableOpacity>
+				</View>
+			</Modal>
+
 			<TouchableOpacity
 				style={[
-					styles.userPoint,
 					{
+						bottom: 0,
 						position: "absolute",
-						/* if there's no position to pull from, make the point go bye-bye */
-						top: userPixelCoords.y,
-						right: userPixelCoords.x,
+						alignItems: "center",
 					},
-				]}/>
-
-			<TouchableOpacity
-				style={[
-					{ bottom: 0, position: "absolute", alignItems: "center" },
 					globalStyles.noInteractionButton,
 				]}
 				onPress={() => {
@@ -382,14 +516,17 @@ export default function MapScreen({ route, navigation }) {
 							user: route.params.user,
 						}); //This is a user from google not necc. the user from our DB, should update!
 					}
-				}}>
+				}}
+			>
+
 				<Image
 					source={
 						pointIsInRange
 							? require("../assets/PointInteractionButton2.png")
 							: require("../assets/1x1.png")
 					}
-					style={{ width: 170, height: 170 }}/>
+					style={{ width: 170, height: 170 }}
+				/>
 			</TouchableOpacity>
 		</ImageBackground>
 	);
@@ -402,21 +539,20 @@ const styles = StyleSheet.create({
 		top: 90,
 	},
 	mapPoint: {
-		width: 50,
-		height: 50,
+		width: 20,
+		height: 20,
 		borderRadius: 100,
-		backgroundColor: "yellow",
+		backgroundColor: "red",
 		borderWidth: 3,
-		borderColor: "#ced20c",
-		opacity: 0.5,
+		borderColor: "black",
 	},
 	userPoint: {
-		width: 10,
-		height: 10,
+		width: 15,
+		height: 15,
 		borderRadius: 100,
 		backgroundColor: "blue",
-		borderWidth: 1,
-		borderColor: "grey",
+		borderWidth: 2,
+		borderColor: "black",
 	},
 	container1: {
 		flex: 1,
