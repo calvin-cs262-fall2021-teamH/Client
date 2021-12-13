@@ -156,8 +156,8 @@ export const globalStyles = StyleSheet.create({
         borderRadius: 100,
     },
     logo: {
-        width: 150,
-        height: 150,
+        width: 200,
+        height: 200,
     },
     deleteQuestion: {
         width: "20%",

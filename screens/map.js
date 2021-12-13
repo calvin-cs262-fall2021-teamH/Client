@@ -251,7 +251,7 @@ export default function MapScreen({ route, navigation }) {
 
 
     return (
-        <ImageBackground source={require('../assets/good.jpg')} style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#8C2032' }}>
+        <ImageBackground source={require('../assets/1x1.png')} style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#8C2032' }}>
             <Text style={{ fontSize: 20, fontWeight: "bold", color: "#fff", padding: 10, position: 'absolute', top: 10, marginRight: 80 }}>{textMessage}</Text>
             <ImageBackground source={require('../assets/ecomap.png')} style={{ position: 'absolute', top: 100, width: MAP_WIDTH, height: MAP_HEIGHT }} />
             <Modal

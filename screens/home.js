@@ -21,6 +21,7 @@ import { globalStyles } from '../styles/global';
 import * as AppAuth from 'expo-app-auth';
 import { Ionicons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
+import * as Animatable from 'react-native-animatable';
 import {
 	HeaderButtons,
 	HeaderButton,
@@ -172,83 +173,83 @@ export async function signOutAsync({ accessToken }) {
  * HomeScreen is the main screen of the Hello Campus app.
  * @param {navigation} navigation makes sure navigation is correct for getting to the screen and navigating other screens.
  */
-export default function HomeScreen({navigation}) {
-  const [helpModalVisible, setHelpModalVisible] = useState(false);
-  const [DBuser, setDBuser]= useState([]);
-  const IoniconsHeaderButton = (props) => (
-	<HeaderButton IconComponent={Ionicons} iconSize={25} {...props} />
-  );
-  
-  //https://docs.expo.dev/versions/v43.0.0/sdk/app-auth/#usage
-  let [authState, setAuthState, userId] = useState(null);
-  useEffect(() => {
-    (async () => {
-      let cachedAuth = await getCachedAuthAsync();
-      if (cachedAuth && !authState) {
-        setAuthState(cachedAuth);
-      }
-    })();
-  }, []);
+export default function HomeScreen({ navigation }) {
+	const [helpModalVisible, setHelpModalVisible] = useState(false);
+	const [DBuser, setDBuser] = useState([]);
+	const IoniconsHeaderButton = (props) => (
+		<HeaderButton IconComponent={Ionicons} iconSize={25} {...props} />
+	);
 
-  
-  //let myclientId = Platform.OS =="android" ? andoidClientId : iosClientId;
-  //location screen is logged in
-  //points of interest is what the general user should see
-
-  let isSignedIn = authState == null ? false : true;
-  let screenToNavigateTo = isSignedIn == true ? "Location" : "Points of Interest";
-  //console.log(isSignedIn, "THIS IS WHERE I AM");//this is updating just fine!
-  //console.log(screenToNavigateTo);
-
-React.useLayoutEffect(() => {
-	  console.log("GOT HERE AND ")
-	/*(async () => {
-		let cachedAuth = await getCachedAuthAsync();
-		if (cachedAuth == null) {
-			screenToNavigateTo = "Points of Interest";
-		}else{
-			screenToNavigateTo = "Location";
-		}
-	  })(screenToNavigateTo);
-*/
-	//let isSignedIn = authState == null ? false : true;
-	//let screenToNavigateTo = isSignedIn == true ? "Location" : "Points of Interest";
-	let myScreen = screenToNavigateTo;
-	console.log(screenToNavigateTo);
-    navigation.setOptions({
-	headerRight: () => (
-        <HeaderButtons  HeaderButtonComponent = {IoniconsHeaderButton}>
-            <Item
-                title={"location-list"}
-				iconName={"md-list-circle"}
-				color="maroon"
-                onPress={() => {
-                	navigation.navigate("Points of Interest")
-                }}
-            />
-			<Item
-				title= {"About"}
-				iconName= {"information-circle"}
-				color = "maroon"
-				onPress={()=>{
-					navigation.navigate("About")
-				}}
-				/>
-			<Item
-				title={"help"}
-				iconName={"help-circle"}
-				color="maroon"
-                onPress={() => {
-				setHelpModalVisible(!helpModalVisible)
-				}}
-            />
-        </HeaderButtons>
-        ),
-    });
-  }, [navigation])
+	//https://docs.expo.dev/versions/v43.0.0/sdk/app-auth/#usage
+	let [authState, setAuthState, userId] = useState(null);
+	useEffect(() => {
+		(async () => {
+			let cachedAuth = await getCachedAuthAsync();
+			if (cachedAuth && !authState) {
+				setAuthState(cachedAuth);
+			}
+		})();
+	}, []);
 
 
-	if (authState == null){
+	//let myclientId = Platform.OS =="android" ? andoidClientId : iosClientId;
+	//location screen is logged in
+	//points of interest is what the general user should see
+
+	let isSignedIn = authState == null ? false : true;
+	let screenToNavigateTo = isSignedIn == true ? "Location" : "Points of Interest";
+	//console.log(isSignedIn, "THIS IS WHERE I AM");//this is updating just fine!
+	//console.log(screenToNavigateTo);
+
+	React.useLayoutEffect(() => {
+		console.log("GOT HERE AND ")
+		/*(async () => {
+			let cachedAuth = await getCachedAuthAsync();
+			if (cachedAuth == null) {
+				screenToNavigateTo = "Points of Interest";
+			}else{
+				screenToNavigateTo = "Location";
+			}
+		  })(screenToNavigateTo);
+	*/
+		//let isSignedIn = authState == null ? false : true;
+		//let screenToNavigateTo = isSignedIn == true ? "Location" : "Points of Interest";
+		let myScreen = screenToNavigateTo;
+		console.log(screenToNavigateTo);
+		navigation.setOptions({
+			headerRight: () => (
+				<HeaderButtons HeaderButtonComponent={IoniconsHeaderButton}>
+					<Item
+						title={"location-list"}
+						iconName={"md-list-circle"}
+						color="maroon"
+						onPress={() => {
+							navigation.navigate("Points of Interest")
+						}}
+					/>
+					<Item
+						title={"About"}
+						iconName={"information-circle"}
+						color="maroon"
+						onPress={() => {
+							navigation.navigate("About")
+						}}
+					/>
+					<Item
+						title={"help"}
+						iconName={"help-circle"}
+						color="maroon"
+						onPress={() => {
+							setHelpModalVisible(!helpModalVisible)
+						}}
+					/>
+				</HeaderButtons>
+			),
+		});
+	}, [navigation])
+
+
+	if (authState == null) {
 		return (
 			<ImageBackground
 				source={require("../assets/woods_scene.jpg")}
@@ -263,12 +264,12 @@ React.useLayoutEffect(() => {
 						setHelpModalVisible(!helpModalVisible);
 					}}
 				>
-					<View style = {globalStyles.helpModal}>						
+					<View style={globalStyles.helpModal}>
 						<Text>Press "i" icon to go to the about page.</Text>
 						<Text>Press "EXPLORE" to continue as a guest.</Text>
 						<Text>Press "SIGN IN" to login.</Text>
 						<Text>Press the list icon to gain access to all the locations.</Text>
-						<TouchableOpacity style= {{backgroundColor: "maroon", margin: 10, borderRadius: 15}} 
+						<TouchableOpacity style={{ backgroundColor: "maroon", margin: 10, borderRadius: 15 }}
 							onPress={() => {
 								setHelpModalVisible(!helpModalVisible)
 							}}
@@ -283,10 +284,11 @@ React.useLayoutEffect(() => {
 						onPress={() => navigation.navigate("About")}
 						style={globalStyles.touchableHighlight}
 					>
-						<Image
+						{/* <Image
 							source={require("../assets/HelloCampusLogo_NoBackground.png")}
 							style={globalStyles.logo}
-						/>
+						/> */}
+						<Animatable.Image animation="bounceInDown" source={require("../assets/HelloCampusLogo_NoBackground.png")} style={globalStyles.logo}></Animatable.Image>
 					</TouchableHighlight>
 					<TouchableOpacity
 						style={globalStyles.genericButton}
@@ -308,7 +310,7 @@ React.useLayoutEffect(() => {
 							setAuthState(_authState);
 							const user = await fetchUserInfo(_authState.accessToken);
 							getUserFromDB(user.email).then(res => setDBuser(res));
-							navigation.navigate("Map", {user, _authState });
+							navigation.navigate("Map", { user, _authState });
 						}}
 					>
 						<Text style={globalStyles.genericButtonText}>SIGN IN</Text>
@@ -552,8 +554,8 @@ React.useLayoutEffect(() => {
 					</TouchableOpacity>
 				</View>
 			</ImageBackground>
-	  )
-  }
+		)
+	}
 }
 
 
