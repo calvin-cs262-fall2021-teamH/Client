@@ -329,6 +329,7 @@ export default function MapScreen({ route, navigation }) {
 
     const [ closestPoint, distanceToPoint ] = (pointsOfInterest == null || pointsOfInterest.length == 0) ? [null, null] : getClosestPoint();
     const pointIsInRange = closestPoint != null && distanceToPoint <= closestPoint.radius;
+	console.log(`pointIsInRange = ${pointIsInRange}`);
 
 	let textMessage = 
 		route.params == null
@@ -504,7 +505,7 @@ export default function MapScreen({ route, navigation }) {
                         navigation.navigate('Questions', { point: closestPoint, user: route.params.user });//This is a user from google not necc. the user from our DB, should update!
                     }
                 }}>
-            <Image source={closestPoint == null ? require('../assets/PointInteractionButton.png') : require("../assets/PointInteractionButton2.png")} style = {{width: 170, height:170 }}/>
+            <Image source={!pointIsInRange ? require('../assets/1x1.png') : require("../assets/PointInteractionButton2.png")} style = {{width: 170, height:170 }}/>
         	</TouchableOpacity>
 		</ImageBackground>
 	);
