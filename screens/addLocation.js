@@ -1,7 +1,7 @@
 /**
  * Screen that allows professors to add a location
  *
- * @author: Brian Langejans
+ * @author: Brian Langejans, David Reidsma, David Heynen, Paul Dick, Kurt Wietelmann
  * 12/10/2021
  */
 
