@@ -25,7 +25,7 @@ export default function myDashBoard({ route, navigation }) {
       <TouchableOpacity style={globalStyles.genericButton}
         onPress={async () => {
           const name = route.params.user.given_name;
-          navigation.navigate("Your Students", { name });
+          navigation.navigate("My Students", { name });
         }}>
         <Text style={{ flex: .315, color: "#fff", fontWeight: "bold" }}>
           Students
