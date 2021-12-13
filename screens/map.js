@@ -214,8 +214,8 @@ export default function MapScreen({ route, navigation }) {
 		}
 
 		async function startLocationUpdates() {
-			// const hasPermissions = await checkForLocationPermissions();
-			// setHasPermission(hasPermission);
+			const hasPermissions = await checkForLocationPermissions();
+			setHasPermission(hasPermissions);
 
 			await initPointsOfInterest();
 	
