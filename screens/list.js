@@ -173,6 +173,7 @@ export default function ListScreen({ route, navigation }) {
                                             if (answer.questionid == question.id) {
                                                 return [
                                                     <TextInput
+                                                        key = {questionID + Date.now()}
                                                         editable={true}
                                                         ref={myTextInput}
                                                         style={globalStyles.input}
