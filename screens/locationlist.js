@@ -179,7 +179,7 @@ export default function locationQuestion({ route, navigation }) {
 
               <TouchableOpacity
                 style={{ backgroundColor: "#8C2131", margin: 10, borderRadius: 5 }}
-                onPress={() => setModalVisible(!modalVisible)}
+                onPress={() => navigation.navigate("Add Location")}
               >
                 <Text style={{ fontSize: 18, fontWeight: 'bold', color: '#fff', margin: 10 }}>Set</Text>
               </TouchableOpacity>
@@ -190,7 +190,7 @@ export default function locationQuestion({ route, navigation }) {
       <View style={{alignItems:"center", justifyContent:"center", marginBottom:10, marginTop:50}}>
         <TouchableOpacity
           style={styles.AddButtonStyle}
-          onPress={() => setModalVisible(true)}
+          onPress={() => navigation.navigate("Add Location")}
         >
           <Text style={styles.textStyle}> Add Locations </Text>
         </TouchableOpacity>
