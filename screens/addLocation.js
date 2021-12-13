@@ -11,7 +11,7 @@ import { globalStyles } from '../styles/global';
 
 
 
-export default function AddQuestionsScreen({ navigation, route }) {
+export default function AddLocationScreen({ navigation, route }) {
 
     const [isDataDownloading, setIsDataDownloading] = useState(true);
     const [location, setLocation] = useState([]);
