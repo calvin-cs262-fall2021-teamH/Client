@@ -25,6 +25,7 @@ import SignedOutLocationList from './screens/signedOutLocations';
 import addStudentsToCourse from './screens/addStudent';
 import AddQuestionsScreen from './screens/addQuestions';
 import AddLocationScreen from './screens/addLocation';
+import LogBox from 'react-native';
 //import Icon from 'react-native-ionicons';
 
 
@@ -39,7 +40,8 @@ const Stack1= createNativeStackNavigator();
 
 
 
-console.disableYellowBox = true;
+LogBox.ignoreAllLogs(); //Disables warnings
+
 
 function App() {
 
