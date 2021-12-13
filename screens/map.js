@@ -44,41 +44,20 @@ import ImageZoom from 'react-native-image-pan-zoom';
 
 const USE_TEST_DATA = false;
 
-const MAP_IMAGE_WIDTH = 800;//2000;
-const MAP_IMAGE_HEIGHT = 1035;//2588;
-
-const OLD_MAP_WIDTH = 400;
-const OLD_MAP_HEIGHT = 461.487;
-
-const MAP_WIDTH = MAP_IMAGE_WIDTH;// 400;
-const MAP_HEIGHT = MAP_IMAGE_HEIGHT;// 461.487;
-const MAP_Y = 0;//90;
-const MAP_X = 0;
-
-const POINT_WIDTH = 50;
-const POINT_HEIGHT = 50;
+const MAP_IMAGE_WIDTH = 800;
+const MAP_IMAGE_HEIGHT = 1035;
 
 const LOCATION_REFRESH_INTERVAL = 2000;
-
-
-// top left: 42.93668603235268, -85.58509326405748
-// top right: 
-// bottom left: 
-// bottom right: 42.930338787000515, -85.57838795335962
-// 42.9303261319036, -85.58060031512204
-// 42.93029877803694, -85.58498049641739
-
-
-// lower bound: 42.930338787000515
-// upper bound: 42.93668603235268
-
-// left bound: -85.58509326405748
-// right bound: -85.57838795335962
 
 let userLocationFromTask = {
 	latitude: -50,
 	longitude: -50
 };
+
+// taskHasReceivedData is necessary for communication between the task defined at the bottom of this file in the global scope...
+// ...locationUpdatesStarted is another story. That *probably* could be defined using useState but I wasn't able to get that working quickly enough.
+let taskHasReceivedData = false;
+let locationUpdatesStarted = false;
 
 export default function MapScreen({ route, navigation }) {
     React.useLayoutEffect(() => {
@@ -98,7 +77,7 @@ export default function MapScreen({ route, navigation }) {
         });
     }, [navigation]);
 
-    const [errorMsg, setErrorMsg] = useState(null); // TODO: do something with errorMsg
+    // const [errorMsg, setErrorMsg] = useState(null); // TODO: do something with errorMsg
     const [userLocation, setUserLocation] = useState({ pixelCoords: { x: -500, y: -500 }, realCoords: { latitude: 0, longitude: 0 } });
 
     const [isDataDownloading, setIsDataDownloading] = useState(true);
@@ -106,9 +85,6 @@ export default function MapScreen({ route, navigation }) {
     const [helpModalVisible, setHelpModalVisible] = useState(false);
 
 	const [mapPosition, setMapPosition] = useState({ x: MAP_IMAGE_WIDTH / 2, y: MAP_IMAGE_HEIGHT / 2, zoom: 1 });
-	const [panTo, setPanTo] = useState(null);
-
-	const [hasPermission, setHasPermission] = useState(false);
 
     const IoniconsHeaderButton = (props) => (
         <HeaderButton IconComponent={Ionicons} iconSize={45} {...props} />
@@ -157,6 +133,7 @@ export default function MapScreen({ route, navigation }) {
 			return permissionGranted;
 		}
 
+		// Old location code; kept around in case needed sometime.
 		async function getCurrentLatLong() {
 			// const locationPromise = await Location.getCurrentPositionAsync({
 			// 	accuracy: Location.Accuracy.Highest,
@@ -164,7 +141,28 @@ export default function MapScreen({ route, navigation }) {
 			// return locationPromise.coords;
 		}
 
+		async function startLocationUpdates() {
+			const hasPermissions = await checkForLocationPermissions();
+			// setHasPermission(hasPermissions);
+
+			await initPointsOfInterest();
+	
+			await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
+				activityType: Location.LocationActivityType.Fitness,
+				showsBackgroundLocationIndicator: true,
+				distanceInterval: 1
+			});
+		}
+
 		async function refreshLocation() {
+			console.log(taskHasReceivedData);
+			if (!taskHasReceivedData) {
+				return;
+			} else if (!locationUpdatesStarted) {
+				await startLocationUpdates();
+				locationUpdatesStarted = true;
+			}
+
 			const realCoords = userLocationFromTask;
 			const pixelCoords = realToPixelCoords({
 				name: "user's location",
@@ -212,21 +210,6 @@ export default function MapScreen({ route, navigation }) {
 				setIsDataDownloading(false);
 			}
 		}
-
-		async function startLocationUpdates() {
-			const hasPermissions = await checkForLocationPermissions();
-			setHasPermission(hasPermissions);
-
-			await initPointsOfInterest();
-	
-			await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
-				activityType: Location.LocationActivityType.Fitness,
-				showsBackgroundLocationIndicator: true,
-				distanceInterval: 1
-			});
-		}
-
-		startLocationUpdates();
 
 		// refresh the location on an interval
 		const locationRefreshIntervalHandle = setInterval(
@@ -375,7 +358,6 @@ export default function MapScreen({ route, navigation }) {
 					imageHeight={MAP_IMAGE_HEIGHT + vertical}
 					pinchToZoom={true}
 					panToMove={true}
-					centerOn={panTo}
 					minScale={0.5}
 					maxScale={5.0}
 					enableCenterFocus={false}
@@ -562,5 +544,7 @@ TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data, error }) => {
 			latitude: locations[0].coords.latitude,
 			longitude: locations[0].coords.longitude,
 		};
+
+		taskHasReceivedData = true;
 	}
 });
