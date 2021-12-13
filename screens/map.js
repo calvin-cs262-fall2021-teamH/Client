@@ -42,6 +42,8 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import ImageZoom from 'react-native-image-pan-zoom';
 
+const LOCATION_TASK_NAME = "hellocampus_background_location";
+
 const USE_TEST_DATA = false;
 
 const MAP_IMAGE_WIDTH = 800;
@@ -56,8 +58,8 @@ let userLocationFromTask = {
 
 // taskHasReceivedData is necessary for communication between the task defined at the bottom of this file in the global scope...
 // ...locationUpdatesStarted is another story. That *probably* could be defined using useState but I wasn't able to get that working quickly enough.
-let taskHasReceivedData = false;
-let locationUpdatesStarted = false;
+// let taskHasReceivedData = false;
+// let locationUpdatesStarted = false;
 
 export default function MapScreen({ route, navigation }) {
     React.useLayoutEffect(() => {
@@ -83,6 +85,7 @@ export default function MapScreen({ route, navigation }) {
     const [isDataDownloading, setIsDataDownloading] = useState(true);
     const [pointsOfInterest, setPointsOfInterest] = useState([]);
     const [helpModalVisible, setHelpModalVisible] = useState(false);
+	// const [locationUpdatesStarted, setLocationUpdatesStarted] = useState(false);
 
 	const [mapPosition, setMapPosition] = useState({ x: MAP_IMAGE_WIDTH / 2, y: MAP_IMAGE_HEIGHT / 2, zoom: 1 });
 
@@ -142,6 +145,11 @@ export default function MapScreen({ route, navigation }) {
 		}
 
 		async function startLocationUpdates() {
+			const updatesAlreadyStarted = await Location.hasStartedLocationUpdatesAsync(LOCATION_TASK_NAME);
+			console.log(`updatesAlreadyStarted=${updatesAlreadyStarted}`);
+			if (updatesAlreadyStarted)
+				return;
+
 			const hasPermissions = await checkForLocationPermissions();
 			// setHasPermission(hasPermissions);
 
@@ -155,12 +163,11 @@ export default function MapScreen({ route, navigation }) {
 		}
 
 		async function refreshLocation() {
-			console.log(taskHasReceivedData);
-			if (!taskHasReceivedData) {
-				return;
-			} else if (!locationUpdatesStarted) {
+			// console.log(locationUpdatesStarted);
+			const haveUpdatesStarted = await Location.hasStartedLocationUpdatesAsync(LOCATION_TASK_NAME);
+			if (!haveUpdatesStarted) {
 				await startLocationUpdates();
-				locationUpdatesStarted = true;
+				//setLocationUpdatesStarted(true);
 			}
 
 			const realCoords = userLocationFromTask;
@@ -217,7 +224,13 @@ export default function MapScreen({ route, navigation }) {
 			LOCATION_REFRESH_INTERVAL
 		);
 
-		return () => clearInterval(locationRefreshIntervalHandle); // end the interval'd calls when the screen is unmounted
+		return async () => {
+			clearInterval(locationRefreshIntervalHandle); // end the interval'd calls when the screen is unmounted
+			// setLocationUpdatesStarted(false);
+
+			// if (await Location.hasStartedLocationUpdatesAsync())
+			Location.stopLocationUpdatesAsync(LOCATION_TASK_NAME);
+		}
 	}, []);
 
 	// console.log(`hasPermission = ${hasPermission}`);
@@ -526,8 +539,6 @@ const styles = StyleSheet.create({
 	},
 });
 
-const LOCATION_TASK_NAME = "hellocampus";
-
 // https://docs.expo.dev/versions/latest/sdk/task-manager/
 // https://docs.expo.dev/versions/latest/sdk/location/#background-location-methods
 TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data, error }) => {
@@ -544,7 +555,5 @@ TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data, error }) => {
 			latitude: locations[0].coords.latitude,
 			longitude: locations[0].coords.longitude,
 		};
-
-		taskHasReceivedData = true;
 	}
 });
