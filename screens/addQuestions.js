@@ -103,21 +103,18 @@ export default function AddQuestionScreen({ navigation, route }) {
     }
 
     const mapQuestion = (question) => {
-
         return (
-            questions.map(question => {
-                return [
-                    <Text
-                        key={Math.random() + Date.now()}
-                        style={{ fontSize: 25, color: "#fff", padding: 20, justifyContent: 'space-between' }}>{question.question}</Text>,
-                    <TouchableOpacity key={Math.random() + Date.now()} style={globalStyles.deleteQuestion} onPress={() => { remove(question.id) }}>
-                        <Text style={globalStyles.submitText}>DELETE</Text>
-                    </TouchableOpacity>
-                ]
-
+        questions.map(question => {
+            return [
+                <Text
+                    key={Math.random()+Date.now()}
+                    style={{ fontSize: 25, color: "#fff", padding: 20, justifyContent:'space-between' }}>{question.question}</Text>,
+                <TouchableOpacity key={Math.random()+Date.now()} style={globalStyles.deleteQuestion} onPress={() => {remove(question.id)}}>
+                    <Text style={globalStyles.submitText}>Delete</Text>
+                </TouchableOpacity>
+            ]
             })
         )
-
     }
 
     return (
