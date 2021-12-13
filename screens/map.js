@@ -222,7 +222,6 @@ export default function MapScreen({ route, navigation }) {
 			await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
 				activityType: Location.LocationActivityType.Fitness,
 				showsBackgroundLocationIndicator: true,
-				timeInterval: 1000,
 				distanceInterval: 1
 			});
 		}
@@ -329,7 +328,6 @@ export default function MapScreen({ route, navigation }) {
 
     const [ closestPoint, distanceToPoint ] = (pointsOfInterest == null || pointsOfInterest.length == 0) ? [null, null] : getClosestPoint();
     const pointIsInRange = closestPoint != null && distanceToPoint <= closestPoint.radius;
-	console.log(`pointIsInRange = ${pointIsInRange}`);
 
 	let textMessage = 
 		route.params == null

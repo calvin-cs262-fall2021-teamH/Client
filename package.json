@@ -8,7 +8,7 @@
     "eject": "expo eject"
   },
   "dependencies": {
-    "@expo/vector-icons": "^12.0.5",
+    "@expo/vector-icons": "^10.0.0",
     "@react-native-async-storage/async-storage": "~1.15.0",
     "@react-native-google-signin/google-signin": "^7.0.1",
     "@react-navigation/drawer": "^6.1.8",
@@ -19,10 +19,10 @@
     "expo": "~42.0.1",
     "expo-cli": "^4.13.0",
     "expo-google-app-auth": "^8.2.5",
-    "expo-location": "~12.1.2",
-    "expo-permissions": "~12.1.1",
+    "expo-location": "~8.2.1",
+    "expo-permissions": "~9.0.1",
     "expo-status-bar": "~1.0.4",
-    "expo-task-manager": "^10.0.3",
+    "expo-task-manager": "~8.3.0",
     "geolib": "^3.3.3",
     "lodash.filter": "^4.6.0",
     "react": "16.13.1",
@@ -30,15 +30,14 @@
     "react-dom": "16.13.1",
     "react-native": "https://github.com/expo/react-native/archive/sdk-42.0.0.tar.gz",
     "react-native-fontawesome": "^7.0.0",
-    "react-native-gesture-handler": "^1.10.3",
+    "react-native-gesture-handler": "~1.6.0",
     "react-native-google-sign-in": "^1.0.16",
     "react-native-image-pan-zoom": "^2.1.12",
-    "react-native-reanimated": "^2.2.2",
-    "react-native-safe-area-context": "3.2.0",
-    "react-native-screens": "~3.4.0",
+    "react-native-reanimated": "~1.9.0",
+    "react-native-safe-area-context": "~3.0.7",
+    "react-native-screens": "~2.9.0",
     "react-native-web": "^0.17.1",
-    "react-navigation-header-buttons": "^9.0.1",
-    "turtle-cli": "^0.24.0"
+    "react-navigation-header-buttons": "^9.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.9.0"
