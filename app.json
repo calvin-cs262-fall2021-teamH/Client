@@ -35,6 +35,6 @@
       "favicon": "./assets/HelloCampusLogo_NoBackground.png"
     },
     "description": "",
-    "sdkVersion": "42.0.0"
+    "sdkVersion": "38.0.0"
   }
 }
