@@ -1,7 +1,7 @@
 /*
  * Screen that contains questions about the user's current location.
  *
- * @author: Brian Langejans
+ * @author: Brian Langejans, David Reidsma, David Heynen, Paul Dick, Kurt Wietelmann
  * 11/16/2021
  */
 
