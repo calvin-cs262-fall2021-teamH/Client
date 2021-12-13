@@ -15,34 +15,9 @@ export default function AddQuestionsScreen({ navigation, route }) {
 
     const [isDataDownloading, setIsDataDownloading] = useState(true);
     const [location, setLocation] = useState([]);
-    // const [latitude, setLatitude] = useState("");
-    // const [longitude, setLongitude] = useState("");
-    // const [radius, setRadius] = useState("");
-    // const [name, setName] = useState("");
-    // const [info, setInfo] = useState("");
-    const [text, onChangeText] = React.useState("Useless Text");
 
+    useEffect (() => {
 
-    useEffect(() => {
-        // setIsDataDownloading(true)
-        // console.log("got to useEffect")
-        // if (isDataDownloading) {
-        //     fetch(`https://hello-campus.herokuapp.com/questionsAtPoint/${route.params.location.id}/`)
-        //     .then((response) => {
-        //         let data = response.json();
-        //         //console.log("Successfully downloaded question data.");
-        //         return data;
-        //     })
-        //     .then((json) => setQuestion(json))
-        //     .then((json) => setNewQuestions(json))
-        //     .catch((error) => {
-        //         //console.log("Error downloading question data: " + error);
-        //     })
-        //     .finally(() => {
-        //         setIsDataDownloading(false);
-        //     }
-        // );
-        // }
     }, [])
 
     const submit = () => {
@@ -86,21 +61,18 @@ export default function AddQuestionsScreen({ navigation, route }) {
                 onChangeText={_handleMultiInput("name")}
                 multiline={true}
                 placeholder="Name"
-
             />
             <TextInput
                 style={globalStyles.inputPointInfo}
                 onChangeText={_handleMultiInput("latitude")}
                 multiline={true}
                 placeholder="Latitude"
-
             />
             <TextInput
                 style={globalStyles.inputPointInfo}
                 onChangeText={_handleMultiInput("longitude")}
                 multiline={true}
                 placeholder="Longitude"
-
             />
             <TextInput
                 style={globalStyles.inputPointInfo}
@@ -108,7 +80,6 @@ export default function AddQuestionsScreen({ navigation, route }) {
                 multiline={true}
                 placeholder="Radius (in meters)"
                 numberOfLines={3}
-
             />
             <TextInput
                 style={globalStyles.inputPointInfo}
@@ -116,7 +87,6 @@ export default function AddQuestionsScreen({ navigation, route }) {
                 multiline={true}
                 placeholder="Description"
                 numberOfLines={3}
-
             />
             <TouchableOpacity style={globalStyles.submitQuestion} onPress={() => { submit(), navigation.replace("Location List", navigation.navigate("Location List")) }}>
                 <Text style={globalStyles.submitText}>Add</Text>
