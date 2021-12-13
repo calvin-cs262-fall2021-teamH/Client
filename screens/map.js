@@ -348,7 +348,7 @@ export default function MapScreen({ route, navigation }) {
 
 	return (
 		<ImageBackground
-			source={require("../assets/light_background.jpg")}
+			source={require("../assets/good.jpg")}
 			style={{
 				flex: 1,
 				alignItems: "center",
@@ -492,42 +492,20 @@ export default function MapScreen({ route, navigation }) {
 			</Modal>
 
 			<TouchableOpacity
-				style={[
-					{
-						bottom: 0,
-						position: "absolute",
-						alignItems: "center",
-					},
-					globalStyles.noInteractionButton,
-				]}
-				onPress={() => {
-					if (!pointIsInRange) {
-						console.log("No close point!");
-						return;
-					}
-
-					if (route.params == null) {
-						//ie we are not logged in...
-						navigation.navigate("PointInfo", closestPoint);
-					} else {
-						//if the user is logged in (need to update further)
-						navigation.navigate("Questions", {
-							point: closestPoint,
-							user: route.params.user,
-						}); //This is a user from google not necc. the user from our DB, should update!
-					}
-				}}
-			>
-
-				<Image
-					source={
-						pointIsInRange
-							? require("../assets/PointInteractionButton2.png")
-							: require("../assets/1x1.png")
-					}
-					style={{ width: 170, height: 170 }}
-				/>
-			</TouchableOpacity>
+                style={[{ bottom: 0, position: 'absolute', alignItems: 'center' }, globalStyles.noInteractionButton]}
+                onPress={() => {
+                    if (closestPoint == null) {
+                        console.log("No close point!");
+                        return;
+                    }
+                    if (route.params == null) {//ie we are not logged in...
+                        navigation.navigate('PointInfo', closestPoint);
+                    } else {//if the user is logged in (need to update further)
+                        navigation.navigate('Questions', { point: closestPoint, user: route.params.user });//This is a user from google not necc. the user from our DB, should update!
+                    }
+                }}>
+            <Image source={closestPoint == null ? require('../assets/PointInteractionButton.png') : require("../assets/PointInteractionButton2.png")} style = {{width: 170, height:170 }}/>
+        	</TouchableOpacity>
 		</ImageBackground>
 	);
 }
