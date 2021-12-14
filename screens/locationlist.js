@@ -68,11 +68,8 @@ export default function locationQuestion({ route, navigation }) {
 
   let isSignedIn = authState == null ? false : true;
   let screenToNavigateTo = isSignedIn == true ? "Location" : "Points of Interest";
-  //console.log(isSignedIn, "THIS IS WHERE I AM");//this is updating just fine!
-  //console.log(screenToNavigateTo);
 
   React.useLayoutEffect(() => {
-    console.log("GOT HERE AND ")
     /*(async () => {
       let cachedAuth = await getCachedAuthAsync();
       if (cachedAuth == null) {
@@ -85,7 +82,6 @@ export default function locationQuestion({ route, navigation }) {
     //let isSignedIn = authState == null ? false : true;
     //let screenToNavigateTo = isSignedIn == true ? "Location" : "Points of Interest";
     let myScreen = screenToNavigateTo;
-    console.log(screenToNavigateTo);
     navigation.setOptions({
       headerRight: () => (
         <HeaderButtons HeaderButtonComponent={IoniconsHeaderButton}>
@@ -159,7 +155,6 @@ export default function locationQuestion({ route, navigation }) {
   const remove = (locationID) => {
     fetch(`https://hello-campus.herokuapp.com/pointOfInterest/${locationID}/`, { method: 'DELETE' })
       .then(() => {
-        console.log("Successfully deleted location data.");
         reloadLocations()
       })
   }

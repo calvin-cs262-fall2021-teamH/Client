@@ -47,11 +47,8 @@ export default function SignedOutLocationList({ route, navigation }) {
 
     let isSignedIn = authState == null ? false : true;
     let screenToNavigateTo = isSignedIn == true ? "Location" : "Points of Interest";
-    //console.log(isSignedIn, "THIS IS WHERE I AM");//this is updating just fine!
-    //console.log(screenToNavigateTo);
 
     React.useLayoutEffect(() => {
-        console.log("GOT HERE AND ")
         /*(async () => {
             let cachedAuth = await getCachedAuthAsync();
             if (cachedAuth == null) {
@@ -64,7 +61,6 @@ export default function SignedOutLocationList({ route, navigation }) {
         //let isSignedIn = authState == null ? false : true;
         //let screenToNavigateTo = isSignedIn == true ? "Location" : "Points of Interest";
         let myScreen = screenToNavigateTo;
-        console.log(screenToNavigateTo);
         navigation.setOptions({
             headerRight: () => (
                 <HeaderButtons HeaderButtonComponent={IoniconsHeaderButton}>
@@ -86,13 +82,11 @@ export default function SignedOutLocationList({ route, navigation }) {
             fetch(`https://hello-campus.herokuapp.com/pointsofinterest/`)
                 .then((response) => {
                     let data = response.json();
-                    console.log(JSON.stringify(data));
-                    //console.log("Successfully downloaded question data.");
                     return data;
                 })
                 .then((json) => setLocation(json))
                 .catch((error) => {
-                    //console.log("Error downloading question data: " + error);
+                    console.log("Error downloading location data: " + error);
                 })
                 .finally(() => {
                     setIsDataDownloading(false);
@@ -106,13 +100,11 @@ export default function SignedOutLocationList({ route, navigation }) {
             fetch(`https://hello-campus.herokuapp.com/questions/`)
                 .then((response) => {
                     let data = response.json();
-                    console.log(JSON.stringify(data));
-                    //console.log("Successfully downloaded question data.");
                     return data;
                 })
                 .then((json) => setQuestion(json))
                 .catch((error) => {
-                    //console.log("Error downloading question data: " + error);
+                    console.log("Error downloading question data: " + error);
                 })
                 .finally(() => {
                     setIsDataDownloading(false);
@@ -126,13 +118,11 @@ export default function SignedOutLocationList({ route, navigation }) {
             fetch(`https://hello-campus.herokuapp.com/answers/`)
                 .then((response) => {
                     let data = response.json();
-                    console.log(JSON.stringify(data));
-                    //console.log("Successfully downloaded question data.");
                     return data;
                 })
                 .then((json) => setAnswer(json))
                 .catch((error) => {
-                    //console.log("Error downloading question data: " + error);
+                    console.log("Error downloading answer data: " + error);
                 })
                 .finally(() => {
                     setIsDataDownloading(false);
@@ -146,13 +136,11 @@ export default function SignedOutLocationList({ route, navigation }) {
             fetch(`https://hello-campus.herokuapp.com/users/`)
                 .then((response) => {
                     let data = response.json();
-                    console.log(JSON.stringify(data));
-                    //console.log("Successfully downloaded question data.");
                     return data;
                 })
                 .then((json) => setUser(json))
                 .catch((error) => {
-                    //console.log("Error downloading question data: " + error);
+                    console.log("Error downloading user data: " + error);
                 })
                 .finally(() => {
                     setIsDataDownloading(false);
