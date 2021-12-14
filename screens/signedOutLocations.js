@@ -51,13 +51,11 @@ export default function SignedOutLocationList({ route, navigation }) {
             fetch(`https://hello-campus.herokuapp.com/pointsofinterest/`)
                 .then((response) => {
                     let data = response.json();
-                    console.log(JSON.stringify(data));
-                    //console.log("Successfully downloaded question data.");
                     return data;
                 })
                 .then((json) => setLocation(json))
                 .catch((error) => {
-                    //console.log("Error downloading question data: " + error);
+                    console.log("Error downloading location data: " + error);
                 })
                 .finally(() => {
                     setIsDataDownloading(false);
@@ -71,13 +69,11 @@ export default function SignedOutLocationList({ route, navigation }) {
             fetch(`https://hello-campus.herokuapp.com/questions/`)
                 .then((response) => {
                     let data = response.json();
-                    console.log(JSON.stringify(data));
-                    //console.log("Successfully downloaded question data.");
                     return data;
                 })
                 .then((json) => setQuestion(json))
                 .catch((error) => {
-                    //console.log("Error downloading question data: " + error);
+                    console.log("Error downloading question data: " + error);
                 })
                 .finally(() => {
                     setIsDataDownloading(false);
@@ -91,13 +87,11 @@ export default function SignedOutLocationList({ route, navigation }) {
             fetch(`https://hello-campus.herokuapp.com/answers/`)
                 .then((response) => {
                     let data = response.json();
-                    console.log(JSON.stringify(data));
-                    //console.log("Successfully downloaded question data.");
                     return data;
                 })
                 .then((json) => setAnswer(json))
                 .catch((error) => {
-                    //console.log("Error downloading question data: " + error);
+                    console.log("Error downloading answer data: " + error);
                 })
                 .finally(() => {
                     setIsDataDownloading(false);
@@ -111,13 +105,11 @@ export default function SignedOutLocationList({ route, navigation }) {
             fetch(`https://hello-campus.herokuapp.com/users/`)
                 .then((response) => {
                     let data = response.json();
-                    console.log(JSON.stringify(data));
-                    //console.log("Successfully downloaded question data.");
                     return data;
                 })
                 .then((json) => setUser(json))
                 .catch((error) => {
-                    //console.log("Error downloading question data: " + error);
+                    console.log("Error downloading user data: " + error);
                 })
                 .finally(() => {
                     setIsDataDownloading(false);

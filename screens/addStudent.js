@@ -111,9 +111,6 @@ export default function addStudentsToCourse({ route, navigation }) {
   }
 
   function addStudent(email) {
-    console.log(email);
-    console.log(setRefreshPage);
-
     fetch(`https://hello-campus.herokuapp.com/updateStudentStatus/`,
       {
         method: 'PUT',
@@ -131,7 +128,6 @@ export default function addStudentsToCourse({ route, navigation }) {
 
 
   function deleteItemById(email) {
-    console.log(email, "This is what we are removing!")
     const filteredData = thoseWhoAreNotStudents.filter(item => item.email != email);
     setThoseWhoAreNotStudents(filteredData);
   }

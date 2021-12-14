@@ -159,7 +159,6 @@ export default function myStudents({ route, navigation }) {
   }
 
   function deleteItemByEmail(email) {
-    console.log(email, "This is what we are removing!")
     const filteredData = data.filter(item => item.email != email);
     setData(filteredData);
   }

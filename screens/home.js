@@ -48,11 +48,9 @@ export async function signInAsync() {
 	await cacheAuthAsync(authState);
 	const user = await fetchUserInfo(authState.accessToken);
 	if (await isInDB(user.email) == false) {//this is for new users
-		console.log("User does not exist in our DB, we are creating a user.");
 		addUser(user);
 	} else {//this is for returning users, ie isInDB returns true
 		var returningUserID = await getID(user.email);
-		//console.log(returningUserID, "user.Id, from our database");///This is important!!!
 	}
 	return authState;
 }
@@ -64,7 +62,6 @@ async function isInDB(email) {
 		const data = await resp.json();
 		return true; //should be only if the User is in the database!
 	} catch (e) {
-		console.log(`User is not in DB: ${e.message}`);//for testing only
 		return false;//returns false signaling that we should add the user to the db
 	}
 }
@@ -138,7 +135,6 @@ function checkIfTokenExpired({ accessTokenExpirationDate }) {
 
 async function refreshAuthAsync({ refreshToken }) {
 	let authState = await AppAuth.refreshAsync(config, refreshToken);
-	console.log('refreshAuth', authState);
 	await cacheAuthAsync(authState);
 	return authState;
 }
@@ -185,11 +181,8 @@ export default function HomeScreen({ navigation }) {
 
 	let isSignedIn = authState == null ? false : true;
 	let screenToNavigateTo = isSignedIn == true ? "Location" : "Points of Interest";
-	//console.log(isSignedIn, "THIS IS WHERE I AM");//this is updating just fine!
-	//console.log(screenToNavigateTo);
 
 	React.useLayoutEffect(() => {
-		console.log("GOT HERE AND ")
 		/*(async () => {
 			let cachedAuth = await getCachedAuthAsync();
 			if (cachedAuth == null) {
@@ -202,7 +195,6 @@ export default function HomeScreen({ navigation }) {
 		//let isSignedIn = authState == null ? false : true;
 		//let screenToNavigateTo = isSignedIn == true ? "Location" : "Points of Interest";
 		let myScreen = screenToNavigateTo;
-		console.log(screenToNavigateTo);
 		navigation.setOptions({
 			headerRight: () => (
 				<HeaderButtons HeaderButtonComponent={IoniconsHeaderButton}>
@@ -391,7 +383,6 @@ export default function HomeScreen({ navigation }) {
 					<TouchableOpacity style={globalStyles.genericButton}
 						onPress={async () => {
 							const userFromGoogle = await fetchUserInfo(authState.accessToken);
-							//console.log(userFromGoogle);
 							const myUser = await getUserFromDB(userFromGoogle.email);
 							navigation.navigate("Location", { user: myUser });
 						}}>
