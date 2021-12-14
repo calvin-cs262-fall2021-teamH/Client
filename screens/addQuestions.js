@@ -1,4 +1,4 @@
-/**
+/*
  * Screen that allows professors to add locations
  *
  * @author: Brian Langejans, David Reidsma, David Heynen, Paul Dick, Kurt Wietelmann
@@ -104,15 +104,15 @@ export default function AddQuestionScreen({ navigation, route }) {
 
     const mapQuestion = (question) => {
         return (
-        questions.map(question => {
-            return [
-                <Text
-                    key={Math.random()+Date.now()}
-                    style={{ fontSize: 25, color: "#fff", padding: 20, justifyContent:'space-between' }}>{question.question}</Text>,
-                <TouchableOpacity key={Math.random()+Date.now()} style={globalStyles.deleteQuestion} onPress={() => {remove(question.id)}}>
-                    <Text style={globalStyles.submitText}>Delete</Text>
-                </TouchableOpacity>
-            ]
+            questions.map(question => {
+                return [
+                    <Text
+                        key={Math.random() + Date.now()}
+                        style={{ fontSize: 25, color: "#fff", padding: 20, justifyContent: 'space-between' }}>{question.question}</Text>,
+                    <TouchableOpacity key={Math.random() + Date.now()} style={globalStyles.deleteQuestion} onPress={() => { remove(question.id) }}>
+                        <Text style={globalStyles.submitText}>Delete</Text>
+                    </TouchableOpacity>
+                ]
             })
         )
     }
@@ -121,7 +121,7 @@ export default function AddQuestionScreen({ navigation, route }) {
 
         <ScrollView style={{ flex: 1, backgroundColor: '#8C2032' }}>
             <ImageBackground source={require('../assets/good.jpg')} style={{ alignItems: 'flex-start', backgroundColor: '#8C2032' }}>
-                <Text style={{ fontSize: 40, color: "white", padding: 15, marginBottom: 30, fontWeight: 'bold', flex: 2, backgroundColor:"maroon", width: 1000}}>{route.params.location.name}</Text>
+                <Text style={{ fontSize: 40, color: "white", padding: 15, marginBottom: 30, fontWeight: 'bold', flex: 2, backgroundColor: "maroon", width: 1000 }}>{route.params.location.name}</Text>
                 {/* { isDataDownloading ? <ActivityIndicator/>:
                 <Text style={{ fontSize: 30, color: "#fff", padding: 20, position: "absolute" }}>{ question[0].question }</Text>
              } */}
@@ -136,7 +136,7 @@ export default function AddQuestionScreen({ navigation, route }) {
                 <TouchableOpacity style={globalStyles.submitQuestion} onPress={() => { submit() }}>
                     <Text style={globalStyles.submitText}>ADD</Text>
                 </TouchableOpacity>
-                <Text style={{ fontSize: 40, color: "white", padding: 20, padding: 10, fontWeight: 'bold', flex: 2, backgroundColor:"maroon", width: 1000 }}>Questions:</Text>
+                <Text style={{ fontSize: 40, color: "white", padding: 20, padding: 10, fontWeight: 'bold', flex: 2, backgroundColor: "maroon", width: 1000 }}>Questions:</Text>
                 {isDataDownloading ? <ActivityIndicator /> :
                     mapQuestion()
                 }

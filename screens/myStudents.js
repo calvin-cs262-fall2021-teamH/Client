@@ -39,9 +39,9 @@ import { useRoute } from '@react-navigation/native';
 import { AsyncStorage } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import {
-	HeaderButtons,
-	HeaderButton,
-	Item
+  HeaderButtons,
+  HeaderButton,
+  Item
 } from 'react-navigation-header-buttons';
 import { checkIfTokenExpired, refreshAuthAsync, getCachedAuthAsync, authState } from './home';
 //import @react-native-async-storage/async-storage;
@@ -53,23 +53,10 @@ export default function myStudents({ route, navigation }) {
   const [fullData, setFullData] = useState([]);
   const [thoseWhoAreNotStudents, setThoseWhoAreNotStudents] = useState([]);
   const [refreshPage, setRefreshPage] = useState([]);
-
-  //const [error, setError] = useState(null);
   const [error, setError] = useState([]);
-  //const [isLoading, setIsLoading] = useState(false);
-  /*useEffect(() => {
-      fetch('https://hello-campus.herokuapp.com/users/')
-          .then((response) => response.json())
-          .then((json) => {setData(json)
-              setFullData(response.results);
-
-               setIsLoading(false)})
-          .catch((error) => console.error(error))
-          .finally(() => setLoading(false));
-    }, []);*/
-
-
-
+  const [modalVisible, setModalVisible] = useState(false);
+  const [addRemoveModalVisible, setAddRemoveModalVisible] = useState(false);
+  const [query, setQuery] = useState('');
 
   useEffect(() => {
     setIsLoading(true);
@@ -78,10 +65,7 @@ export default function myStudents({ route, navigation }) {
       .then(response => response.json())
       .then((json) => {
         setData(json);
-
-        // ADD THIS
         setFullData(json);
-
         setIsLoading(false);
       })
       .catch(err => {
@@ -102,12 +86,6 @@ export default function myStudents({ route, navigation }) {
       })
 
   }, []);
-
-
-
-  const [modalVisible, setModalVisible] = useState(false);
-  const [addRemoveModalVisible, setAddRemoveModalVisible] = useState(false);
-  const [query, setQuery] = useState('');
 
   function renderHeader() {
     return (
@@ -207,7 +185,7 @@ export default function myStudents({ route, navigation }) {
 
         />
       </ScrollView>
-      <View style={{alignItems:"center", marginBottom:10}}>
+      <View style={{ alignItems: "center", marginBottom: 10 }}>
         <TouchableOpacity
           style={styles.AddButtonStyle}
           onPress={() =>

@@ -1,12 +1,12 @@
-/**
+/*
  * Screen that allows professors to add a location
  *
  * @author: Brian Langejans, David Reidsma, David Heynen, Paul Dick, Kurt Wietelmann
  * 12/10/2021
  */
 
-import React, { useEffect, useReducer, useState } from 'react';
-import { Image, Button, View, Text, TouchableOpacity, FlatList, ImageBackground, TextInput, ActivityIndicator, ScrollView } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Text, TouchableOpacity, TextInput, ScrollView } from 'react-native';
 import { globalStyles } from '../styles/global';
 
 
@@ -16,7 +16,7 @@ export default function AddLocationScreen({ navigation, route }) {
     const [isDataDownloading, setIsDataDownloading] = useState(true);
     const [location, setLocation] = useState([]);
 
-    useEffect (() => {
+    useEffect(() => {
 
     }, [])
 

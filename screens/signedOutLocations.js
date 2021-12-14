@@ -97,11 +97,6 @@ export default function SignedOutLocationList({ route, navigation }) {
         }
     }, [])
 
-    locations.map(location =>
-        console.log(location.name, "THIs is in the other part")
-    )
-    //console.log("Hi There...........................................", route.params.user.email)
-
     return (
         <ImageBackground source={require('../assets/light_background.jpg')} style={styles.container}>
             <ScrollView>
