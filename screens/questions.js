@@ -57,7 +57,6 @@ export default function QuestionScreen({ navigation, route }) {
                         questionID: questions[i].id,
 
                         answer: answer["answer_" + questions[i].id]
-
                     })
                 })
         }
