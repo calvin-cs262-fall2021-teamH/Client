@@ -43,4 +43,3 @@ export default function PointInfoScreen({ route, navigation }) {
         </ImageBackground>
     );
 }
-//<ImageBackground source = {{ uri: route.params.imageurl }} style = { globalStyles.pointImage }/>
