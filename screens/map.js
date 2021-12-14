@@ -51,15 +51,20 @@ const MAP_IMAGE_HEIGHT = 1035;
 
 const LOCATION_REFRESH_INTERVAL = 2000;
 
-let userLocationFromTask = {
-	latitude: -50,
-	longitude: -50
-};
+async function checkForLocationPermissions() {
+    let { granted } = await Location.getForegroundPermissionsAsync();
+    if (granted) {
+        return true;
+    }
 
-// taskHasReceivedData is necessary for communication between the task defined at the bottom of this file in the global scope...
-// ...locationUpdatesStarted is another story. That *probably* could be defined using useState but I wasn't able to get that working quickly enough.
-// let taskHasReceivedData = false;
-// let locationUpdatesStarted = false;
+    let { status } = await Location.requestForegroundPermissionsAsync();
+    const permissionGranted = status === "granted";
+    if (!permissionGranted) {
+        console.log("Permission problem: status is " + status);
+    }
+
+    return permissionGranted;
+}
 
 export default function MapScreen({ route, navigation }) {
 	React.useLayoutEffect(() => {
@@ -79,13 +84,12 @@ export default function MapScreen({ route, navigation }) {
 		});
 	}, [navigation]);
 
-	// const [errorMsg, setErrorMsg] = useState(null); // TODO: do something with errorMsg
 	const [userLocation, setUserLocation] = useState({ pixelCoords: { x: -500, y: -500 }, realCoords: { latitude: 0, longitude: 0 } });
 
 	const [isDataDownloading, setIsDataDownloading] = useState(true);
 	const [pointsOfInterest, setPointsOfInterest] = useState([]);
 	const [helpModalVisible, setHelpModalVisible] = useState(false);
-	// const [locationUpdatesStarted, setLocationUpdatesStarted] = useState(false);
+	const [hasPermission, setHasPermission] = useState(false);
 
 	const [mapPosition, setMapPosition] = useState({ x: MAP_IMAGE_WIDTH / 2, y: MAP_IMAGE_HEIGHT / 2, zoom: 1 });
 
@@ -121,56 +125,26 @@ export default function MapScreen({ route, navigation }) {
 	}, [navigation])
 
 	useEffect(() => {
-		async function checkForLocationPermissions() {
-			let { granted } = await Location.getBackgroundPermissionsAsync();
-			if (granted) {
-				return true;
-			}
-
-			let { status } = await Location.requestBackgroundPermissionsAsync();
-			const permissionGranted = status === "granted";
-			if (!permissionGranted) {
-				console.log("Permission problem: status is " + status);
-				setErrorMsg("Permission to access location was denied");
-			}
-			return permissionGranted;
-		}
-
-		// Old location code; kept around in case needed sometime.
 		async function getCurrentLatLong() {
-			// const locationPromise = await Location.getCurrentPositionAsync({
-			// 	accuracy: Location.Accuracy.Highest,
-			// });
-			// return locationPromise.coords;
+			const locationPromise = await Location.getCurrentPositionAsync({
+				accuracy: Location.Accuracy.Highest
+			});
+			return locationPromise.coords;
 		}
 
-		async function startLocationUpdates() {
-			const updatesAlreadyStarted = await Location.hasStartedLocationUpdatesAsync(LOCATION_TASK_NAME);
-			console.log(`updatesAlreadyStarted=${updatesAlreadyStarted}`);
-			if (updatesAlreadyStarted)
-				return;
-
-			const hasPermissions = await checkForLocationPermissions();
-			// setHasPermission(hasPermissions);
-
-			await initPointsOfInterest();
-
-			await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
-				activityType: Location.LocationActivityType.Fitness,
-				showsBackgroundLocationIndicator: true,
-				distanceInterval: 1
-			});
+		async function updatePermissionStatus() {
+            const hasPermissions = await checkForLocationPermissions();
+            setHasPermission(hasPermissions);
 		}
 
 		async function refreshLocation() {
-			// console.log(locationUpdatesStarted);
-			const haveUpdatesStarted = await Location.hasStartedLocationUpdatesAsync(LOCATION_TASK_NAME);
-			if (!haveUpdatesStarted) {
-				await startLocationUpdates();
-				//setLocationUpdatesStarted(true);
-			}
+            let { granted } = await Location.getForegroundPermissionsAsync();
+            if (!granted)
+                return;
+            else if (!hasPermission)
+                setHasPermission(true);
 
-			const realCoords = userLocationFromTask;
+			const realCoords = await getCurrentLatLong();
 			const pixelCoords = realToPixelCoords({
 				name: "user's location",
 				latitude: realCoords.latitude,
@@ -218,53 +192,59 @@ export default function MapScreen({ route, navigation }) {
 			}
 		}
 
-		// refresh the location on an interval
-		const locationRefreshIntervalHandle = setInterval(
-			refreshLocation,
-			LOCATION_REFRESH_INTERVAL
-		);
+        initPointsOfInterest();
+        
+        updatePermissionStatus();
 
-		return async () => {
+        // refresh the location on an interval
+        const locationRefreshIntervalHandle = setInterval(
+            refreshLocation,
+            LOCATION_REFRESH_INTERVAL
+        );
+
+		return () => {
 			clearInterval(locationRefreshIntervalHandle); // end the interval'd calls when the screen is unmounted
-			// setLocationUpdatesStarted(false);
-
-			// if (await Location.hasStartedLocationUpdatesAsync())
-			Location.stopLocationUpdatesAsync(LOCATION_TASK_NAME);
 		}
 	}, []);
 
 	// console.log(`hasPermission = ${hasPermission}`);
-	// if (!hasPermission) {
-	// 	return (
-	// 		<ImageBackground source={require('../assets/light_background.jpg')} style={{ flex: 1, alignItems: 'center', backgroundColor: '#8C2032' }}>
-	// 			<Text
-	// 				style={{
-	// 					fontSize: 20,
-	// 					fontWeight: "bold",
-	// 					color: "#fff",
-	// 					padding: 10,
-	// 					position: "absolute",
-	// 					top: 30,
-	// 					marginRight: 80,
-	// 				}}
-	// 			>
-	// 				Location permissions not granted! Please provide HelloCampus background location permissions.
-	// 			</Text>
-	// 		</ImageBackground>
-	// 	);
-	// }
+	if (!hasPermission) {
+		return (
+			<ImageBackground
+				source={require("../assets/light_background.jpg")}
+				style={{
+					flex: 1,
+					alignItems: "center",
+					backgroundColor: "#8C2032",
+				}}>
+				<Text
+					style={{
+						fontSize: 20,
+						fontWeight: "bold",
+						color: "#fff",
+						padding: 10,
+						position: "relative",
+                        textAlign: "center",
+						top: 15
+					}}
+				>Location permissions not granted! Please provide HelloCampus location permissions.</Text>
+
+				<TouchableOpacity
+					style={globalStyles.genericButton}
+					onPress={async () => {
+						await checkForLocationPermissions();
+					}}>
+					<Text style={globalStyles.genericButtonText}>Request permissions</Text>
+				</TouchableOpacity>
+			</ImageBackground>
+		);
+	}
 
 	function realToPixelCoords(point) {
 		// quick and dirty method to get rid of locations that are off the map to prevent wraparound
 		if (!PointOfInterest.isCoordWithinBoundaries(point)) {
 			return { x: -500, y: -500 };
 		}
-
-
-		// const pinPosition = {
-		// 	x: (mapLongToCenterX(parseFloat(pin.longitude)) - mapPosition.x) * mapPosition.zoom,
-		// 	y: (mapLatToCenterY(parseFloat(pin.latitude)) - mapPosition.y) * mapPosition.zoom + Dimensions.get('window').height / 2 - PINHEIGHT + 5,
-		// }
 
 		let pixelCoords = PointOfInterest.scaleCoordsToPixelCoords(
 			point,
@@ -273,14 +253,6 @@ export default function MapScreen({ route, navigation }) {
 			MAP_IMAGE_WIDTH,
 			MAP_IMAGE_HEIGHT
 		);
-
-		// account for the size of the dotu
-		// pixelCoords.x -= POINT_WIDTH / 2;
-		// pixelCoords.y -= POINT_HEIGHT / 2;
-
-		// // account for the size of the dot
-		// pixelCoords.x -= POINT_WIDTH / 2;
-		// pixelCoords.y -= POINT_HEIGHT / 2;
 
 		return pixelCoords;
 	}
@@ -313,7 +285,7 @@ export default function MapScreen({ route, navigation }) {
 		});
 
 		const point = sortedByDistance[0];
-		return [point, getDistance(userLocationFromTask, { latitude: pointsOfInterest[0].latitude, longitude: pointsOfInterest[0].longitude })];
+		return [point, getDistance(currentLocation, { latitude: pointsOfInterest[0].latitude, longitude: pointsOfInterest[0].longitude })];
 	}
 
 	//add the user to the map screen
@@ -542,19 +514,19 @@ const styles = StyleSheet.create({
 
 // https://docs.expo.dev/versions/latest/sdk/task-manager/
 // https://docs.expo.dev/versions/latest/sdk/location/#background-location-methods
-TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data, error }) => {
-	if (error) {
-		// Error occurred - check `error.message` for more details.
-		console.log("error occurred while getting the location");
-		return;
-	}
+// TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data, error }) => {
+// 	if (error) {
+// 		// Error occurred - check `error.message` for more details.
+// 		console.log("error occurred while getting the location");
+// 		return;
+// 	}
 
-	if (data) {
-		const { locations } = data;
+// 	if (data) {
+// 		const { locations } = data;
 
-		userLocationFromTask = {
-			latitude: locations[0].coords.latitude,
-			longitude: locations[0].coords.longitude,
-		};
-	}
-});
+// 		userLocationFromTask = {
+// 			latitude: locations[0].coords.latitude,
+// 			longitude: locations[0].coords.longitude,
+// 		};
+// 	}
+// });

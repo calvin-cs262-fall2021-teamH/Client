@@ -33,8 +33,7 @@
       },
       "permissions": [
         "ACCESS_FINE_LOCATION",
-        "LOCATION",
-        "ACCESS_BACKGROUND_LOCATION"
+        "LOCATION"
       ]
     },
     "web": {
