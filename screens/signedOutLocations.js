@@ -154,7 +154,7 @@ export default function SignedOutLocationList({ route, navigation }) {
                         // locationName= location.name
                         // locationInfo = location.info
                         <View key={location.id + 10000}>
-                            <TouchableOpacity key={location.id + 100} onPress={() => navigation.navigate("PointInfo", { locationName: (location.name), info: (location.info) })}>
+                            <TouchableOpacity key={location.id + 100} onPress={() => navigation.navigate("PointInfo", { name: (location.name), info: (location.info) })}>
 
                                 <Text key={location.id} style={globalStyles.list}>
                                     {location.name}
