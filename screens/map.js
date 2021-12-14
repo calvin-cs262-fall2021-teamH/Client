@@ -25,7 +25,6 @@ import { globalStyles } from "../styles/global";
 import * as Location from "expo-location";
 import * as TaskManager from "expo-task-manager";
 import { getDistance } from "geolib";
-import Prompt from "./prompt";
 import * as PointOfInterest from "../models/PointOfInterest";
 import { TEST_POINTS_OF_INTEREST as TEST_POINTS_OF_INTEREST } from "../models/TestData.js";
 import { useRoute } from "@react-navigation/native";
