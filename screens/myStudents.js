@@ -39,9 +39,9 @@ import { useRoute } from '@react-navigation/native';
 import { AsyncStorage } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import {
-	HeaderButtons,
-	HeaderButton,
-	Item
+  HeaderButtons,
+  HeaderButton,
+  Item
 } from 'react-navigation-header-buttons';
 import { checkIfTokenExpired, refreshAuthAsync, getCachedAuthAsync, authState } from './home';
 //import @react-native-async-storage/async-storage;
@@ -53,6 +53,65 @@ export default function myStudents({ route, navigation }) {
   const [fullData, setFullData] = useState([]);
   const [thoseWhoAreNotStudents, setThoseWhoAreNotStudents] = useState([]);
   const [refreshPage, setRefreshPage] = useState([]);
+
+  const [helpModalVisible, setHelpModalVisible] = useState(false);
+  const [DBuser, setDBuser] = useState([]);
+  const IoniconsHeaderButton = (props) => (
+    <HeaderButton IconComponent={Ionicons} iconSize={40} {...props} />
+  );
+
+  //https://docs.expo.dev/versions/v43.0.0/sdk/app-auth/#usage
+  let [authState, setAuthState, userId] = useState(null);
+  useEffect(() => {
+    (async () => {
+      let cachedAuth = await getCachedAuthAsync();
+      if (cachedAuth && !authState) {
+        setAuthState(cachedAuth);
+      }
+    })();
+  }, []);
+
+
+  //let myclientId = Platform.OS =="android" ? andoidClientId : iosClientId;
+  //location screen is logged in
+  //points of interest is what the general user should see
+
+  let isSignedIn = authState == null ? false : true;
+  let screenToNavigateTo = isSignedIn == true ? "Location" : "Points of Interest";
+  //console.log(isSignedIn, "THIS IS WHERE I AM");//this is updating just fine!
+  //console.log(screenToNavigateTo);
+
+  React.useLayoutEffect(() => {
+    console.log("GOT HERE AND ")
+    /*(async () => {
+      let cachedAuth = await getCachedAuthAsync();
+      if (cachedAuth == null) {
+        screenToNavigateTo = "Points of Interest";
+      }else{
+        screenToNavigateTo = "Location";
+      }
+      })(screenToNavigateTo);
+  */
+    //let isSignedIn = authState == null ? false : true;
+    //let screenToNavigateTo = isSignedIn == true ? "Location" : "Points of Interest";
+    let myScreen = screenToNavigateTo;
+    console.log(screenToNavigateTo);
+    navigation.setOptions({
+      headerRight: () => (
+        <HeaderButtons HeaderButtonComponent={IoniconsHeaderButton}>
+          <Item
+            title={"help"}
+            iconName={"help-circle"}
+            color="maroon"
+            onPress={() => {
+              setHelpModalVisible(!helpModalVisible)
+            }}
+          />
+        </HeaderButtons>
+      ),
+    });
+  }, [navigation])
+
 
   //const [error, setError] = useState(null);
   const [error, setError] = useState([]);
@@ -175,12 +234,35 @@ export default function myStudents({ route, navigation }) {
 
   return (
     <ImageBackground source={require('../assets/good.jpg')}
+
       style={{
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: '#8C2032'
       }}>
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={helpModalVisible}
+        onRequestClose={() => {
+          Alert.alert("Modal has been closed.");
+          setHelpModalVisible(!helpModalVisible);
+        }}
+      >
+        <View style={globalStyles.helpModal}>
+          <Text style={globalStyles.helpText}>Press a student's name/email to access their answers.</Text>
+          <Text style={globalStyles.helpText}>Press "X" to remove the student from your list.</Text>
+          <Text style={globalStyles.helpText}>Press "Add Student" to add a student from the database to your list.</Text>
+          <TouchableOpacity style={{ backgroundColor: "maroon", margin: 10, borderRadius: 15 }}
+            onPress={() => {
+              setHelpModalVisible(!helpModalVisible)
+            }}
+          >
+            <Text style={{ color: "#fff", fontSize: 25, margin: 10 }}>EXIT</Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
       <Text style={{ fontSize: 18, fontWeight: 'bold', color: "#8C2131", marginTop: 30 }} >
         Select a student to view their answers.
       </Text>
@@ -193,7 +275,7 @@ export default function myStudents({ route, navigation }) {
             <View style={{ flexDirection: "row" }}>
               <View style={globalStyles.listButton}>
                 <TouchableOpacity onPress={() => { navigation.navigate("Location", { user: item }) }}>
-                  <Text style={{ color: "#fff", fontSize: 20 }}> {item.email} </Text>
+                  <Text style={{ color: "#fff", fontSize: 20 }}> {item.name}, {item.email} </Text>
                 </TouchableOpacity>
               </View>
               <View>
@@ -207,7 +289,7 @@ export default function myStudents({ route, navigation }) {
 
         />
       </ScrollView>
-      <View style={{alignItems:"center", marginBottom:10}}>
+      <View style={{ alignItems: "center", marginBottom: 10 }}>
         <TouchableOpacity
           style={styles.AddButtonStyle}
           onPress={() =>
