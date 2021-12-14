@@ -29,42 +29,7 @@ export default function SignedOutLocationList({ route, navigation }) {
         <HeaderButton IconComponent={Ionicons} iconSize={40} {...props} />
     );
 
-    //https://docs.expo.dev/versions/v43.0.0/sdk/app-auth/#usage
-    let [authState, setAuthState, userId] = useState(null);
-    useEffect(() => {
-        (async () => {
-            let cachedAuth = await getCachedAuthAsync();
-            if (cachedAuth && !authState) {
-                setAuthState(cachedAuth);
-            }
-        })();
-    }, []);
-
-
-    //let myclientId = Platform.OS =="android" ? andoidClientId : iosClientId;
-    //location screen is logged in
-    //points of interest is what the general user should see
-
-    let isSignedIn = authState == null ? false : true;
-    let screenToNavigateTo = isSignedIn == true ? "Location" : "Points of Interest";
-    //console.log(isSignedIn, "THIS IS WHERE I AM");//this is updating just fine!
-    //console.log(screenToNavigateTo);
-
     React.useLayoutEffect(() => {
-        console.log("GOT HERE AND ")
-        /*(async () => {
-            let cachedAuth = await getCachedAuthAsync();
-            if (cachedAuth == null) {
-                screenToNavigateTo = "Points of Interest";
-            }else{
-                screenToNavigateTo = "Location";
-            }
-          })(screenToNavigateTo);
-    */
-        //let isSignedIn = authState == null ? false : true;
-        //let screenToNavigateTo = isSignedIn == true ? "Location" : "Points of Interest";
-        let myScreen = screenToNavigateTo;
-        console.log(screenToNavigateTo);
         navigation.setOptions({
             headerRight: () => (
                 <HeaderButtons HeaderButtonComponent={IoniconsHeaderButton}>
@@ -188,7 +153,7 @@ export default function SignedOutLocationList({ route, navigation }) {
                     locations.map(location =>
                         // locationName= location.name
                         // locationInfo = location.info
-                        <View>
+                        <View key={location.id + 10000}>
                             <TouchableOpacity key={location.id + 100} onPress={() => navigation.navigate("PointInfo", { locationName: (location.name), info: (location.info) })}>
 
                                 <Text key={location.id} style={globalStyles.list}>
