@@ -71,11 +71,8 @@ export default function myStudents({ route, navigation }) {
 
   let isSignedIn = authState == null ? false : true;
   let screenToNavigateTo = isSignedIn == true ? "Location" : "Points of Interest";
-  //console.log(isSignedIn, "THIS IS WHERE I AM");//this is updating just fine!
-  //console.log(screenToNavigateTo);
 
   React.useLayoutEffect(() => {
-    console.log("GOT HERE AND ")
     /*(async () => {
       let cachedAuth = await getCachedAuthAsync();
       if (cachedAuth == null) {
@@ -88,7 +85,6 @@ export default function myStudents({ route, navigation }) {
     //let isSignedIn = authState == null ? false : true;
     //let screenToNavigateTo = isSignedIn == true ? "Location" : "Points of Interest";
     let myScreen = screenToNavigateTo;
-    console.log(screenToNavigateTo);
     navigation.setOptions({
       headerRight: () => (
         <HeaderButtons HeaderButtonComponent={IoniconsHeaderButton}>
@@ -195,7 +191,6 @@ export default function myStudents({ route, navigation }) {
   }
 
   function deleteItemByEmail(email) {
-    console.log(email, "This is what we are removing!")
     const filteredData = data.filter(item => item.email != email);
     setData(filteredData);
   }

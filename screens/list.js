@@ -58,11 +58,8 @@ export default function ListScreen({ route, navigation }) {
 
     let isSignedIn = authState == null ? false : true;
     let screenToNavigateTo = isSignedIn == true ? "Location" : "Points of Interest";
-    //console.log(isSignedIn, "THIS IS WHERE I AM");//this is updating just fine!
-    //console.log(screenToNavigateTo);
 
     React.useLayoutEffect(() => {
-        console.log("GOT HERE AND ")
         /*(async () => {
             let cachedAuth = await getCachedAuthAsync();
             if (cachedAuth == null) {
@@ -75,7 +72,6 @@ export default function ListScreen({ route, navigation }) {
         //let isSignedIn = authState == null ? false : true;
         //let screenToNavigateTo = isSignedIn == true ? "Location" : "Points of Interest";
         let myScreen = screenToNavigateTo;
-        console.log(screenToNavigateTo);
         navigation.setOptions({
             headerRight: () => (
                 <HeaderButtons HeaderButtonComponent={IoniconsHeaderButton}>
@@ -98,12 +94,11 @@ export default function ListScreen({ route, navigation }) {
             fetch('https://hello-campus.herokuapp.com/questions/')
                 .then((response) => {
                     let data = response.json();
-                    console.log(JSON.stringify(data));
                     return data;
                 })
                 .then((json) => setQuestion(json))
                 .catch((error) => {
-                    //console.log("Error downloading question data: " + error);
+                    console.log("Error downloading question data: " + error);
                 })
                 .finally(() => {
                     setIsDataDownloading(false);
@@ -117,7 +112,6 @@ export default function ListScreen({ route, navigation }) {
             fetch(`https://hello-campus.herokuapp.com/pointsofinterest/`)
                 .then((response) => {
                     let data = response.json();
-                    console.log(JSON.stringify(data));
                     return data;
                 })
                 .then((json) => setLocation(json))
@@ -136,7 +130,6 @@ export default function ListScreen({ route, navigation }) {
 
                 .then((response) => {
                     let data = response.json();
-                    console.log(JSON.stringify(data));
                     return data;
                 })
                 .then((json) => setUser(json))
@@ -155,13 +148,11 @@ export default function ListScreen({ route, navigation }) {
 
                 .then((response) => {
                     let data = response.json();
-                    console.log(JSON.stringify(data));
-                    console.log("Successfully downloaded question data.");
                     return data;
                 })
                 .then((json) => setAnswer(json))
                 .catch((error) => {
-                    //console.log("Error downloading question data: " + error);
+                    console.log("Error downloading question data: " + error);
                 })
                 .finally(() => {
                     setIsDataDownloading(false);
@@ -171,10 +162,6 @@ export default function ListScreen({ route, navigation }) {
     }, [])
 
     function submit(questionId) {
-        console.log(text);
-        console.log(questionId);
-        console.log(route.params.user.id);
-
         fetch(`https://hello-campus.herokuapp.com/updateAnswer/`,
             {
                 method: 'PUT',
@@ -254,7 +241,7 @@ export default function ListScreen({ route, navigation }) {
                                                         alignSelf: 'flex-end',
                                                         right: 40,
                                                         backgroundColor: "maroon",
-                                                    }} onPress={() => { submit(question.id), console.log("SUBMITTED!"), setButtonColor("#8C2032"), setTextSubmit("Submitted") }}>
+                                                    }} onPress={() => { submit(question.id), setButtonColor("#8C2032"), setTextSubmit("Submitted") }}>
                                                         <Text style={{ color: "#fff", fontWeight: "bold" }}>{textSubmit}</Text>
                                                     </TouchableOpacity>,
                                                 ]

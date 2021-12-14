@@ -47,11 +47,8 @@ export default function AddQuestionScreen({ navigation, route }) {
 
     let isSignedIn = authState == null ? false : true;
     let screenToNavigateTo = isSignedIn == true ? "Location" : "Points of Interest";
-    //console.log(isSignedIn, "THIS IS WHERE I AM");//this is updating just fine!
-    //console.log(screenToNavigateTo);
 
     React.useLayoutEffect(() => {
-        console.log("GOT HERE AND ")
         /*(async () => {
             let cachedAuth = await getCachedAuthAsync();
             if (cachedAuth == null) {
@@ -64,7 +61,6 @@ export default function AddQuestionScreen({ navigation, route }) {
         //let isSignedIn = authState == null ? false : true;
         //let screenToNavigateTo = isSignedIn == true ? "Location" : "Points of Interest";
         let myScreen = screenToNavigateTo;
-        console.log(screenToNavigateTo);
         navigation.setOptions({
             headerRight: () => (
                 <HeaderButtons HeaderButtonComponent={IoniconsHeaderButton}>
@@ -85,18 +81,16 @@ export default function AddQuestionScreen({ navigation, route }) {
 
     useEffect(() => {
         setIsDataDownloading(true)
-        console.log("got to useEffect")
         if (isDataDownloading) {
             fetch(`https://hello-campus.herokuapp.com/questionsAtPoint/${route.params.location.id}/`)
                 .then((response) => {
                     let data = response.json();
-                    //console.log("Successfully downloaded question data.");
                     return data;
                 })
                 .then((json) => setQuestion(json))
                 .then((json) => setNewQuestions(json))
                 .catch((error) => {
-                    //console.log("Error downloading question data: " + error);
+                    console.log("Error downloading question data: " + error);
                 })
                 .finally(() => {
                     setIsDataDownloading(false);
@@ -130,13 +124,12 @@ export default function AddQuestionScreen({ navigation, route }) {
         fetch(`https://hello-campus.herokuapp.com/questionsAtPoint/${route.params.location.id}/`)
             .then((response) => {
                 let data = response.json();
-                //console.log("Successfully downloaded question data.");
                 return data;
             })
             .then((json) => setQuestion(json))
             .then((json) => setNewQuestions(json))
             .catch((error) => {
-                //console.log("Error downloading question data: " + error);
+                console.log("Error downloading question data: " + error);
             })
             .finally(() => {
                 setIsDataDownloading(false);
@@ -147,7 +140,6 @@ export default function AddQuestionScreen({ navigation, route }) {
     const remove = (questionID) => {
         fetch(`https://hello-campus.herokuapp.com/questions/${questionID}/`, { method: 'DELETE' })
             .then(() => {
-                console.log("Successfully downloaded question data.");
                 reloadQuestions()
             })
     }

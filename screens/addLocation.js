@@ -43,11 +43,8 @@ export default function AddLocationScreen({ navigation, route }) {
 
     let isSignedIn = authState == null ? false : true;
     let screenToNavigateTo = isSignedIn == true ? "Location" : "Points of Interest";
-    //console.log(isSignedIn, "THIS IS WHERE I AM");//this is updating just fine!
-    //console.log(screenToNavigateTo);
 
     React.useLayoutEffect(() => {
-        console.log("GOT HERE AND ")
         /*(async () => {
             let cachedAuth = await getCachedAuthAsync();
             if (cachedAuth == null) {
@@ -60,7 +57,6 @@ export default function AddLocationScreen({ navigation, route }) {
         //let isSignedIn = authState == null ? false : true;
         //let screenToNavigateTo = isSignedIn == true ? "Location" : "Points of Interest";
         let myScreen = screenToNavigateTo;
-        console.log(screenToNavigateTo);
         navigation.setOptions({
             headerRight: () => (
                 <HeaderButtons HeaderButtonComponent={IoniconsHeaderButton}>
