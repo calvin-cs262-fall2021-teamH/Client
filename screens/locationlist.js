@@ -123,7 +123,6 @@ export default function locationQuestion({ route, navigation }) {
   const remove = (locationID) => {
     fetch(`https://hello-campus.herokuapp.com/pointOfInterest/${locationID}/`, { method: 'DELETE' })
       .then(() => {
-        console.log("Successfully deleted location data.");
         reloadLocations()
       })
   }

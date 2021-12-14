@@ -151,8 +151,6 @@ export default function MapScreen({ route, navigation }) {
 				longitude: realCoords.longitude
 			});
 
-			console.log(`Geographical coords: ${realCoords.latitude}, ${realCoords.longitude}\t\t\tScreen coords: ${pixelCoords.x}, ${pixelCoords.y}`);
-
 			// update the location
 			setUserLocation({
 				realCoords: realCoords,
@@ -166,7 +164,7 @@ export default function MapScreen({ route, navigation }) {
 				const response = await fetch(`https://hello-campus.herokuapp.com/pointsofinterest/`);
 				downloadedPoints = response.json();
 			} catch (error) {
-				console.log(error);
+				console.log("Error downloading location data: " + error);
 			}
 			return downloadedPoints;
 		}
@@ -174,17 +172,12 @@ export default function MapScreen({ route, navigation }) {
 		async function initPointsOfInterest() {
 			if (isDataDownloading) {
 				if (USE_TEST_DATA) {
-					console.log("Using test point of interest data.");
 					setPointsOfInterest(TEST_POINTS_OF_INTEREST);
 				} else {
-					console.log("Downloading point of interest data from the dataservice...");
-
 					let points = await downloadPointsFromService();
 					if (points == null) {
 						console.log("Error downloading point of interest data!");
 						points = [];
-					} else {
-						console.log("Successfully downloaded point of interest data!");
 					}
 					setPointsOfInterest(points);
 				}
@@ -207,7 +200,6 @@ export default function MapScreen({ route, navigation }) {
 		}
 	}, []);
 
-	// console.log(`hasPermission = ${hasPermission}`);
 	if (!hasPermission) {
 		return (
 			<ImageBackground
@@ -287,12 +279,6 @@ export default function MapScreen({ route, navigation }) {
 		const point = sortedByDistance[0];
 		return [point, getDistance(currentLocation, { latitude: pointsOfInterest[0].latitude, longitude: pointsOfInterest[0].longitude })];
 	}
-
-	//add the user to the map screen
-	//props.route.params
-	//const { user } = route.params;
-	//const {userId} = route.params;
-	//console.log("user from google", user);
 
 	const [closestPoint, distanceToPoint] = (pointsOfInterest == null || pointsOfInterest.length == 0) ? [null, null] : getClosestPoint();
 	const pointIsInRange = closestPoint != null && distanceToPoint <= closestPoint.radius;
@@ -461,7 +447,6 @@ export default function MapScreen({ route, navigation }) {
 				style={[{ bottom: 0, position: 'absolute', alignItems: 'center' }, globalStyles.noInteractionButton]}
 				onPress={() => {
 					if (!pointIsInRange) {
-						console.log("No close point!");
 						return;
 					}
 					if (route.params == null) {//ie we are not logged in...
@@ -511,22 +496,3 @@ const styles = StyleSheet.create({
 		// position: 'absolute', // add if dont work with above
 	},
 });
-
-// https://docs.expo.dev/versions/latest/sdk/task-manager/
-// https://docs.expo.dev/versions/latest/sdk/location/#background-location-methods
-// TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data, error }) => {
-// 	if (error) {
-// 		// Error occurred - check `error.message` for more details.
-// 		console.log("error occurred while getting the location");
-// 		return;
-// 	}
-
-// 	if (data) {
-// 		const { locations } = data;
-
-// 		userLocationFromTask = {
-// 			latitude: locations[0].coords.latitude,
-// 			longitude: locations[0].coords.longitude,
-// 		};
-// 	}
-// });

@@ -36,7 +36,6 @@ class User {
 async function readUserFromDataBase(email) {
     const resp = await fetch(`https://hello-campus.herokuapp.com/usersByEmail/` + email);
     const userData = await resp.json();
-    console.log(userData.id, "retrieved Data.id from our DBASE....");
     this.id = userData.id,
         this.email = userData.email,
         this.name = userData.name

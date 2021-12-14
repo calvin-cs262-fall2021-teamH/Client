@@ -50,18 +50,16 @@ export default function AddQuestionScreen({ navigation, route }) {
 
     useEffect(() => {
         setIsDataDownloading(true)
-        console.log("got to useEffect")
         if (isDataDownloading) {
             fetch(`https://hello-campus.herokuapp.com/questionsAtPoint/${route.params.location.id}/`)
                 .then((response) => {
                     let data = response.json();
-                    //console.log("Successfully downloaded question data.");
                     return data;
                 })
                 .then((json) => setQuestion(json))
                 .then((json) => setNewQuestions(json))
                 .catch((error) => {
-                    //console.log("Error downloading question data: " + error);
+                    console.log("Error downloading question data: " + error);
                 })
                 .finally(() => {
                     setIsDataDownloading(false);
@@ -95,13 +93,12 @@ export default function AddQuestionScreen({ navigation, route }) {
         fetch(`https://hello-campus.herokuapp.com/questionsAtPoint/${route.params.location.id}/`)
             .then((response) => {
                 let data = response.json();
-                //console.log("Successfully downloaded question data.");
                 return data;
             })
             .then((json) => setQuestion(json))
             .then((json) => setNewQuestions(json))
             .catch((error) => {
-                //console.log("Error downloading question data: " + error);
+                console.log("Error downloading question data: " + error);
             })
             .finally(() => {
                 setIsDataDownloading(false);
@@ -112,7 +109,6 @@ export default function AddQuestionScreen({ navigation, route }) {
     const remove = (questionID) => {
         fetch(`https://hello-campus.herokuapp.com/questions/${questionID}/`, { method: 'DELETE' })
             .then(() => {
-                console.log("Successfully downloaded question data.");
                 reloadQuestions()
             })
     }
