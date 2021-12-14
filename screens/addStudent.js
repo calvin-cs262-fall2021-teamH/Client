@@ -15,8 +15,16 @@ import {
   ImageBackground,
   FlatList,
   TextInput,
+  Modal
 } from "react-native";
 import filter from 'lodash.filter'
+import { Ionicons } from '@expo/vector-icons';
+import {
+  HeaderButtons,
+  HeaderButton,
+  Item
+} from 'react-navigation-header-buttons';
+import { globalStyles } from "../styles/global";
 
 export default function addStudentsToCourse({ route, navigation }) {
   const [isLoading, setIsLoading] = useState(true);
@@ -28,6 +36,63 @@ export default function addStudentsToCourse({ route, navigation }) {
   const [modalVisible, setModalVisible] = useState(false);
   const [query, setQuery] = useState('');
 
+  const [helpModalVisible, setHelpModalVisible] = useState(false);
+  const [DBuser, setDBuser] = useState([]);
+  const IoniconsHeaderButton = (props) => (
+    <HeaderButton IconComponent={Ionicons} iconSize={40} {...props} />
+  );
+
+  //https://docs.expo.dev/versions/v43.0.0/sdk/app-auth/#usage
+  let [authState, setAuthState, userId] = useState(null);
+  useEffect(() => {
+    (async () => {
+      let cachedAuth = await getCachedAuthAsync();
+      if (cachedAuth && !authState) {
+        setAuthState(cachedAuth);
+      }
+    })();
+  }, []);
+
+
+  //let myclientId = Platform.OS =="android" ? andoidClientId : iosClientId;
+  //location screen is logged in
+  //points of interest is what the general user should see
+
+  let isSignedIn = authState == null ? false : true;
+  let screenToNavigateTo = isSignedIn == true ? "Location" : "Points of Interest";
+  //console.log(isSignedIn, "THIS IS WHERE I AM");//this is updating just fine!
+  //console.log(screenToNavigateTo);
+
+  React.useLayoutEffect(() => {
+    console.log("GOT HERE AND ")
+    /*(async () => {
+      let cachedAuth = await getCachedAuthAsync();
+      if (cachedAuth == null) {
+        screenToNavigateTo = "Points of Interest";
+      }else{
+        screenToNavigateTo = "Location";
+      }
+      })(screenToNavigateTo);
+  */
+    //let isSignedIn = authState == null ? false : true;
+    //let screenToNavigateTo = isSignedIn == true ? "Location" : "Points of Interest";
+    let myScreen = screenToNavigateTo;
+    console.log(screenToNavigateTo);
+    navigation.setOptions({
+      headerRight: () => (
+        <HeaderButtons HeaderButtonComponent={IoniconsHeaderButton}>
+          <Item
+            title={"help"}
+            iconName={"help-circle"}
+            color="maroon"
+            onPress={() => {
+              setHelpModalVisible(!helpModalVisible)
+            }}
+          />
+        </HeaderButtons>
+      ),
+    });
+  }, [navigation])
 
   useEffect(() => {
     setIsLoading(true);
@@ -108,12 +173,36 @@ export default function addStudentsToCourse({ route, navigation }) {
 
 
   return (
-    <ImageBackground source={require('../assets/good.jpg')} 
-      style={{ flex:1,
-               alignItems: 'center',
-               justifyContent: 'center',
-               backgroundColor: '#8C2032' }}>
-      <Text style={{ fontSize: 18, fontWeight: 'bold', color: "maroon", marginTop: 75 }} > 
+    <ImageBackground source={require('../assets/good.jpg')}
+      style={{
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#8C2032'
+      }}>
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={helpModalVisible}
+        onRequestClose={() => {
+          Alert.alert("Modal has been closed.");
+          setHelpModalVisible(!helpModalVisible);
+        }}
+      >
+        <View style={globalStyles.helpModal}>
+          <Text style={globalStyles.helpText}>Press search bar to find a student in the database.</Text>
+          <Text style={globalStyles.helpText}>Press on the student to add it to your list.</Text>
+          <Text style={globalStyles.helpText}>Press "DONE" to finish.</Text>
+          <TouchableOpacity style={{ backgroundColor: "maroon", margin: 10, borderRadius: 15 }}
+            onPress={() => {
+              setHelpModalVisible(!helpModalVisible)
+            }}
+          >
+            <Text style={{ color: "#fff", fontSize: 25, margin: 10 }}>EXIT</Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
+      <Text style={{ fontSize: 18, fontWeight: 'bold', color: "maroon", marginTop: 75 }} >
         Select a student to add to your course.
       </Text>
       <FlatList
@@ -122,13 +211,13 @@ export default function addStudentsToCourse({ route, navigation }) {
         ListHeaderComponent={renderHeader()}
         renderItem={({ item }) => (
           <TouchableOpacity onPress={() => { addStudent(item.email), deleteItemById(item.email) }}>
-            <Text style={{ color: textColor, fontSize: 18, marginLeft: '20%', marginRight: '20%' }}> {item.email} {"\n"} </Text>
+            <Text style={{ color: textColor, fontSize: 18, marginLeft: '20%', marginRight: '20%' }}> {item.name}, {item.email} {"\n"} </Text>
           </TouchableOpacity>
         )}
       />
       <TouchableOpacity
         style={styles.AddButtonStyle}
-        onPress={() => navigation.replace("My Students", { name: route.params.name }, navigation.navigate("My Students", {name: route.params.name}))}
+        onPress={() => navigation.replace("My Students", { name: route.params.name }, navigation.navigate("My Students", { name: route.params.name }))}
       >
         <Text style={styles.textStyle}> DONE </Text>
       </TouchableOpacity>
