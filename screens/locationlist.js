@@ -170,11 +170,8 @@ export default function locationQuestion({ route, navigation }) {
     fetch('https://hello-campus.herokuapp.com/pointsofinterest/')
       .then(response => response.json())
       .then((json) => {
-        setData(json);
-
-        // ADD THIS
+        setData(json)
         setFullData(json);
-
         setIsLoading(false);
       })
       .catch(err => {
@@ -299,15 +296,6 @@ export default function locationQuestion({ route, navigation }) {
               multiline={true}
               numberOfLines={3}
             />
-
-
-            {/* <TouchableOpacity
-                style={{backgroundColor:"#8C2131", margin:10, borderRadius:5}}
-                onPress={() => setModalVisible(!modalVisible)}
-              >
-                <Text style={{fontSize: 18, fontWeight:'bold', color: '#fff', margin:10}}>Use Current Location?</Text>
-            </TouchableOpacity> */}
-
             <TouchableOpacity
               style={{ backgroundColor: "#8C2131", margin: 10, borderRadius: 5 }}
               onPress={() => setModalVisible(!modalVisible)}

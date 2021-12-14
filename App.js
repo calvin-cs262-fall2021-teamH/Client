@@ -12,11 +12,7 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import HomeScreen from "./screens/home";
 import MapScreen from "./screens/map";
 import PointInfoScreen from './screens/pointInfo';
-
-//import Header from './shared/header';
-import Login from './screens/Login';
 import About from './screens/about';
-import DrawerScreen from './screens/Navigator2'
 import myStudents from './screens/myStudents'
 import QuestionScreen from './screens/questions';
 import myDashBoard from './screens/dashboard';
@@ -26,22 +22,12 @@ import addStudentsToCourse from './screens/addStudent';
 import AddQuestionsScreen from './screens/addQuestions';
 import AddLocationScreen from './screens/addLocation';
 import LogBox from 'react-native';
-//import Icon from 'react-native-ionicons';
-
-
 import ListScreen from './screens/list';
-
-import Prompt from './screens/prompt';
 import { TouchableOpacity, Text, Header } from 'react-native';
 
 
 const Stack = createNativeStackNavigator();
-const Stack1 = createNativeStackNavigator();
-
-
-
 //LogBox.ignoreAllLogs(); //Disables warnings
-
 
 function App() {
 
@@ -104,16 +90,6 @@ function App() {
           headerTintColor: "maroon",
         }} />
         <Stack.Screen name="Location" component={ListScreen} options={{
-          headerShown: true,
-          headerTitleAlign: "center",
-          headerTintColor: "maroon",
-        }} />
-        <Stack.Screen name="Prompt" component={Prompt} options={{
-          headerShown: true,
-          headerTitleAlign: "center",
-          headerTintColor: "maroon",
-        }} />
-        <Stack.Screen name="Navigator2" component={DrawerScreen} options={{
           headerShown: true,
           headerTitleAlign: "center",
           headerTintColor: "maroon",

@@ -23,15 +23,6 @@ import {
   TextInput,
   RefreshControl,
 } from "react-native";
-
-import {
-  FontAwesome,
-  SolidIcons,
-  RegularIcons,
-  BrandIcons,
-  parseIconFromClassName,
-}
-  from 'react-native-fontawesome';
 import filter from 'lodash.filter'
 import { globalStyles } from "../styles/global";
 import * as Google from "expo-google-app-auth";
@@ -45,7 +36,9 @@ import {
 } from 'react-navigation-header-buttons';
 import { checkIfTokenExpired, refreshAuthAsync, getCachedAuthAsync, authState } from './home';
 //import @react-native-async-storage/async-storage;
+import { LogBox } from 'react-native';
 
+LogBox.ignoreLogs(['VirtualizedLists should never be nested inside plain ScrollViews with the same orientation - use another VirtualizedList-backed container instead.']);
 
 export default function myStudents({ route, navigation }) {
   const [isLoading, setIsLoading] = useState(true);
@@ -115,20 +108,9 @@ export default function myStudents({ route, navigation }) {
 
   //const [error, setError] = useState(null);
   const [error, setError] = useState([]);
-  //const [isLoading, setIsLoading] = useState(false);
-  /*useEffect(() => {
-      fetch('https://hello-campus.herokuapp.com/users/')
-          .then((response) => response.json())
-          .then((json) => {setData(json)
-              setFullData(response.results);
-
-               setIsLoading(false)})
-          .catch((error) => console.error(error))
-          .finally(() => setLoading(false));
-    }, []);*/
-
-
-
+  const [modalVisible, setModalVisible] = useState(false);
+  const [addRemoveModalVisible, setAddRemoveModalVisible] = useState(false);
+  const [query, setQuery] = useState('');
 
   useEffect(() => {
     setIsLoading(true);
@@ -137,10 +119,7 @@ export default function myStudents({ route, navigation }) {
       .then(response => response.json())
       .then((json) => {
         setData(json);
-
-        // ADD THIS
         setFullData(json);
-
         setIsLoading(false);
       })
       .catch(err => {
@@ -161,12 +140,6 @@ export default function myStudents({ route, navigation }) {
       })
 
   }, []);
-
-
-
-  const [modalVisible, setModalVisible] = useState(false);
-  const [addRemoveModalVisible, setAddRemoveModalVisible] = useState(false);
-  const [query, setQuery] = useState('');
 
   function renderHeader() {
     return (
@@ -208,9 +181,6 @@ export default function myStudents({ route, navigation }) {
   };
 
   function removeStudent(email) {
-    console.log(email);
-    console.log(setRefreshPage);
-
     fetch(`https://hello-campus.herokuapp.com/updateStudentStatus/`,
       {
         method: 'PUT',
@@ -229,8 +199,6 @@ export default function myStudents({ route, navigation }) {
     const filteredData = data.filter(item => item.email != email);
     setData(filteredData);
   }
-
-
 
   return (
     <ImageBackground source={require('../assets/good.jpg')}
@@ -282,7 +250,6 @@ export default function myStudents({ route, navigation }) {
                 <TouchableOpacity onPress={() => { removeStudent(item.email), deleteItemByEmail(item.email) }}>
                   <Text style={{ color: "#fff", fontSize: 18, borderColor: "#fff", borderWidth: 1, backgroundColor: "maroon", margin: 25, borderRadius: 20 }}> X </Text>
                 </TouchableOpacity>
-
               </View>
             </View>
           )}
@@ -293,7 +260,7 @@ export default function myStudents({ route, navigation }) {
         <TouchableOpacity
           style={styles.AddButtonStyle}
           onPress={() =>
-            navigation.navigate("Add Students", { name: route.params.name })}//{() => setModalVisible(true)}//////
+            navigation.navigate("Add Students", { name: route.params.name })}
         >
           <Text style={styles.textStyle}> Add Student </Text>
         </TouchableOpacity>
