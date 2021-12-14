@@ -27,7 +27,7 @@ import { TouchableOpacity, Text, Header } from 'react-native';
 
 
 const Stack = createNativeStackNavigator();
-//LogBox.ignoreAllLogs(); //Disables warnings
+LogBox.ignoreAllLogs(); //Disables warnings
 
 function App() {
 
