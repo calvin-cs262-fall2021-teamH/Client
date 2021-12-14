@@ -6,18 +6,81 @@
  */
 
 import React, { useEffect, useReducer, useState } from 'react';
-import { Image, Button, View, Text, TouchableOpacity, FlatList, ImageBackground, TextInput, ActivityIndicator, ScrollView } from 'react-native';
+import { Image, Button, View, Modal, Text, TouchableOpacity, FlatList, ImageBackground, TextInput, ActivityIndicator, ScrollView } from 'react-native';
 import { globalStyles } from '../styles/global';
-
+import { Ionicons } from '@expo/vector-icons';
+import {
+    HeaderButtons,
+    HeaderButton,
+    Item
+} from 'react-navigation-header-buttons';
 
 
 export default function AddQuestionScreen({ navigation, route }) {
-
     const [isDataDownloading, setIsDataDownloading] = useState(true);
     const [questions, setQuestion] = useState([]);
     const [newQuestion, setNewQuestion] = useState("");
     const myTextInput = React.createRef();
     const [text, onChangeText] = React.useState("Useless Text");
+
+    const [helpModalVisible, setHelpModalVisible] = useState(false);
+    const [DBuser, setDBuser] = useState([]);
+    const IoniconsHeaderButton = (props) => (
+        <HeaderButton IconComponent={Ionicons} iconSize={40} {...props} />
+    );
+
+    //https://docs.expo.dev/versions/v43.0.0/sdk/app-auth/#usage
+    let [authState, setAuthState, userId] = useState(null);
+    useEffect(() => {
+        (async () => {
+            let cachedAuth = await getCachedAuthAsync();
+            if (cachedAuth && !authState) {
+                setAuthState(cachedAuth);
+            }
+        })();
+    }, []);
+
+
+    //let myclientId = Platform.OS =="android" ? andoidClientId : iosClientId;
+    //location screen is logged in
+    //points of interest is what the general user should see
+
+    let isSignedIn = authState == null ? false : true;
+    let screenToNavigateTo = isSignedIn == true ? "Location" : "Points of Interest";
+    //console.log(isSignedIn, "THIS IS WHERE I AM");//this is updating just fine!
+    //console.log(screenToNavigateTo);
+
+    React.useLayoutEffect(() => {
+        console.log("GOT HERE AND ")
+        /*(async () => {
+            let cachedAuth = await getCachedAuthAsync();
+            if (cachedAuth == null) {
+                screenToNavigateTo = "Points of Interest";
+            }else{
+                screenToNavigateTo = "Location";
+            }
+          })(screenToNavigateTo);
+    */
+        //let isSignedIn = authState == null ? false : true;
+        //let screenToNavigateTo = isSignedIn == true ? "Location" : "Points of Interest";
+        let myScreen = screenToNavigateTo;
+        console.log(screenToNavigateTo);
+        navigation.setOptions({
+            headerRight: () => (
+                <HeaderButtons HeaderButtonComponent={IoniconsHeaderButton}>
+                    <Item
+                        title={"help"}
+                        iconName={"help-circle"}
+                        color="maroon"
+                        onPress={() => {
+                            setHelpModalVisible(!helpModalVisible)
+                        }}
+                    />
+                </HeaderButtons>
+            ),
+        });
+    }, [navigation])
+
 
 
     useEffect(() => {
@@ -120,6 +183,27 @@ export default function AddQuestionScreen({ navigation, route }) {
     return (
 
         <ScrollView style={{ flex: 1, backgroundColor: '#8C2032' }}>
+            <Modal
+                animationType="fade"
+                transparent={true}
+                visible={helpModalVisible}
+                onRequestClose={() => {
+                    Alert.alert("Modal has been closed.");
+                    setHelpModalVisible(!helpModalVisible);
+                }}
+            >
+                <View style={globalStyles.helpModal}>
+                    <Text style={globalStyles.helpText}>Press text box to type a question, then press "ADD" when finished.</Text>
+                    <Text style={globalStyles.helpText}>Press "DELETE" to remove the question from the list.</Text>
+                    <TouchableOpacity style={{ backgroundColor: "maroon", margin: 10, borderRadius: 15 }}
+                        onPress={() => {
+                            setHelpModalVisible(!helpModalVisible)
+                        }}
+                    >
+                        <Text style={{ color: "#fff", fontSize: 25, margin: 10 }}>EXIT</Text>
+                    </TouchableOpacity>
+                </View>
+            </Modal>
             <ImageBackground source={require('../assets/good.jpg')} style={{ alignItems: 'flex-start', backgroundColor: '#8C2032' }}>
                 <Text style={{ fontSize: 40, color: "white", padding: 15, marginBottom: 30, fontWeight: 'bold', flex: 2, backgroundColor: "maroon", width: 1000 }}>{route.params.location.name}</Text>
                 {/* { isDataDownloading ? <ActivityIndicator/>:
