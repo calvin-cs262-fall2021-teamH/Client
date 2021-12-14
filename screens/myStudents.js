@@ -23,29 +23,11 @@ import {
   TextInput,
   RefreshControl,
 } from "react-native";
-
-import {
-  FontAwesome,
-  SolidIcons,
-  RegularIcons,
-  BrandIcons,
-  parseIconFromClassName,
-}
-  from 'react-native-fontawesome';
 import filter from 'lodash.filter'
 import { globalStyles } from "../styles/global";
-import * as Google from "expo-google-app-auth";
-import { useRoute } from '@react-navigation/native';
-import { AsyncStorage } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import {
-  HeaderButtons,
-  HeaderButton,
-  Item
-} from 'react-navigation-header-buttons';
-import { checkIfTokenExpired, refreshAuthAsync, getCachedAuthAsync, authState } from './home';
-//import @react-native-async-storage/async-storage;
+import { LogBox } from 'react-native';
 
+LogBox.ignoreLogs(['VirtualizedLists should never be nested inside plain ScrollViews with the same orientation - use another VirtualizedList-backed container instead.']);
 
 export default function myStudents({ route, navigation }) {
   const [isLoading, setIsLoading] = useState(true);
@@ -127,9 +109,6 @@ export default function myStudents({ route, navigation }) {
   };
 
   function removeStudent(email) {
-    console.log(email);
-    console.log(setRefreshPage);
-
     fetch(`https://hello-campus.herokuapp.com/updateStudentStatus/`,
       {
         method: 'PUT',
@@ -148,8 +127,6 @@ export default function myStudents({ route, navigation }) {
     const filteredData = data.filter(item => item.email != email);
     setData(filteredData);
   }
-
-
 
   return (
     <ImageBackground source={require('../assets/good.jpg')}
@@ -178,18 +155,17 @@ export default function myStudents({ route, navigation }) {
                 <TouchableOpacity onPress={() => { removeStudent(item.email), deleteItemByEmail(item.email) }}>
                   <Text style={{ color: "#fff", fontSize: 18, borderColor: "#fff", borderWidth: 1, backgroundColor: "maroon", margin: 25, borderRadius: 20 }}> X </Text>
                 </TouchableOpacity>
-
               </View>
             </View>
           )}
 
         />
       </ScrollView>
-      <View style={{ alignItems: "center", marginBottom: 10 }}>
+      <View style={{alignItems:"center", marginBottom:10}}>
         <TouchableOpacity
           style={styles.AddButtonStyle}
           onPress={() =>
-            navigation.navigate("Add Students", { name: route.params.name })}//{() => setModalVisible(true)}//////
+            navigation.navigate("Add Students", { name: route.params.name })}
         >
           <Text style={styles.textStyle}> Add Student </Text>
         </TouchableOpacity>
