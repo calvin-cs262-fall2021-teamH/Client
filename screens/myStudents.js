@@ -34,7 +34,6 @@ import {
   HeaderButton,
   Item
 } from 'react-navigation-header-buttons';
-import { checkIfTokenExpired, refreshAuthAsync, getCachedAuthAsync, authState } from './home';
 //import @react-native-async-storage/async-storage;
 import { LogBox } from 'react-native';
 
@@ -53,38 +52,7 @@ export default function myStudents({ route, navigation }) {
     <HeaderButton IconComponent={Ionicons} iconSize={40} {...props} />
   );
 
-  //https://docs.expo.dev/versions/v43.0.0/sdk/app-auth/#usage
-  let [authState, setAuthState, userId] = useState(null);
-  useEffect(() => {
-    (async () => {
-      let cachedAuth = await getCachedAuthAsync();
-      if (cachedAuth && !authState) {
-        setAuthState(cachedAuth);
-      }
-    })();
-  }, []);
-
-
-  //let myclientId = Platform.OS =="android" ? andoidClientId : iosClientId;
-  //location screen is logged in
-  //points of interest is what the general user should see
-
-  let isSignedIn = authState == null ? false : true;
-  let screenToNavigateTo = isSignedIn == true ? "Location" : "Points of Interest";
-
   React.useLayoutEffect(() => {
-    /*(async () => {
-      let cachedAuth = await getCachedAuthAsync();
-      if (cachedAuth == null) {
-        screenToNavigateTo = "Points of Interest";
-      }else{
-        screenToNavigateTo = "Location";
-      }
-      })(screenToNavigateTo);
-  */
-    //let isSignedIn = authState == null ? false : true;
-    //let screenToNavigateTo = isSignedIn == true ? "Location" : "Points of Interest";
-    let myScreen = screenToNavigateTo;
     navigation.setOptions({
       headerRight: () => (
         <HeaderButtons HeaderButtonComponent={IoniconsHeaderButton}>
