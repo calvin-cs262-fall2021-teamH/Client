@@ -189,27 +189,6 @@ export default function ListScreen({ route, navigation }) {
             })
     }
 
-    function _handleMultiInput(answerText) {
-        return (text) => {
-            setAnswer({ [answerText]: text })
-        }
-    }
-
-    const getCircularReplacer = () => {
-        const seen = new WeakSet();
-        return (key, value) => {
-            if (typeof value === "object" && value !== null) {
-                if (seen.has(value)) {
-                    return;
-                }
-                seen.add(value);
-            }
-            return value;
-        };
-    };
-
-
-
     return (
         <ScrollView style={{ flex: 1, backgroundColor: '#8C2032' }}>
             <Modal

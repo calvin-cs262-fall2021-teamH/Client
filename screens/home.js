@@ -27,7 +27,7 @@ import {
 	Item
 } from 'react-navigation-header-buttons';
 
-//getting our clientId into the (Probably should put into the DB to hide from the user)
+//getting our clientId into the app(Probably should put into the DB to hide from the user)
 let andoidClientId = "2260489795-b82e25fatl0ih72e43ii5q6q858fb6ql.apps.googleusercontent.com";//androidclientID
 let iosClientId = "2260489795-nvs04mkpqbhrjbd7ne2jb560e2a3dhdm.apps.googleusercontent.com";//iosclientID
 
@@ -46,14 +46,13 @@ StorageKey = '@MyApp:CustomGoogleOAuthKey';
 export async function signInAsync() {
 	let authState = await AppAuth.authAsync(config);
 	await cacheAuthAsync(authState);
-	//console.log('signinInAsync', authState.accessToken);//we get here
 	const user = await fetchUserInfo(authState.accessToken);
 	if (await isInDB(user.email) == false) {//this is for new users
 		console.log("User does not exist in our DB, we are creating a user.");
 		addUser(user);
 	} else {//this is for returning users, ie isInDB returns true
 		var returningUserID = await getID(user.email);
-		console.log(returningUserID, "user.Id, from our database");///This is important!!!
+		//console.log(returningUserID, "user.Id, from our database");///This is important!!!
 	}
 	return authState;
 }
@@ -63,7 +62,6 @@ async function isInDB(email) {
 	try {
 		const resp = await fetch(`https://hello-campus.herokuapp.com/usersByEmail/` + email);
 		const data = await resp.json();
-		console.log(data);
 		return true; //should be only if the User is in the database!
 	} catch (e) {
 		console.log(`User is not in DB: ${e.message}`);//for testing only
@@ -75,7 +73,6 @@ async function isInDB(email) {
 async function getUserFromDB(email) {
 	const resp = await fetch(`https://hello-campus.herokuapp.com/usersByEmail/` + email);
 	const data = await resp.json();
-	console.log(data);
 	return data; //should be only if the User is in the database
 }
 
@@ -98,7 +95,6 @@ async function addUser(userFromGoogle) {
 async function getID(email) {
 	const resp = await fetch(`https://hello-campus.herokuapp.com/usersByEmail/` + email);
 	const data = await resp.json();
-	console.log(data.id, "retrieved Data.id from our DBASE....");
 	var userID = data.id;
 	return userID;
 }
@@ -126,7 +122,6 @@ async function fetchUserInfo(token) {
 export async function getCachedAuthAsync() {
 	let value = await AsyncStorage.getItem(StorageKey);
 	let authState = JSON.parse(value);
-	//console.log('getCachedAuthAsync', authState);//we get here
 	if (authState) {
 		if (checkIfTokenExpired(authState)) {
 			return refreshAuthAsync(authState);
@@ -160,13 +155,6 @@ export async function signOutAsync({ accessToken }) {
 		alert(`Failed to revoke token: ${e.message}`);
 	}
 }
-
-
-
-
-
-
-
 
 /*
  * HomeScreen is the main screen of the Hello Campus app.
@@ -403,7 +391,7 @@ export default function HomeScreen({ navigation }) {
 					<TouchableOpacity style={globalStyles.genericButton}
 						onPress={async () => {
 							const userFromGoogle = await fetchUserInfo(authState.accessToken);
-							console.log(userFromGoogle);
+							//console.log(userFromGoogle);
 							const myUser = await getUserFromDB(userFromGoogle.email);
 							navigation.navigate("Location", { user: myUser });
 						}}>

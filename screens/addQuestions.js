@@ -1,4 +1,4 @@
-/**
+/*
  * Screen that allows professors to add locations
  *
  * @author: Brian Langejans, David Reidsma, David Heynen, Paul Dick, Kurt Wietelmann
