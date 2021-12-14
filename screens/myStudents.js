@@ -25,6 +25,9 @@ import {
 } from "react-native";
 import filter from 'lodash.filter'
 import { globalStyles } from "../styles/global";
+import { LogBox } from 'react-native';
+
+LogBox.ignoreLogs(['VirtualizedLists should never be nested inside plain ScrollViews with the same orientation - use another VirtualizedList-backed container instead.']);
 
 export default function myStudents({ route, navigation }) {
   const [isLoading, setIsLoading] = useState(true);
@@ -33,6 +36,9 @@ export default function myStudents({ route, navigation }) {
   const [thoseWhoAreNotStudents, setThoseWhoAreNotStudents] = useState([]);
   const [refreshPage, setRefreshPage] = useState([]);
   const [error, setError] = useState([]);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [addRemoveModalVisible, setAddRemoveModalVisible] = useState(false);
+  const [query, setQuery] = useState('');
 
   useEffect(() => {
     setIsLoading(true);
@@ -41,9 +47,7 @@ export default function myStudents({ route, navigation }) {
       .then(response => response.json())
       .then((json) => {
         setData(json);
-
         setFullData(json);
-
         setIsLoading(false);
       })
       .catch(err => {
@@ -64,12 +68,6 @@ export default function myStudents({ route, navigation }) {
       })
 
   }, []);
-
-
-
-  const [modalVisible, setModalVisible] = useState(false);
-  const [addRemoveModalVisible, setAddRemoveModalVisible] = useState(false);
-  const [query, setQuery] = useState('');
 
   function renderHeader() {
     return (
@@ -141,7 +139,7 @@ export default function myStudents({ route, navigation }) {
       <Text style={{ fontSize: 18, fontWeight: 'bold', color: "#8C2131", marginTop: 30 }} >
         Select a student to view their answers.
       </Text>
-      <View>
+      <ScrollView>
         <FlatList
           data={data}
           keyExtractor={({ id }, index) => id.toString()}
@@ -162,7 +160,7 @@ export default function myStudents({ route, navigation }) {
           )}
 
         />
-      </View>
+      </ScrollView>
       <View style={{alignItems:"center", marginBottom:10}}>
         <TouchableOpacity
           style={styles.AddButtonStyle}
