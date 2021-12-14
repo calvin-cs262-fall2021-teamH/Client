@@ -33,14 +33,15 @@ import { HomeScreen } from "./home";
 import MapInfoText from "../components/mapInfoText";
 import InteractionButton from "../components/interactionButton";
 import {
-    HeaderButtons,
-    HeaderButton,
-    Item,
-    HiddenItem,
-    OverflowMenu,
+	HeaderButtons,
+	HeaderButton,
+	Item,
+	HiddenItem,
+	OverflowMenu,
 } from 'react-navigation-header-buttons';
 import { Ionicons } from '@expo/vector-icons';
 import ImageZoom from 'react-native-image-pan-zoom';
+import * as Animatable from 'react-native-animatable';
 
 const LOCATION_TASK_NAME = "hellocampus_background_location";
 
@@ -62,63 +63,63 @@ let userLocationFromTask = {
 // let locationUpdatesStarted = false;
 
 export default function MapScreen({ route, navigation }) {
-    React.useLayoutEffect(() => {
-        navigation.setOptions({
-            headerLeft: () => (
-                <HeaderButtons HeaderButtonComponent={IoniconsHeaderButton}>
-                    <Item
-                        title="location-list"
-                        iconName="md-home"
-                        color="maroon"
-                        onPress={() => {
-                            navigation.navigate("Home")
-                        }}
-                    />
-                </HeaderButtons>
-            ),
-        });
-    }, [navigation]);
+	React.useLayoutEffect(() => {
+		navigation.setOptions({
+			headerLeft: () => (
+				<HeaderButtons HeaderButtonComponent={IoniconsHeaderButton}>
+					<Item
+						title="location-list"
+						iconName="md-home"
+						color="maroon"
+						onPress={() => {
+							navigation.navigate("Home")
+						}}
+					/>
+				</HeaderButtons>
+			),
+		});
+	}, [navigation]);
 
-    // const [errorMsg, setErrorMsg] = useState(null); // TODO: do something with errorMsg
-    const [userLocation, setUserLocation] = useState({ pixelCoords: { x: -500, y: -500 }, realCoords: { latitude: 0, longitude: 0 } });
+	// const [errorMsg, setErrorMsg] = useState(null); // TODO: do something with errorMsg
+	const [userLocation, setUserLocation] = useState({ pixelCoords: { x: -500, y: -500 }, realCoords: { latitude: 0, longitude: 0 } });
 
-    const [isDataDownloading, setIsDataDownloading] = useState(true);
-    const [pointsOfInterest, setPointsOfInterest] = useState([]);
-    const [helpModalVisible, setHelpModalVisible] = useState(false);
+	const [isDataDownloading, setIsDataDownloading] = useState(true);
+	const [pointsOfInterest, setPointsOfInterest] = useState([]);
+	const [helpModalVisible, setHelpModalVisible] = useState(false);
 	// const [locationUpdatesStarted, setLocationUpdatesStarted] = useState(false);
 
 	const [mapPosition, setMapPosition] = useState({ x: MAP_IMAGE_WIDTH / 2, y: MAP_IMAGE_HEIGHT / 2, zoom: 1 });
 
-    const IoniconsHeaderButton = (props) => (
-        <HeaderButton IconComponent={Ionicons} iconSize={45} {...props} />
-    );
+	const IoniconsHeaderButton = (props) => (
+		<HeaderButton IconComponent={Ionicons} iconSize={45} {...props} />
+	);
 
-    React.useLayoutEffect(() => {
-        navigation.setOptions({
-            headerRight: () =>
-            (
-                <HeaderButtons HeaderButtonComponent={IoniconsHeaderButton}>
-                    <Item
-                        title={"location-list"}
-                        iconName={"md-list-circle"}
-                        color="maroon"
-                        onPress={() => {
-                            navigation.navigate("Points of Interest")
-                        }}
-                    />
-                    <Item
-                        title={"help"}
-                        iconName={"help-circle"}
-                        color="maroon"
-                        onPress={() => {
-                            setHelpModalVisible(!helpModalVisible)
-                        }
-                        }
-                    />
-                </HeaderButtons>
-            ),
-        });
-    }, [navigation])
+	React.useLayoutEffect(() => {
+		navigation.setOptions({
+			headerRight: () =>
+			(
+				<HeaderButtons HeaderButtonComponent={IoniconsHeaderButton}>
+					<Item
+						title={"location-list"}
+						iconName={"md-list-circle"}
+						color="maroon"
+						onPress={() => {
+							navigation.navigate("Points of Interest")
+						}}
+					/>
+					<Item
+						title={"help"}
+						iconName={"help-circle"}
+						color="maroon"
+						onPress={() => {
+							setHelpModalVisible(!helpModalVisible)
+						}
+						}
+					/>
+				</HeaderButtons>
+			),
+		});
+	}, [navigation])
 
 	useEffect(() => {
 		async function checkForLocationPermissions() {
@@ -154,7 +155,7 @@ export default function MapScreen({ route, navigation }) {
 			// setHasPermission(hasPermissions);
 
 			await initPointsOfInterest();
-	
+
 			await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
 				activityType: Location.LocationActivityType.Fitness,
 				showsBackgroundLocationIndicator: true,
@@ -285,13 +286,13 @@ export default function MapScreen({ route, navigation }) {
 		return pixelCoords;
 	}
 
-    const userHasLocation = userLocation.realCoords?.latitude != null;
+	const userHasLocation = userLocation.realCoords?.latitude != null;
 	const userPixelCoords = userHasLocation
-        ? realToPixelCoords(userLocation.realCoords)
-        : { x: -500, y: -500 };
+		? realToPixelCoords(userLocation.realCoords)
+		: { x: -500, y: -500 };
 
 	function getClosestPoint() {
-        const currentLocation = userLocation.realCoords;
+		const currentLocation = userLocation.realCoords;
 		let distance = 1;
 		const sortedByDistance = pointsOfInterest.sort((a, b) => {
 			const distanceA = getDistance(currentLocation, {
@@ -312,25 +313,25 @@ export default function MapScreen({ route, navigation }) {
 			}
 		});
 
-        const point = sortedByDistance[0];
+		const point = sortedByDistance[0];
 		return [point, getDistance(userLocationFromTask, { latitude: pointsOfInterest[0].latitude, longitude: pointsOfInterest[0].longitude })];
 	}
-	
-    //add the user to the map screen
-    //props.route.params
-    //const { user } = route.params;
-    //const {userId} = route.params;
-    //console.log("user from google", user);
 
-    const [ closestPoint, distanceToPoint ] = (pointsOfInterest == null || pointsOfInterest.length == 0) ? [null, null] : getClosestPoint();
-    const pointIsInRange = closestPoint != null && distanceToPoint <= closestPoint.radius;
+	//add the user to the map screen
+	//props.route.params
+	//const { user } = route.params;
+	//const {userId} = route.params;
+	//console.log("user from google", user);
 
-	let textMessage = 
+	const [closestPoint, distanceToPoint] = (pointsOfInterest == null || pointsOfInterest.length == 0) ? [null, null] : getClosestPoint();
+	const pointIsInRange = closestPoint != null && distanceToPoint <= closestPoint.radius;
+
+	let textMessage =
 		route.params == null
 			? "Walk towards a point on the map."
 			: "Welcome " +
-			  route.params.user.given_name +
-			  ", walk towards a point to answer questions.";
+			route.params.user.given_name +
+			", walk towards a point to answer questions.";
 
 	if (closestPoint != null) {
 		textMessage = distanceToPoint + " meters away from " + closestPoint.name + ", which has a radius of " + closestPoint.radius + " meters";
@@ -431,7 +432,7 @@ export default function MapScreen({ route, navigation }) {
 														user: route.params.user,
 													}
 												),
-											Vibration.cancel())
+												Vibration.cancel())
 										}
 									/>
 								);
@@ -486,20 +487,21 @@ export default function MapScreen({ route, navigation }) {
 			</Modal>
 
 			<TouchableOpacity
-                style={[{ bottom: 0, position: 'absolute', alignItems: 'center' }, globalStyles.noInteractionButton]}
-                onPress={() => {
-                    if (!pointIsInRange) {
-                        console.log("No close point!");
-                        return;
-                    }
-                    if (route.params == null) {//ie we are not logged in...
-                        navigation.navigate('PointInfo', closestPoint);
-                    } else {//if the user is logged in (need to update further)
-                        navigation.navigate('Questions', { point: closestPoint, user: route.params.user });//This is a user from google not necc. the user from our DB, should update!
-                    }
-                }}>
-            <Image source={!pointIsInRange ? require('../assets/PointInteractionButton.png') : require("../assets/PointInteractionButton.gif")} style = {{width: 170, height:170 }}/>
-        	</TouchableOpacity>
+				style={[{ bottom: 0, position: 'absolute', alignItems: 'center' }, globalStyles.noInteractionButton]}
+				onPress={() => {
+					if (!pointIsInRange) {
+						console.log("No close point!");
+						return;
+					}
+					if (route.params == null) {//ie we are not logged in...
+						navigation.navigate('PointInfo', closestPoint);
+					} else {//if the user is logged in (need to update further)
+						navigation.navigate('Questions', { point: closestPoint, user: route.params.user });//This is a user from google not necc. the user from our DB, should update!
+					}
+				}}>
+				{/* <Image source={!pointIsInRange ? require('../assets/PointInteractionButton.png') : require("../assets/PointInteractionButton.gif")} style = {{width: 170, height:170 }}/> */}
+				<Animatable.Image animation="bounceInUp" source={!pointIsInRange ? require('../assets/PointInteractionButton.png') : require("../assets/PointInteractionButton.gif")} style={{ width: 170, height: 170 }}></Animatable.Image>
+			</TouchableOpacity>
 		</ImageBackground>
 	);
 }
